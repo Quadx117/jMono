@@ -2,6 +2,7 @@ package gameCore.graphics;
 
 import gameCore.events.EventArgs;
 import gameCore.events.EventHandler;
+import gameCore.utilities.StringHelpers;
 
 import java.lang.ref.WeakReference;
 
@@ -121,14 +122,7 @@ public abstract class GraphicsResource implements AutoCloseable
 	@Override
 	public String toString()
 	{
-		return stringIsNullOrEmpty(name) ? super.toString() : name;
-	}
-
-	// TODO: This should go in a wrapper class so id don't have to copy it around.
-	// Helper method
-	private boolean stringIsNullOrEmpty(String s)
-	{
-		return s == null || s.isEmpty();
+		return StringHelpers.isNullOrEmpty(name) ? super.toString() : name;
 	}
 
 }

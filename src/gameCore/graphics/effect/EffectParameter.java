@@ -9,6 +9,7 @@ import gameCore.math.Quaternion;
 import gameCore.math.Vector2;
 import gameCore.math.Vector3;
 import gameCore.math.Vector4;
+import gameCore.utilities.StringHelpers;
 
 import java.lang.reflect.Array;
 
@@ -196,7 +197,7 @@ public class EffectParameter
 	public String debugDisplayString()
 	{
 		String semanticStr = new String(); // String.Empty;
-		if (!stringIsNullOrEmpty(semantic))
+		if (!StringHelpers.isNullOrEmpty(semantic))
 			semanticStr = " <" + semantic + ">";
 
 		String valueStr;
@@ -975,13 +976,6 @@ public class EffectParameter
 		for (int i = 0; i < value.length; ++i)
 			elements.getEffectParameter(i).setValue(value[i]);
 		stateKey = ++NextStateKey;
-	}
-
-	// TODO: This should go in a Class (StringHelper for example)
-	// Helper method
-	private boolean stringIsNullOrEmpty(String s)
-	{
-		return s == null || s.isEmpty();
 	}
 
 }
