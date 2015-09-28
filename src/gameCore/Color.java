@@ -1022,6 +1022,13 @@ public class Color
 	 */
 	private int _packedValue;
 	// TODO: _packedValue is a uint, test to see if it matters
+	
+	// Note: added this since it is provided by default for struct in C#
+	public Color()
+	{
+		_packedValue = 0;
+	}
+	
 	/**
 	 * Creates an sRGB color with the specified combined RGBA value consisting
 	 * of the alpha component in bits 24-31, the red component in bits 16-23,

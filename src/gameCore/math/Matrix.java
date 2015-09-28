@@ -20,6 +20,27 @@ public class Matrix // implements IEquatable<Matrix>
 	public float M31, M32, M33, M34;
 	public float M41, M42, M43, M44;
 
+	// Note: added this since it is provided by default for struct in C#
+	public Matrix()
+	{
+		this.M11 = 0.0f;
+		this.M12 = 0.0f;
+		this.M13 = 0.0f;
+		this.M14 = 0.0f;
+		this.M21 = 0.0f;
+		this.M22 = 0.0f;
+		this.M23 = 0.0f;
+		this.M24 = 0.0f;
+		this.M31 = 0.0f;
+		this.M32 = 0.0f;
+		this.M33 = 0.0f;
+		this.M34 = 0.0f;
+		this.M41 = 0.0f;
+		this.M42 = 0.0f;
+		this.M43 = 0.0f;
+		this.M44 = 0.0f;
+	}
+	
 	public Matrix(Matrix m)
 	{
 		this.M11 = m.M11;

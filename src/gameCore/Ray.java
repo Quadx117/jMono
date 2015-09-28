@@ -9,6 +9,13 @@ public class Ray // implements IEquatable<Ray>
 
 	public Vector3 position;
 
+	// Note: added this since it is provided by default for struct in C#
+	public Ray()
+	{
+		this.position = new Vector3();
+		this.direction = new Vector3();
+	}
+	
 	public Ray(Vector3 position, Vector3 direction)
 	{
 		this.position = position;

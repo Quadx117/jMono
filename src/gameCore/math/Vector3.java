@@ -85,6 +85,7 @@ public class Vector3 {
 		return new Vector3(backward);
 	}
 
+	// Note: added this since it is provided by default for struct in C#
 	public Vector3() {
 		this.x = 0.0f;
 		this.y = 0.0f;

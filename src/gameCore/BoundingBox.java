@@ -11,10 +11,8 @@ public class BoundingBox
 
 	public final int CORNER_COUNT = 8;
 
-	/*
-	 * Only needed to instantiate variable in createFromSphere and createMerged
-	 */
-	private BoundingBox()
+	// Note: added this since it is provided by default for struct in C#
+	public BoundingBox()
 	{
 		this.min = new Vector3();
 		this.max = new Vector3();

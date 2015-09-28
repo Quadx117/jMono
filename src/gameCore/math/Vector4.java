@@ -65,6 +65,7 @@ public class Vector4 {
 		return new Vector4(unitW);
 	}
 
+	// Note: added this since it is provided by default for struct in C#
 	public Vector4() {
 		this.x = 0.0f;
 		this.y = 0.0f;

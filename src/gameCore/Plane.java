@@ -46,7 +46,7 @@ public class Plane // IEquatable<Plane>
 
 	public Vector3 normal;
 
-	// NOTE: I added this utility constructor
+	// Note: added this since it is provided by default for struct in C#
 	public Plane()
 	{
 		normal = new Vector3();

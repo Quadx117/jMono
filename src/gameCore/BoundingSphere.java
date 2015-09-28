@@ -22,13 +22,11 @@ public class BoundingSphere
 				"Radius( " + this.radius + " )");
 	}
 
-	/*
-	 * Only needed to instantiate variable in transfrom, createFromBoundingBox and createMerged
-	 */
-	private BoundingSphere()
+	// Note: added this since it is provided by default for struct in C#
+	public BoundingSphere()
 	{
 		this.center = new Vector3();
-		this.radius = 0;
+		this.radius = 0.0f;
 	}
 
 	/**

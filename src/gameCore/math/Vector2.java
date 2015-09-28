@@ -53,6 +53,7 @@ public class Vector2 // implements IEquatable<Vector2>
 		return (this.x + "  " + this.y);
 	}
 
+	// Note: added this since it is provided by default for struct in C#
 	/**
 	 * Initializes a new instance of Vector2 with both of its component set to
 	 * 0.0f.

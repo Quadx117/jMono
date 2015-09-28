@@ -94,6 +94,16 @@ public class Viewport {
 		return new Rectangle(x, y, width, height);
 	}
 
+	// Note: added this since it is provided by default for struct in C#
+	public Viewport() {
+		this.x = 0;
+		this.y = 0;
+		this.width = 0;
+		this.height = 0;
+		this.minDepth = 0.0f;
+		this.maxDepth = 0.0f;
+	}
+	
 	public Viewport(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
