@@ -7,15 +7,18 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * A java class that is capable of parsing .net BinaryWriter encoded files.
+ * A java class that is capable of parsing .NET BinaryWriter encoded files.
  * Some methods are not implemented as I have no need for them.
  * 
- * @author robbiev
+ * @see https://github.com/dotnet/coreclr/blob/master/src/mscorlib/src/System/IO/BinaryReader.cs
+ * @author Eric Perron
  *
  */
-public class BinaryReader extends FilterInputStream {
+public class BinaryReader extends FilterInputStream
+{
 
-	public BinaryReader(InputStream in) {
+	public BinaryReader(InputStream in)
+	{
 		super(in);
 	}
 
@@ -26,7 +29,8 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public int readInt32() {
+	public int readInt32()
+	{
 		return ByteBuffer.wrap(this.readBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getInt();
 	}
 
@@ -37,7 +41,8 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public long readUInt32() {
+	public long readUInt32()
+	{
 		return this.readInt32() & 0xFFFFFFFFL;
 	}
 
@@ -48,7 +53,8 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public int readInt16() {
+	public int readInt16()
+	{
 		return ByteBuffer.wrap(this.readBytes(2)).order(ByteOrder.LITTLE_ENDIAN).getShort();
 	}
 
@@ -60,7 +66,8 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public int readUInt16() {
+	public int readUInt16()
+	{
 		return this.readInt16() & 0xFFFF;
 	}
 
@@ -71,12 +78,15 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public String readString() {
+	public String readString()
+	{
 		byte[] result = null;
-		try {
+		try
+		{
 			result = this.readBytes(this.getStringLength());
 		}
-		catch (IOException e) {
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 		return new String(result);
@@ -89,7 +99,8 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean readBoolean() {
+	public boolean readBoolean()
+	{
 		return this.readBytes(1)[0] != 0;
 	}
 
@@ -100,7 +111,8 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public float readSingle() {
+	public float readSingle()
+	{
 		return ByteBuffer.wrap(this.readBytes(4)).order(ByteOrder.LITTLE_ENDIAN).getFloat();
 	}
 
@@ -116,22 +128,26 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	private int getStringLength() throws IOException {
+	private int getStringLength() throws IOException
+	{
 		int count = 0;
 		int shift = 0;
 		boolean more = true;
-		while (more) {
+		while (more)
+		{
 			byte b = (byte) this.read();
 			count |= (b & 0x7F) << shift;
 			shift += 7;
-			if ((b & 0x80) == 0) {
+			if ((b & 0x80) == 0)
+			{
 				more = false;
 			}
 		}
 		return count;
 	}
 
-	public byte readByte() {
+	public byte readByte()
+	{
 		Byte value = 0;
 		value = readBytes(1)[0];
 		return value;
@@ -145,20 +161,43 @@ public class BinaryReader extends FilterInputStream {
 	 * @return
 	 * @throws IOException
 	 */
-	public byte[] readBytes(int length) {
+	public byte[] readBytes(int length)
+	{
 		byte[] bytes = new byte[length];
-		try {
+		try
+		{
 			this.read(bytes);
 		}
-		catch (IOException e) {
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 		return bytes;
 	}
+	
+	protected int read7BitEncodedInt() {
+        // Read out an Int32 7 bits at a time.  The high bit
+        // of the byte when on means to continue reading more bytes.
+        int count = 0;
+        int shift = 0;
+        byte b;
+        do {
+            // Check for a corrupted stream.  Read a max of 5 bytes.
+            // In a future version, add a DataFormatException.
+            if (shift == 5 * 7)  // 5 bytes max per Int32, shift += 7
+            	// TODO: Environment.GetResourceString
+                // throw new IllegalFormatException(Environment.GetResourceString("Format_Bad7BitInt32"));
+            	throw new NumberFormatException("Format_Bad7BitInt32");
+
+            // ReadByte handles end of stream cases for us.
+            b = readByte();
+            count |= (b & 0x7F) << shift;
+            shift += 7;
+        } while ((b & 0x80) != 0);
+        return count;
+    }
 }
 // TODO: Finish comments as per MSDN :
 // https://msdn.microsoft.com/en-us/library/system.io.binaryreader%28v=vs.110%29.aspx
 
 // TODO: implement other methods and validate the existing one
-// see
-// https://github.com/dotnet/coreclr/blob/4cf8a6b082d9bb1789facd996d8265d3908757b2/src/mscorlib/src/System/IO/BinaryReader.cs
