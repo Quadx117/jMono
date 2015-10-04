@@ -1,6 +1,6 @@
 package gameCore.graphics;
 
-//http://msdn.microsoft.com/en-us/library/ff434403.aspx
+// http://msdn.microsoft.com/en-us/library/ff434403.aspx
 public class RenderTargetBinding
 {
 	private Texture _renderTarget;
@@ -16,6 +16,7 @@ public class RenderTargetBinding
 		return _arraySlice;
 	}
 
+	// TODO: Since this is a struct, Do I need a no-args constructor ?
 	public RenderTargetBinding(RenderTarget2D renderTarget)
 	{
 		if (renderTarget == null)
