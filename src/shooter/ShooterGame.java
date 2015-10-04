@@ -8,12 +8,15 @@ import gameCore.graphics.SpriteSortMode;
 import gameCore.graphics.SurfaceFormat;
 import gameCore.graphics.Texture2D;
 import gameCore.graphics.states.BlendState;
+import gameCore.math.Vector2;
 import gameCore.time.GameTime;
+import gameCore.time.TimeSpan;
 
 import java.awt.Rectangle;
+import java.util.Random;
 
-public class ShooterGame extends Game {
-
+public class ShooterGame extends Game
+{
 	/** Default serial version UID */
 	private static final long serialVersionUID = 1L;
 
@@ -21,93 +24,902 @@ public class ShooterGame extends Game {
 	SpriteBatch spriteBatch;
 
 	// Bounding Rectangles
-    Texture2D pixel;
-    Rectangle boundingRectPlayer = new Rectangle(20, 20, 50, 50);
-	
+	Texture2D pixel;
+	Rectangle boundingRectPlayer = new Rectangle(20, 20, 50, 50); // Rectangle boundingRectPlayer;
+	// List<Rectangle> boundingRectEnemies;
+	// List<Rectangle> boundingRectLaser;
+
+	// Represents the Player
+	// Player player;
+
+	// Keyboard states used to determine key presses
+	// KeyboardState currentKeyboardState;
+	// KeyboardState previousKeyboardState;
+
+	// Gamepad states used to determine button presses
+	// GamePadState currentGamePadState;
+	// GamePadState previousGamePadState;
+
+	// A movement speed for the Player
+	float playerMoveSpeed;
+
 	// Image used to display the static background
-    Texture2D mainBackground;
-    
-	public ShooterGame() {
-		
-		graphics = new GraphicsDeviceManager(this);
-		// Content.RootDirectory = "Content";
+	Texture2D mainBackground;
+
+	// Parallaxing Layers
+	ParallaxingBackground bgLayer1;
+	ParallaxingBackground bgLayer2;
+
+	// Enemies
+	Texture2D enemyTexture;
+	// List<Enemy> enemies;
+
+	// The rate at which the enemies appear
+	TimeSpan enemySpawnTime;
+	TimeSpan previousSpawnTime;
+
+	// A random number generator
+	Random random;
+
+	// Projectiles
+	Texture2D projectileTexture;
+	// List<Projectiles> projectiles;
+
+	// The rate of fire of the Player's Laser
+	TimeSpan fireTime;
+	TimeSpan previousFireTime;
+
+	// Explosion
+	Texture2D explosionTexture;
+	// List<Animation> explosions;
+
+	// The sound played when a laser is fired
+	// SoundEffect laserSound;
+
+	// The sound used for explosions
+	// SoundEffect explosionSound;
+
+	// Low Beep (Used in menu)
+	// SoundEffect LowBeep;
+
+	// The music played during Gameplay and Menus
+	// Song gameplayMusic;
+	// Song menuMusic;
+
+	// Variables to check which song is playing
+	boolean isPlayingMenuMusic;
+	boolean isPlayingGameMusic;
+
+	// Number that holds the player score
+	int score;
+
+	// Background textures for the various screens in the game
+	Texture2D mainMenuScreenBackground;
+	Texture2D endMenuScreenBackground;
+
+	// The enumaration of the various screen states available in the game
+	enum ScreenState
+	{
+		MainGame,	//
+		MainMenu,	//
+		EndMenu
 	}
 
-	protected void initialize() {
+	// The current screen state
+	ScreenState currentScreen;
+
+	// Font resources
+	Vector2 fontPos;
+	Vector2 fontOrigin;
+	// SpriteFont gamefont; // The font used to display UI elements
+	// SpriteFont menufont; // The font used in menus
+	Color playColor;
+	Color quitColor;
+	int elapsedTimeColor; // The time elapsed since the last fontColor change
+	int menuIndex;        // if 0 means we are on Play; if 1 means we are on Quit
+	float fontAlphaBlend; // Value for transparency. 0 = transparent ; 0.5 = 50% ; 1 = opaque;
+							// BlendState.AlphaBlend must be set in spritebatch.begin
+
+	// The elapsed time since the player died
+	int elapsedTimeDead;
+
+	public ShooterGame()
+	{
+		graphics = new GraphicsDeviceManager(this);
+		// TODO: Do I want to rename res to content ?
+		// getContent().setRootDirectory("Content");
+		getContent().setRootDirectory("res");
+	}
+
+	protected void initialize()
+	{
 		// TODO: Add your initialization logic here
+		// Initialize the Player class
+		// player = new Player();
+
+		// Set a constant Player move speed
+		playerMoveSpeed = 8.0f;
+
+		// Initialize the enemies list
+		// enemies = new List<Enemy>();
+
+		// Set the time keepers to 0
+		previousSpawnTime = TimeSpan.ZERO;
+
+		// Used to determine how fast enemy respawns
+		enemySpawnTime = TimeSpan.fromSeconds(1.0f);
+
+		// Initialize our random number generator
+		random = new Random();
+
+		// Initalize the ParallaxingBackgrounds
+		bgLayer1 = new ParallaxingBackground();
+		bgLayer2 = new ParallaxingBackground();
+
+		// Initialize the Projectiles list
+		// projectiles = new List<Projectiles>();
+
+		// Set the Laser to fire every quarter second
+		fireTime = TimeSpan.fromSeconds(.15f);
+
+		// Initialze the explosions list
+		// explosions = new List<Animation>();
+
+		// Set player's score to 0
+		score = 0;
+
+		// Initalize the boundingRectangles list
+		// boundingRectEnemies = new List<Rectangle>();
+		// boundingRectLaser = new List<Rectangle>();
+
+		// Initialize the current screen state to the screen we want to display first
+		currentScreen = ScreenState.MainGame;
+
+		// Initialize the Font position to be in the center of the screen
+		fontPos = new Vector2(getGraphicsDevice().getViewport().getWidth() / 2,
+				getGraphicsDevice().getViewport().getHeight() / 2);
+
+		// Initialize ou bool so that MenuMusic will play first
+		isPlayingGameMusic = false;
+		isPlayingMenuMusic = true;
+
+		// Set the elapsedTimeColor and elapsedTimeDead to 0
+		elapsedTimeColor = 0;
+		elapsedTimeDead = 0;
+
+		// Set the default color for the buttons in the main Menu
+		playColor = Color.OrangeRed;
+		quitColor = Color.White;
+		menuIndex = 0;
 
 		super.initialize();
 	}
 
-	protected void loadContent() {
+	protected void loadContent()
+	{
 		// Create a new SpriteBatch, which can be used to draw textures.
 		spriteBatch = new SpriteBatch(getGraphicsDevice());
 
 		// TODO: use this.Content to load your game content here
-		
-		// Used to draw the Bounding Rectangles.  Can be used to draw any primitives
-        pixel = new Texture2D(getGraphicsDevice(), 1, 1, false, SurfaceFormat.Color);
-        pixel.setData(new Color[] { Color.White }); // So we can draw whatever color we want
-		
-		// Load the Background images
-        // mainBackground = Content.Load<Texture2D>("mainbackground");
+
+		// Used to draw the Bounding Rectangles. Can be used to draw any primitives
+		pixel = new Texture2D(getGraphicsDevice(), 1, 1, false, SurfaceFormat.Color);
+		pixel.setData(new Color[] { Color.White }); // So we can draw whatever color we want
+
+		// Load the Player resources
+		// Animation playerAnimation = new Animation();
+		// TODO: Should I do it this way ?
+		// Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
+		Texture2D playerTexture = getContent().load("shipAnimation");
+		// playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 60, Color.White, 1f,
+		// true);
+
+		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
+				getGraphicsDevice().getViewport().getTitleSafeArea().y
+						+ getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
+		// player.Initialize(Content.Load<Texture2D>("player"), playerPosition); Ancien code pour
+		// une seul image
+		// player.Initialize(playerAnimation, playerPosition);
+
+		// TODO: Should I do it this way instead ?
+		// mainBackground = getContent().load("mainbackground", Texture2D.class);
+		mainBackground = getContent().load("mainbackground");
+		bgLayer1.initialize(getContent(), "bgLayer1", getGraphicsDevice().getViewport().getWidth(), -1);
+		bgLayer2.initialize(getContent(), "bgLayer2", getGraphicsDevice().getViewport().getWidth(), -2);
+		// TODO: Should I do it this way instead ?
+		// mainMenuScreenBackground = getContent().load("mainMenu", Texture2D.class);
+		mainMenuScreenBackground = getContent().load("mainMenu");
+		// TODO: Should I do it this way instead ?
+		// endMenuScreenBackground = getContent().load("endMenu", Texture2D.class);
+		endMenuScreenBackground = getContent().load("endMenu");
+
+		// Load the enemy resources
+		// TODO: Should I do it this way instead ?
+		// enemyTexture = getContent().load("mineAnimation", Texture2D.class);
+		enemyTexture = getContent().load("mineAnimation");
+
+		// Load the projectiles resources
+		// TODO: Should I do it this way instead ?
+		// projectileTexture = getContent().load("laser", Texture2D.class);
+		projectileTexture = getContent().load("laser");
+
+		// Load the explosions resources
+		// TODO: Should I do it this way instead ?
+		// explosionTexture = getContent().load("explosion", Texture2D.class);
+		explosionTexture = getContent().load("explosion");
+
+		// Load the Laser, Explosion and LowBeep sound effect
+		// TODO: Should I do it this way instead ?
+		// laserSound = getContent().load("sound/laserFire", SoundEffect.class);
+		// explosionSound = getContent().load("sound/explosion", SoundEffect.class);
+		// lowBeep = getContent().load("sound/LowBeep", SoundEffect.class);
+
+		// Load the music
+		// TODO: Should I do it this way instead ?
+		// gameplayMusic = getContent().load("sound/gameMusic", Song.class);
+		// menuMusic = getContent().load("sound/menuMusic", Song.class);
+
+		// Start the music right away
+		// PlayMusic(menuMusic);
+
+		// Load the UI font
+		// gamefont = getContent().load("fonts/gameFont", SpriteFont.class);
+		// menufont = getContent().load("fonts/menuFont", SpriteFont.class);
 	}
 
-	protected void unloadContent() {
+	protected void unloadContent()
+	{
 		// TODO: Unload any non ContentManager content here
 	}
 
-	protected void update(GameTime gameTime) {
-		// Allows the game to exit
-		// if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-		// this.stop();
+	private void startNewGame()
+	{
+		// Reset everything we need to start a new game
+		// player = new Player();
+		// enemies = new List<Enemy>();
+		// projectiles = new List<Projectiles>();
+		// Animation playerAnimation = new Animation();
+
+		// Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
+		Texture2D playerTexture = getContent().load("shipAnimation");
+
+		// playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 60, Color.White, 1f,
+		// true);
+
+		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
+				getGraphicsDevice().getViewport().getTitleSafeArea().y
+						+ getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
+		// player.Initialize(playerAnimation, playerPosition);
+
+		score = 0;
+
+		// Set the time keepers to 0
+		previousSpawnTime = TimeSpan.ZERO;
+
+		// Set the elapsedTimeColor and elapsedTimeDead to 0
+		elapsedTimeColor = 0;
+		elapsedTimeDead = 0;
+	}
+
+	protected void update(GameTime gameTime)
+	{
+		// Save the previous state of the Keyboard and GamePad so we can determine single key/button
+		// presses
+		// previousGamePadState = currentGamePadState;
+		// previousKeyboardState = currentKeyboardState;
+
+		// Read the current state of the Keyboard and GamePad and store it
+		// currentGamePadState = GamePad.GetState(PlayerIndex.One);
+		// currentKeyboardState = Keyboard.GetState();
+
+		// Update mehtod associated with the current screen
+		switch (currentScreen)
+		{
+			case MainMenu:
+			{
+				// Update the elapsedTimeColor
+				elapsedTimeColor += (int) gameTime.elapsedGameTime.getTotalMilliseconds();
+
+				if (elapsedTimeColor >= 500f)
+				{
+					elapsedTimeColor = 0;
+
+					if (menuIndex == 0)
+					{
+						if (playColor == Color.White)
+						{
+							playColor = Color.OrangeRed;
+						}
+						else
+						{
+							playColor = Color.White;
+						}
+					}
+					else if (menuIndex == 1)
+					{
+						if (quitColor == Color.White)
+						{
+							quitColor = Color.OrangeRed;
+						}
+						else
+						{
+							quitColor = Color.White;
+						}
+					}
+				}
+
+				updateMainMenu();
+
+				if (!isPlayingMenuMusic)
+				{
+					isPlayingMenuMusic = true;
+					isPlayingGameMusic = false;
+					// PlayMusic(menuMusic);
+				}
+				break;
+			}
+			case EndMenu:
+			{
+				elapsedTimeColor = 0;
+				updateEndMenu();
+				if (!isPlayingMenuMusic)
+				{
+					isPlayingMenuMusic = true;
+					isPlayingGameMusic = false;
+					// PlayMusic(menuMusic);
+				}
+				break;
+			}
+			case MainGame:
+			{
+				elapsedTimeColor = 0;
+				updateMainGame(gameTime);
+				if (!isPlayingGameMusic)
+				{
+					isPlayingMenuMusic = false;
+					isPlayingGameMusic = true;
+					// PlayMusic(gameplayMusic);
+				}
+				break;
+			}
+		}
 
 		// TODO: Add your update logic here
-
 		super.update(gameTime);
 	}
 
-	protected void draw(GameTime gameTime) {
+	private void updateMainMenu()
+	{
+		// Allows the game to exit
+		// if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+		// previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.IsKeyDown(Keys.Escape))
+		// this.exit();
+
+		// if (previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.IsKeyDown(Keys.Down) & menuIndex != 1)
+		// {
+		// menuIndex = 1;
+		// elapsedTimeColor = 0;
+		// PlayColor = Color.White;
+		// QuitColor = Color.OrangeRed;
+		//
+		// // Play the LowBeep sound effect
+		// LowBeep.Play(0.7f, 0.0f, 0.0f);
+		// }
+
+		// if (previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.IsKeyDown(Keys.Up) & menuIndex != 0)
+		// {
+		// menuIndex = 0;
+		// elapsedTimeColor = 0;
+		// PlayColor = Color.OrangeRed;
+		// QuitColor = Color.White;
+		//
+		// // Play the LowBeep sound effect
+		// LowBeep.Play(0.7f, 0.0f, 0.0f);
+		// }
+
+		// if (previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.IsKeyDown(Keys.Enter) & menuIndex == 0)
+		// {
+		// CurrentScreen = ScreenState.MainGame;
+		// }
+		// else if (previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.IsKeyDown(Keys.Enter) & menuIndex == 1)
+		// {
+		// this.Exit();
+		// }
+	}
+
+	private void updateMainGame(GameTime gameTime)
+	{
+		// Allow the game to return to the main menu
+		// if (previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.IsKeyDown(Keys.Escape))
+		// {
+		// CurrentScreen = ScreenState.MainMenu;
+		// return;
+		// }
+
+		// Update the Player
+		updatePlayer(gameTime);
+
+		// Update the Enemies
+		updateEnemies(gameTime);
+
+		// Update the parallaxing background
+		bgLayer1.update();
+		bgLayer2.update();
+
+		// Update Collision only if player is alive
+		// if (player.Active) UpdateCollision();
+
+		// Update Projectiles
+		updateProjectiles();
+
+		// Update Explosions
+		updateExplosions(gameTime);
+
+	}
+
+	private void updateEndMenu()
+	{
+		// Test if any key is pressed. If a key is pressed .Lenght = 1 ; if two keys are pressed
+		// simultaneously .Length = 2, etc.
+		// if (previousKeyboardState != currentKeyboardState &
+		// currentKeyboardState.GetPressedKeys().Length > 0)
+		// {
+		// startNewGame();
+		// CurrentScreen = ScreenState.MainMenu;
+		// }
+	}
+
+	private void updatePlayer(GameTime gameTime)
+	{
+		// player.update(gameTime);
+
+		// Get Thumbstick Controls
+		// player.Position.X += currentGamePadState.ThumbSticks.Left.X * playerMoveSpeed;
+		// player.Position.Y -= currentGamePadState.ThumbSticks.Left.Y * playerMoveSpeed;
+
+		// Use the Keyboard / Dpad
+		// if (currentKeyboardState.IsKeyDown(Keys.Left) || currentGamePadState.DPad.Left ==
+		// ButtonState.Pressed)
+		// {
+		// player.Position.X -= playerMoveSpeed;
+		// }
+		// if (currentKeyboardState.IsKeyDown(Keys.Right) || currentGamePadState.DPad.Right ==
+		// ButtonState.Pressed)
+		// {
+		// player.Position.X += playerMoveSpeed;
+		// }
+		// if (currentKeyboardState.IsKeyDown(Keys.Up) || currentGamePadState.DPad.Up ==
+		// ButtonState.Pressed)
+		// {
+		// player.Position.Y -= playerMoveSpeed;
+		// }
+		// if (currentKeyboardState.IsKeyDown(Keys.Down) || currentGamePadState.DPad.Down ==
+		// ButtonState.Pressed)
+		// {
+		// player.Position.Y += playerMoveSpeed;
+		// }
+
+		// Make sure the player does not go out of bounds. Because we've put the center of the image
+		// of our ship
+		// over the top left corner (0, 0) of the destinationRect, we have to set our clamping min.
+		// and max. value accordingly.
+		// player.Position.X = MathHelper.Clamp(player.Position.X,
+		// (player.PlayerAnimation.FrameWidth / 2),
+		// GraphicsDevice.Viewport.Width - (player.PlayerAnimation.FrameWidth / 2));
+		// player.Position.Y = MathHelper.Clamp(player.Position.Y,
+		// (player.PlayerAnimation.FrameHeight / 2),
+		// GraphicsDevice.Viewport.Height - (player.PlayerAnimation.FrameHeight / 2));
+
+		// Fire if we press spacebar and only every interval we set as the fireTime
+		// if (currentKeyboardState.IsKeyDown(Keys.Space))
+		// {
+		// if ((gameTime.TotalGameTime - previousFireTime > fireTime) & (player.Active))
+		// {
+		// // Reset our current time
+		// previousFireTime = gameTime.TotalGameTime;
+
+		// Add the projectile, but add it to the front and center of the player. Because
+		// playerPosition is in the
+		// center of our ship, we have to set our projectile position accordingly
+		// addProjectile(player.Position + new Vector2(player.PlayerAnimation.FrameWidth / 2, 0));
+
+		// Play the laser sound effect
+		// laserSound.Play();
+		// }
+		// }
+
+		// Display the Game Over screen after 3 seconds if the player is dead
+		// if ((!player.Active) & (elapsedTimeDead == 0))
+		// {
+		// // Add the explosion
+		// AddExplosion(player.Position);
+
+		// Play the explosion sound effect
+		// explosionSound.Play(0.3f, 0.0f, 0.0f);
+
+		// elapsedTimeDead += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+		// }
+		// else if ((!player.Active) & (elapsedTimeDead <= 3000))
+		// {
+		// elapsedTimeDead += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+		// }
+		// else if ((!player.Active) & (elapsedTimeDead > 3000))
+		// {
+		// CurrentScreen = ScreenState.EndMenu;
+		// }
+	}
+
+	private void addEnemy()
+	{
+		// Create the animation object
+		// Animation enemyAnimation = new Animation();
+
+		// Initialize the animation with the correct animation information
+		// enemyAnimation.Initialize(enemyTexture, Vector2.Zero, 47, 61, 8, 60, Color.White, 1f,
+		// true);
+
+		// Randomly generate the position of the enemy
+		// Vector2 position = new Vector2(GraphicsDevice.Viewport.Width + enemyTexture.Width / 2,
+		// random.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+		// Create an enemy
+		// Enemy enemy = new Enemy();
+		// Rectangle boundingRect = new Rectangle();
+
+		// Initialize the enemy
+		// enemy.Initialize(enemyAnimation, position);
+
+		// Add the enemy to the active enemies list
+		// enemies.Add(enemy);
+		// boundingRectEnemies.Add(boundingRect);
+	}
+
+	private void updateEnemies(GameTime gameTime)
+	{
+		// Spawn a new enemy every 1.5 seconds
+		// if (gameTime.TotalGameTime - previousSpawnTime > enemySpawnTime)
+		// {
+		// previousSpawnTime = gameTime.TotalGameTime;
+		// // Add an enemy
+		// AddEnemy();
+		// }
+
+		// Update the enemies
+		// for (int i = enemies.Count - 1; i >= 0; i--)
+		// {
+		// enemies[i].Update(gameTime);
+		// if (enemies[i].Active == false)
+		// {
+		// // If not Active and Health <= 0 (so we don't get an explosion when the enemy goes out of
+		// the screen)
+		// if (enemies[i].Health <= 0)
+		// {
+		// // Add the explosion
+		// AddExplosion(enemies[i].Position);
+
+		// Play the explosion sound effect
+		// explosionSound.Play(0.3f, 0.0f, 0.0f);
+
+		// Add to the Player's score
+		// score += enemies[i].Value;
+		// }
+		// enemies.RemoveAt(i);
+		// boundingRectEnemies.RemoveAt(i);
+		// }
+		// }
+	}
+
+	private void addProjectile(Vector2 position)
+	{
+		// Create the projectile
+		// Projectiles projectile = new Projectiles();
+		// Rectangle boundingRect = new Rectangle();
+
+		// Initialize the projectile
+		// projectile.Initialize(GraphicsDevice.Viewport, projectileTexture, position);
+
+		// Add the projectile to the active enemies list
+		// projectiles.Add(projectile);
+		// boundingRectLaser.Add(boundingRect);
+	}
+
+	private void updateProjectiles()
+	{
+		// Update the projetctiles
+		// for (int i = projectiles.Count - 1; i >= 0; i--)
+		// {
+		// projectiles[i].Update();
+
+		// if (projectiles[i].Active == false)
+		// {
+		// projectiles.RemoveAt(i);
+		// boundingRectLaser.RemoveAt(i);
+		// }
+		// }
+	}
+
+	private void updateCollision()
+	{
+		// Use the Rectangle's built-in intersect function to determine if 2 objects are overlapping
+		// Rectangle rectangle1;
+		// Rectangle rectangle2;
+
+		// Only create the rectangle once for the player
+		// rectangle1 = new Rectangle((int)player.Position.X - (player.Width / 2),
+		// (int)player.Position.Y - (player.Height / 2),
+		// player.Width, player.Height);
+		// boundingRectPlayer = new Rectangle((int)player.Position.X - (player.Width / 2),
+		// (int)player.Position.Y - (player.Height / 2),
+		// player.Width, player.Height);
+
+		// Check collision between Player and Enemies
+		// for (int i = 0; i < enemies.Count; i++)
+		// {
+		// rectangle2 = new Rectangle((int)enemies[i].Position.X - (enemies[i].Width / 2),
+		// (int)enemies[i].Position.Y - (enemies[i].Height / 2), enemies[i].Width,
+		// enemies[i].Height);
+		// boundingRectEnemies[i] = new Rectangle((int)enemies[i].Position.X - (enemies[i].Width /
+		// 2),
+		// (int)enemies[i].Position.Y - (enemies[i].Height / 2), enemies[i].Width,
+		// enemies[i].Height);
+
+		// Determine if the two objects collided with each other
+		// if (rectangle1.Intersects(rectangle2))
+		// {
+		// Subtract Health from the player based on the enemy damage
+		// player.Health -= enemies[i].Damage;
+
+		// Since the Enemy collided with the Player destroy it
+		// enemies[i].Health = 0;
+
+		// If the Player Health is less or equal to 0 we died
+		// if (player.Health <= 0) player.Active = false;
+		// }
+		// }
+
+		// Projectiles VS Enemies Collisions
+		// for (int i = 0; i < projectiles.Count; i++)
+		// {
+		// for (int j = 0; j < enemies.Count; j++)
+		// {
+		// Create the rectangles we need to determine if lasers collided with enemies
+		// rectangle1 = new Rectangle((int)projectiles[i].Position.X - (projectiles[i].Width / 2),
+		// (int)projectiles[i].Position.Y - (projectiles[i].Height / 2),
+		// projectiles[i].Width, projectiles[i].Height);
+		// rectangle2 = new Rectangle((int)enemies[j].Position.X - (enemies[j].Width / 2),
+		// (int)enemies[j].Position.Y - (enemies[j].Height / 2), enemies[j].Width,
+		// enemies[j].Height);
+
+		// Using visible bounding rectangles
+		// boundingRectLaser[i] = new Rectangle((int)projectiles[i].Position.X -
+		// (projectiles[i].Width / 2),
+		// (int)projectiles[i].Position.Y - (projectiles[i].Height / 2),
+		// projectiles[i].Width, projectiles[i].Height);
+		// boundingRectEnemies[j] = new Rectangle((int)enemies[j].Position.X - (enemies[j].Width /
+		// 2),
+		// (int)enemies[j].Position.Y - (enemies[j].Height / 2), enemies[j].Width,
+		// enemies[j].Height);
+
+		// Determine if the two objects collided with each other
+		// if (rectangle1.Intersects(rectangle2))
+		// {
+		// Subtract enemies Health by the damage of the projectile and deactivate projectile
+		// enemies[j].Health -= projectiles[i].Damage;
+		// projectiles[i].Active = false;
+		// }
+		// }
+		// }
+		// Player VS HUD collision
+		// Check if the Player is under the Heath and Score text. If so, the Health and Score text
+		// will be transparent so we
+		// can see the player. We will check which line is longer and use that to test if the player
+		// is under the text.
+		// We have use the offset of our player position since it is in the middle of the ship
+		// if (gamefont.MeasureString("Health : " + player.Health).X >=
+		// gamefont.MeasureString("Score : " + score).X)
+		// {
+		// FontOrigin = new Vector2(gamefont.MeasureString("Health : " + player.Health).X,
+		// gamefont.MeasureString("Score : " + score).Y + 25); // + 25 is the Height that we are
+		// using to set the position of the second Line (Health line)
+		// }
+		// else
+		// {
+		// FontOrigin = new Vector2(gamefont.MeasureString("Score : " + score).X,
+		// gamefont.MeasureString("Score : " + score).Y + 25); // + 25 is the Height that we are
+		// using to set the position of the second Line (Health line)
+		// }
+
+		// if ((player.Position.X - player.Width / 2 <= FontOrigin.X) &&
+		// (player.Position.Y - player.Height / 2 <= FontOrigin.Y))
+		// {
+		// fontAlphaBlend = 0.25f;
+		// }
+		// else
+		// {
+		// fontAlphaBlend = 1f;
+		// }
+	}
+
+	private void addExplosion(Vector2 position)
+	{
+		// Animation explosion = new Animation();
+		// explosion.Initialize(explosionTexture, position, 134, 134, 12, 45, Color.White, 1f,
+		// false);
+		// explosions.Add(explosion);
+	}
+
+	private void updateExplosions(GameTime gameTime)
+	{
+		// for (int i = explosions.Count - 1; i >= 0; i--)
+		// {
+		// explosions[i].Update(gameTime);
+		// if (explosions[i].Active == false)
+		// {
+		// explosions.RemoveAt(i);
+		// }
+		// }
+	}
+
+	// private void playMusic(Song song)
+	// {
+	// Due to the way the MediaPlayer plays music, we have to catch the exception.
+	// Music will play when the game is not tethered
+	// try
+	// {
+	// Play the music
+	// MediaPlayer.Play(song);
+
+	// Loop the currently playing song
+	// MediaPlayer.IsRepeating = true;
+	// }
+	// catch { }
+	// }
+
+	protected void draw(GameTime gameTime)
+	{
 		getGraphicsDevice().clear(Color.CornflowerBlue);
 
 		// TODO: Add your drawing code here
 
 		// Start drawing
-        spriteBatch.begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-        
-		// Draw Bounding Rectangles
-        drawBorder(boundingRectPlayer, 2, Color.BlueViolet);
-		
-        // Stop drawing
-        spriteBatch.end();
-        
+		spriteBatch.begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+		// Call the Draw method associated with the current screen
+		switch (currentScreen)
+		{
+			case MainMenu:
+			{
+				drawMainMenu();
+				break;
+			}
+			case EndMenu:
+			{
+				drawEndMenu();
+				break;
+			}
+			case MainGame:
+			{
+				drawMainGame();
+				break;
+			}
+		}
+
+		// Stop drawing
+		spriteBatch.end();
+
 		super.draw(gameTime);
 	}
 
 	@Override
-	protected void drawText(GameTime gameTime) {
+	protected void drawText(GameTime gameTime)
+	{
 		// TODO Auto-generated method stub
+	}
 
+	private void drawMainMenu()
+	{
+		// Draw all the elements that are part of the Main Menu
+		spriteBatch.draw(mainMenuScreenBackground, Vector2.ZERO, Color.White);
+
+		// fontOrigin = menufont.MeasureString("Play") / 2;
+		// spriteBatch.drawString(menufont, "Play", new Vector2(FontPos.X, FontPos.Y + 10),
+		// PlayColor, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+		// fontOrigin = menufont.MeasureString("Quit") / 2;
+		// spriteBatch.drawString(menufont, "Quit", new Vector2(FontPos.X, FontPos.Y + 10 +
+		// FontOrigin.Y * 2), QuitColor, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+	}
+
+	private void drawMainGame()
+	{
+		// Draw the static background
+		spriteBatch.draw(mainBackground, Vector2.ZERO, Color.White);
+
+		// Draw the moving backgrounds
+		bgLayer1.draw(spriteBatch);
+		bgLayer2.draw(spriteBatch);
+
+		// Draw the Player if player's health is above 0
+		// if (player.Health > 0) player.draw(spriteBatch);
+
+		// Draw the Enemies
+		// for (int i = 0; i < enemies.Count; i++)
+		// {
+		// enemies[i].Draw(spriteBatch);
+		// }
+
+		// Draw the Projectiles
+		// for (int i = 0; i < projectiles.Count; i++)
+		// {
+		// projectiles[i].Draw(spriteBatch);
+		// }
+
+		// Draw the Explosions
+		// for (int i = 0; i < explosions.Count; i++)
+		// {
+		// explosions[i].Draw(spriteBatch);
+		// }
+
+		// Draw the score
+		// spriteBatch.DrawString(gamefont, "Score : " + score, new Vector2
+		// (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y),
+		// Color.White * fontAlphaBlend);
+
+		// Draw the player's health
+		// spriteBatch.DrawString(gamefont, "Health : " + player.Health, new Vector2
+		// (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 25),
+		// Color.White * fontAlphaBlend);
+
+		// Draw Bounding Rectangles
+		drawBorder(boundingRectPlayer, 2, Color.BlueViolet);
+
+		// for (int i = 0; i < boundingRectEnemies.Count; i++)
+		// {
+		// drawBorder(boundingRectEnemies[i], 2, Color.SpringGreen);
+		// }
+
+		// for (int i = 0; i < boundingRectLaser.Count; i++)
+		// {
+		// drawBorder(boundingRectLaser[i], 2, Color.Black);
+		// }
+	}
+
+	private void drawEndMenu()
+	{
+		// Draw all the elements that are part of the End Menu
+		// Draw the EndMenu Background
+		spriteBatch.draw(endMenuScreenBackground, Vector2.ZERO, Color.White);
+
+		// Draw the score
+		// FontOrigin = menufont.MeasureString("Score : " + score) / 2;
+		// spriteBatch.DrawString(menufont, "Score : " + score, FontPos, Color.White, 0, FontOrigin,
+		// 1.0f, SpriteEffects.None, 0.5f);
 	}
 
 	// Used to draw the Bounding Rectangles
-    private void drawBorder(Rectangle rectangleToDraw, int borderThickness, Color borderColor)
-    {
-        // Draw Top line
-        spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y,
-                        rectangleToDraw.width, borderThickness), borderColor);
+	private void drawBorder(Rectangle rectangleToDraw, int borderThickness, Color borderColor)
+	{
+		// Draw Top line
+		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y,
+				rectangleToDraw.width, borderThickness), borderColor);
 
-        // Draw Left line
-        spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y,
-                        borderThickness, rectangleToDraw.height), borderColor);
+		// Draw Left line
+		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y,
+				borderThickness, rectangleToDraw.height), borderColor);
 
-        // Draw Right line
-        spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x + rectangleToDraw.width - borderThickness,
-                        rectangleToDraw.y, borderThickness, rectangleToDraw.height), borderColor);
+		// Draw Right line
+		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x + rectangleToDraw.width - borderThickness,
+				rectangleToDraw.y, borderThickness, rectangleToDraw.height), borderColor);
 
-        // Draw Bottom line
-        spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y + rectangleToDraw.height - borderThickness,
-                        rectangleToDraw.width, borderThickness), borderColor);
-    }
-	
+		// Draw Bottom line
+		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y + rectangleToDraw.height
+				- borderThickness,
+				rectangleToDraw.width, borderThickness), borderColor);
+	}
+
 }
