@@ -1282,7 +1282,7 @@ public class Color
 	 */
 	public byte getBlue()
 	{
-		return (byte) (this._packedValue >> 16);
+		return (byte) (this._packedValue);
 	}
 
 	/**
@@ -1328,7 +1328,7 @@ public class Color
 	 */
 	public byte getRed()
 	{
-		return (byte) this._packedValue;
+		return (byte) (this._packedValue >> 16);
 	}
 
 	/**
