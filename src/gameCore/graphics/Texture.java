@@ -10,6 +10,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class Texture extends GraphicsResource
 {
+	// TODO: I added this array to hold the image data
+	// TODO: This is handled by ShaprDX and I don't know how it works yet.
+	// TODO: I should maybe make this private and implement getData in Texture2D
+	public int[] pixels;
+	
 	protected SurfaceFormat _format;
 	protected int _levelCount;
 

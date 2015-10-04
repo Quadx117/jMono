@@ -6,16 +6,12 @@ import gameCore.components.GameComponentCollectionEventArgs;
 import gameCore.components.IDrawable;
 import gameCore.components.IGameComponent;
 import gameCore.components.IUpdateable;
+import gameCore.content.ContentManager;
 import gameCore.events.EventArgs;
 import gameCore.events.EventHandler;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.graphics.IGraphicsDeviceService;
 import gameCore.graphics.Viewport;
-import gameCore.graphics.effect.Effect;
-import gameCore.graphics.states.BlendState;
-import gameCore.graphics.states.DepthStencilState;
-import gameCore.graphics.states.RasterizerState;
-import gameCore.graphics.states.SamplerState;
 import gameCore.input.Mouse;
 import gameCore.time.GameTime;
 import gameCore.time.Stopwatch;
@@ -48,31 +44,31 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 	private GameComponentCollection _components;
 	private GameServiceContainer _services;
-	// private ContentManager _content;
+	private ContentManager _content;
 	protected GamePlatform platform; // not useful since java is crossplatform ?
 
 	// TODO: Validate arguments (Events)
 	// TODO: Should I go back to the other way I was doing ?
 	// I had to change IDrawable to an abstract class.
 	private SortingFilteringCollection<IDrawable> _drawables =
-		new SortingFilteringCollection<IDrawable>(
-			d -> d.isVisible(),
-			// (d, handler) -> d.visibleChanged(handler),
-			// (d, handler) -> d.visibleChanged(handler),
-			(d, handler) -> d.visibleChanged = handler,
-			(d, handler) -> d.visibleChanged = handler,
-			new Comparator<IDrawable>() {
+			new SortingFilteringCollection<IDrawable>(
+					d -> d.isVisible(),
+					// (d, handler) -> d.visibleChanged(handler),
+					// (d, handler) -> d.visibleChanged(handler),
+					(d, handler) -> d.visibleChanged = handler,
+					(d, handler) -> d.visibleChanged = handler,
+					new Comparator<IDrawable>() {
 
-				@Override
-				public int compare(IDrawable d1, IDrawable d2)
-				{
-					return d1.getDrawOrder() - d2.getDrawOrder();
-				}
-			},
-			// (d, handler) -> d.drawOrderChanged(handler),
-			// (d, handler) -> d.drawOrderChanged(handler),
-			(d, handler) -> d.drawOrderChanged = handler,
-			(d, handler) -> d.drawOrderChanged = handler);
+						@Override
+						public int compare(IDrawable d1, IDrawable d2)
+						{
+							return d1.getDrawOrder() - d2.getDrawOrder();
+						}
+					},
+					// (d, handler) -> d.drawOrderChanged(handler),
+					// (d, handler) -> d.drawOrderChanged(handler),
+					(d, handler) -> d.drawOrderChanged = handler,
+					(d, handler) -> d.drawOrderChanged = handler);
 	/*
 	 * private SortingFilteringCollection<IDrawable> _drawables =
 	 * new SortingFilteringCollection<IDrawable>(
@@ -86,24 +82,24 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 	// TODO: Validate arguments (Events)
 	private SortingFilteringCollection<IUpdateable> _updateables =
-		new SortingFilteringCollection<IUpdateable>(
-			u -> u.isEnabled(),
-			// (u, handler) -> u.enabledChanged(handler),
-			// (u, handler) -> u.enabledChanged(handler),
-			(u, handler) -> u.enabledChanged = handler,
-			(u, handler) -> u.enabledChanged = handler,
-			new Comparator<IUpdateable>() {
+			new SortingFilteringCollection<IUpdateable>(
+					u -> u.isEnabled(),
+					// (u, handler) -> u.enabledChanged(handler),
+					// (u, handler) -> u.enabledChanged(handler),
+					(u, handler) -> u.enabledChanged = handler,
+					(u, handler) -> u.enabledChanged = handler,
+					new Comparator<IUpdateable>() {
 
-				@Override
-				public int compare(IUpdateable u1, IUpdateable u2)
-				{
-					return u1.getUpdateOrder() - u2.getUpdateOrder();
-				}
-			},
-			// (u, handler) -> u.updateOrderChanged(handler, null),
-			// (u, handler) -> u.updateOrderChanged(handler, null)
-			(u, handler) -> u.updateOrderChanged = handler,
-			(u, handler) -> u.updateOrderChanged = handler);
+						@Override
+						public int compare(IUpdateable u1, IUpdateable u2)
+						{
+							return u1.getUpdateOrder() - u2.getUpdateOrder();
+						}
+					},
+					// (u, handler) -> u.updateOrderChanged(handler, null),
+					// (u, handler) -> u.updateOrderChanged(handler, null)
+					(u, handler) -> u.updateOrderChanged = handler,
+					(u, handler) -> u.updateOrderChanged = handler);
 
 	/*
 	 * private SortingFilteringCollection<IUpdateable> _updateables =
@@ -216,7 +212,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		// LaunchParameters = new LaunchParameters();
 		_services = new GameServiceContainer();
 		_components = new GameComponentCollection();
-		// _content = new ContentManager(_services);
+		_content = new ContentManager(_services);
 
 		platform = GamePlatform.create(this);
 		// Platform.Activated += OnActivated;
@@ -282,11 +278,11 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 				}
 				_components = null;
 
-				// if (_content != null)
-				// {
-				// _content.Dispose();
-				// _content = null;
-				// }
+				if (_content != null)
+				{
+					_content.close();
+					_content = null;
+				}
 
 				if (_graphicsDeviceManager != null)
 				{
@@ -299,9 +295,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 					// Platform.Activated -= OnActivated;
 					// Platform.Deactivated -= OnDeactivated;
 					_services.removeService(GamePlatform.class);
-// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
+					// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 					// Platform.ViewStateChanged -= Platform_ApplicationViewChanged;
-// #endif
+					// #endif
 					platform.close();
 					platform = null;
 				}
@@ -310,9 +306,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 				// SoundEffect.PlatformShutdown();
 			}
-// #if ANDROID
+			// #if ANDROID
 			// Activity = null;
-// #endif
+			// #endif
 			_isDisposed = true;
 			_instance = null;
 		}
@@ -328,7 +324,11 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 
 	private static Game _instance = null;
-	public static Game getInstance() { return Game._instance; }
+
+	public static Game getInstance()
+	{
+		return Game._instance;
+	}
 
 	// TODO: Doesn't seem to be used anywhere.
 	// public LaunchParameters LaunchParameters { get; private set; }
@@ -455,20 +455,18 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		return _services;
 	}
 
-	/*
-	 * public ContentManager getContent()
-	 * {
-	 * return _content;
-	 * }
-	 * 
-	 * public void setContent(ContentManager value)
-	 * {
-	 * if (value == null)
-	 * throw new NullPointerException();
-	 * 
-	 * _content = value;
-	 * }
-	 */
+	public ContentManager getContent()
+	{
+		return _content;
+	}
+
+	public void setContent(ContentManager value)
+	{
+		if (value == null)
+			throw new NullPointerException();
+
+		_content = value;
+	}
 
 	// NOTE: GraphicsDevice gets created from platform.beforeInitialize();
 	public GraphicsDevice getGraphicsDevice()
@@ -498,13 +496,13 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	public EventHandler<EventArgs> disposed;
 	public EventHandler<EventArgs> exiting;
 
-// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
+	// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 	// public event EventHandler<ViewStateChangedEventArgs> ApplicationViewChanged;
-// #endif
+	// #endif
 
-// #if WINRT
+	// #if WINRT
 	// public ApplicationExecutionState PreviousExecutionState { get; internal set; }
-// #endif
+	// #endif
 
 	public void exit()
 	{
@@ -786,7 +784,10 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		}
 	}
 
-	protected boolean beginDraw() { return true; }
+	protected boolean beginDraw()
+	{
+		return true;
+	}
 
 	/**
 	 * Disposes of this graphics context and releases any system resources that
@@ -800,19 +801,24 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		buffStrat.show();
 	}
 
-	protected void beginRun() {}
-	protected void endRun() {}
+	protected void beginRun()
+	{}
+
+	protected void endRun()
+	{}
 
 	/**
 	 * LoadContent will be called once per game and is the place to load all of
 	 * your content.
 	 */
-	protected void loadContent() {}
+	protected void loadContent()
+	{}
 
 	/**
 	 * Unload any unmanaged content here
 	 */
-	protected void unloadContent() {}
+	protected void unloadContent()
+	{}
 
 	protected void initialize()
 	{
@@ -934,12 +940,12 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		doExiting();
 	}
 
-// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
+	// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 	// private void Platform_ApplicationViewChanged(object sender, ViewStateChangedEventArgs e) {
 	// AssertNotDisposed();
 	// Raise(ApplicationViewChanged, e);
 	// }
-// #endif
+	// #endif
 
 	protected void applyChanges(GraphicsDeviceManager manager)
 	{
@@ -950,8 +956,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			platform.exitFullScreen();
 
 		Viewport viewport = new Viewport(0, 0,
-										 getGraphicsDevice().getPresentationParameters().getBackBufferWidth(),
-										 getGraphicsDevice().getPresentationParameters().getBackBufferHeight());
+				getGraphicsDevice().getPresentationParameters().getBackBufferWidth(),
+				getGraphicsDevice().getPresentationParameters().getBackBufferHeight());
 
 		getGraphicsDevice().setViewport(viewport);
 		platform.endScreenDeviceChange("", viewport.getWidth(), viewport.getHeight());
@@ -1086,7 +1092,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 
 	// TODO : Do I keep the SortingFilteringCollection class int its own file ?
-	
+
 	// Stuff that I added
 	// TODO: Delete these at some point
 

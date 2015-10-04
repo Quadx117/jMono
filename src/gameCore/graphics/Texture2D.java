@@ -1,14 +1,17 @@
 package gameCore.graphics;
 
+import gameCore.Color;
+
 import java.awt.Rectangle;
-import java.util.stream.Stream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Texture2D extends Texture
 {
 	protected enum SurfaceType
 	{
-		Texture, //
-		RenderTarget, //
+		Texture,				//
+		RenderTarget,			//
 		SwapChainRenderTarget,
 	}
 
@@ -30,7 +33,7 @@ public class Texture2D extends Texture
 	{
 		this(graphicsDevice, width, height, mipmap, format, SurfaceType.Texture, false, 1);
 	}
-	
+
 	public Texture2D(GraphicsDevice graphicsDevice, int width, int height, boolean mipmap, SurfaceFormat format,
 			int arraySize)
 	{
@@ -52,7 +55,7 @@ public class Texture2D extends Texture
 		}
 		if (arraySize > 1 && !graphicsDevice.getGraphicsCapabilities().supportsTextureArrays)
 			throw new IllegalArgumentException("Texture arrays are not supported on this graphics device: arraySize");
-		
+
 		this.graphicsDevice = graphicsDevice;
 		this.width = width;
 		this.height = height;
@@ -65,7 +68,7 @@ public class Texture2D extends Texture
 			return;
 
 		// TODO: See other Texture2D files
-		// platformConstruct(width, height, mipmap, format, type, shared);
+		// PlatformConstruct(width, height, mipmap, format, type, shared);
 	}
 
 	public int getWidth()
@@ -78,6 +81,9 @@ public class Texture2D extends Texture
 		return height;
 	}
 
+	// TODO: Should I create all primitives type or send the primitives through
+	// this method as their Wrapper Class counterpart ?
+	// This means creating a bunch of utilities method to do the conversion
 	// where T : struct
 	public <T> void setData(int level, int arraySlice, Rectangle rect, T[] data, int startIndex, int elementCount)
 	{
@@ -86,17 +92,40 @@ public class Texture2D extends Texture
 
 		if (arraySlice > 0 && !getGraphicsDevice().getGraphicsCapabilities().supportsTextureArrays)
 			throw new IllegalArgumentException("Texture arrays are not supported on this graphics device: arraySlice");
-		
+
 		// TODO: See other Texture2D files.
-		// platformSetData(level, arraySlice, rect, data, startIndex, elementCount);
+		// PlatformSetData(level, arraySlice, rect, data, startIndex, elementCount);
 	}
 
-	 // where T : struct
-	public <T> void setData(int level, Rectangle rect, T[] data, int startIndex, int elementCount) 
+	// NOTE: Added this method, see previous TODO
+	public void setData(int level, int arraySlice, Rectangle rect, byte[] data, int startIndex, int elementCount)
+	{
+		if (data == null)
+			throw new NullPointerException("data cannot be null");
+
+		if (arraySlice > 0 && !getGraphicsDevice().getGraphicsCapabilities().supportsTextureArrays)
+			throw new IllegalArgumentException("Texture arrays are not supported on this graphics device: arraySlice");
+
+		// TODO: See other Texture2D files.
+		// PlatformSetData(level, arraySlice, rect, data, startIndex, elementCount);
+		platformSetData(level, arraySlice, rect, data, startIndex, elementCount);
+	}
+
+	// TODO: Should I create all primitives type or send the primitives through
+	// this method as their Wrapper Class counterpart ?
+	// This means creating a bunch of utilities method to do the conversion
+	// where T : struct
+	public <T> void setData(int level, Rectangle rect, T[] data, int startIndex, int elementCount)
 	{
 		this.setData(level, 0, rect, data, startIndex, elementCount);
 	}
-	
+
+	// NOTE: Added this method, see previous TODO
+	public void setData(int level, Rectangle rect, byte[] data, int startIndex, int elementCount)
+	{
+		this.setData(level, 0, rect, data, startIndex, elementCount);
+	}
+
 	// where T : struct
 	public <T> void setData(T[] data, int startIndex, int elementCount)
 	{
@@ -104,9 +133,24 @@ public class Texture2D extends Texture
 	}
 
 	// where T : struct
-	public <T> void setData(T[] data)
+	// public <T> void setData(T[] data)
+	// {
+	// this.setData(0, null, data, 0, data.length);
+	// }
+
+	// TODO: Should I create all the overloads to byte[] ?
+	public <T> void setData(Color[] data)
 	{
-		this.setData(0, null, data, 0, data.length);
+		int length = data.length * 4; // Color is made of four byte components
+		byte[] byteArray = new byte[length];
+		for (int i = 0, j = 0; i < data.length; ++i, j += 4)
+		{
+			byteArray[j + 0] = data[i].getRed();
+			byteArray[j + 1] = data[i].getGreen();
+			byteArray[j + 2] = data[i].getBlue();
+			byteArray[j + 3] = data[i].getAlpha();
+		}
+		this.setData(0, null, byteArray, 0, byteArray.length);
 	}
 
 	// where T : struct
@@ -119,9 +163,9 @@ public class Texture2D extends Texture
 					+ elementCount + " pixels have been requested.");
 		if (arraySlice > 0 && !getGraphicsDevice().getGraphicsCapabilities().supportsTextureArrays)
 			throw new IllegalArgumentException("Texture arrays are not supported on this graphics device: arraySlice");
-		
+
 		// TODO: See Texture2D files.
-		// platformGetData(level, rect, data, startIndex, elementCount);
+		// PlatformGetData(level, rect, data, startIndex, elementCount);
 	}
 
 	// where T : struct
@@ -129,7 +173,7 @@ public class Texture2D extends Texture
 	{
 		this.getData(level, 0, rect, data, startIndex, elementCount);
 	}
-	
+
 	// where T : struct
 	public <T> void getData(T[] data, int startIndex, int elementCount)
 	{
@@ -142,24 +186,24 @@ public class Texture2D extends Texture
 		this.getData(0, null, data, 0, data.length);
 	}
 
-	public static Texture2D fromStream(GraphicsDevice graphicsDevice, Stream stream)
+	public static Texture2D fromStream(GraphicsDevice graphicsDevice, InputStream stream)
 	{
 		return platformFromStream(graphicsDevice, stream);
 	}
 
-	public void saveAsJpeg(Stream stream, int width, int height)
+	public void saveAsJpeg(OutputStream stream, int width, int height)
 	{
 		platformSaveAsJpeg(stream, width, height);
 	}
 
-	public void saveAsPng(Stream stream, int width, int height)
+	public void saveAsPng(OutputStream stream, int width, int height)
 	{
 		platformSaveAsPng(stream, width, height);
 	}
 
 	// This method allows games that use Texture2D.fromStream
 	// to reload their textures after the GL context is lost.
-	public void reload(Stream textureStream)
+	public void reload(InputStream textureStream)
 	{
 		platformReload(textureStream);
 	}
@@ -177,7 +221,7 @@ public class Texture2D extends Texture
 
 	// TODO: From Texture2D.DirectX.cs
 	// TODO: See the others Texture2D files
-	private static Texture2D platformFromStream(GraphicsDevice graphicsDevice, Stream stream)
+	private static Texture2D platformFromStream(GraphicsDevice graphicsDevice, InputStream stream)
 	{
 // #if WINDOWS_PHONE
 		// WriteableBitmap bitmap = null;
@@ -240,7 +284,7 @@ public class Texture2D extends Texture
 		}
 	}
 
-	private void platformSaveAsJpeg(Stream stream, int width, int height)
+	private void platformSaveAsJpeg(OutputStream stream, int width, int height)
 	{
 // #if MONOMAC || WINDOWS
 		// TODO: Look into this method.
@@ -271,7 +315,7 @@ public class Texture2D extends Texture
 	}
 
 	// TODO: from Texture2D.DirectX.cs
-	private void platformSaveAsPng(Stream stream, int width, int height)
+	private void platformSaveAsPng(OutputStream stream, int width, int height)
 	{
 // #if WINDOWS_STOREAPP
 		// TODO: Look into this method.
@@ -286,10 +330,27 @@ public class Texture2D extends Texture
 	// TODO: from Texture2D.OpenGL.cs
 	// This method allows games that use Texture2D.fromStream
 	// to reload their textures after the GL context is lost.
-	private void platformReload(Stream textureStream)
+	private void platformReload(InputStream textureStream)
 	{
 		// GenerateGLTextureIfRequired();
 		// FillTextureFromStream(textureStream);
+	}
+
+	// TODO: Should I create all primitives type or send the primitives through
+	// this method as their Wrapper Class counterpart ?
+	// This means creating a bunch of utilities method to do the conversion
+	private void platformSetData(int level, int arraySlice, Rectangle rect, byte[] data, int startIndex,
+			int elementCount)
+	{
+		int elementSize = _format.getSize();
+		this.pixels = new int[elementCount / elementSize];
+		for (int i = 0, j = 0; i < elementCount; i += 4, ++j)
+		{
+			this.pixels[j] = (data[i + 3] & 0xFF) << 24 |	// A component
+							 (data[i + 0] & 0xFF) << 16 |	// R component
+							 (data[i + 1] & 0xFF) <<  8 |	// G component
+							 (data[i + 2] & 0xFF);			// B component
+		}
 	}
 
 }

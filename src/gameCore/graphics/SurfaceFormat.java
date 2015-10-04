@@ -1,5 +1,8 @@
 package gameCore.graphics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Defines types of surface formats.
  * 
@@ -207,5 +210,21 @@ public enum SurfaceFormat
 			default:
 				throw new IllegalArgumentException();
 		}
+	}
+
+	// NOTE: This is to convert the data read from the disk into an enum value
+	private static Map<Integer, SurfaceFormat> map = new HashMap<Integer, SurfaceFormat>();
+
+	static
+	{
+		for (SurfaceFormat surfaceFormat : SurfaceFormat.values())
+		{
+			map.put(surfaceFormat.ordinal(), surfaceFormat);
+		}
+	}
+
+	public static SurfaceFormat valueOf(int surfaceFormat)
+	{
+		return map.get(surfaceFormat);
 	}
 }
