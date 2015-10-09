@@ -539,7 +539,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		platform.resetElapsedTime();
 		_gameTimer.reset();
 		_gameTimer.start();
-		_accumulatedElapsedTime.setTimeSpan(TimeSpan.ZERO.getTicks());
+		_accumulatedElapsedTime.setTimeSpan(TimeSpan.ZERO);
 		_gameTime.setElapsedGameTime(TimeSpan.ZERO);
 		_previousTicks = 0L;
 	}
@@ -722,7 +722,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			{
 				try
 				{
-					_gameTime.totalGameTime.add(_targetElapsedTime);
+					_gameTime.getTotalGameTime().add(_targetElapsedTime);
 					_accumulatedElapsedTime.subtract(_targetElapsedTime);
 				}
 				catch (Exception e)
@@ -762,7 +762,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			_gameTime.setElapsedGameTime(_accumulatedElapsedTime);
 			try
 			{
-				_gameTime.totalGameTime.add(_accumulatedElapsedTime);
+				_gameTime.getTotalGameTime().add(_accumulatedElapsedTime);
 			}
 			catch (Exception e)
 			{

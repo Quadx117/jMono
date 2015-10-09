@@ -8,17 +8,17 @@ public class GameTime
 {
 
 	/** The amount of game time since the start of the game. */
-	public TimeSpan totalGameTime;
+	private TimeSpan totalGameTime;
 
 	/** The amount of elapsed game time since the last update. */
-	public TimeSpan elapsedGameTime;
+	private TimeSpan elapsedGameTime;
 
 	/**
 	 * Value indicating that the game loop is taking longer than its
 	 * targetElapsedTime. In this case, the game loop can be considered to be
 	 * running too slowly and should do something to "catch up."
 	 */
-	public boolean isRunningSlowly;
+	private boolean isRunningSlowly;
 
 	/**
 	 * Creates a new instance of GameTime with it's members initialized to {@link TimeSpan.ZERO}.
@@ -42,8 +42,8 @@ public class GameTime
 	 */
 	public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime)
 	{
-		this.totalGameTime = totalGameTime;
-		this.elapsedGameTime = elapsedGameTime;
+		this.totalGameTime = new TimeSpan(totalGameTime);
+		this.elapsedGameTime = new TimeSpan(elapsedGameTime);
 		isRunningSlowly = false;
 	}
 
@@ -60,10 +60,10 @@ public class GameTime
 	 *        The value used to set the initial isRunningSlowly for this
 	 *        GameTime.
 	 */
-	public GameTime(TimeSpan totalRealTime, TimeSpan elapsedRealTime, boolean isRunningSlowly)
+	public GameTime(TimeSpan totalGameTime, TimeSpan elapsedGameTime, boolean isRunningSlowly)
 	{
-		this.totalGameTime = totalRealTime;
-		this.elapsedGameTime = elapsedRealTime;
+		this.totalGameTime = new TimeSpan(totalGameTime);
+		this.elapsedGameTime = new TimeSpan(elapsedGameTime);
 		this.isRunningSlowly = isRunningSlowly;
 	}
 
@@ -89,7 +89,6 @@ public class GameTime
 	}
 
 	// TODO: Finish comments
-	// TODO: Do I keep these since the fields are public
 	// ++++++++++ GETTERS ++++++++++ //
 	public TimeSpan getElapsedGameTime()
 	{
@@ -109,12 +108,12 @@ public class GameTime
 	// ++++++++++ SETTERS ++++++++++ //
 	public void setElapsedGameTime(TimeSpan ts)
 	{
-		elapsedGameTime = ts;
+		elapsedGameTime.setTimeSpan(ts);
 	}
 
 	public void setTotalGameTime(TimeSpan ts)
 	{
-		totalGameTime = ts;
+		totalGameTime.setTimeSpan(ts);
 	}
 
 	public void setIsRunningSlowly(boolean value)
