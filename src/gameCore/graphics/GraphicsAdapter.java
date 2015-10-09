@@ -1,5 +1,6 @@
 package gameCore.graphics;
 
+import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +78,13 @@ public class GraphicsAdapter implements AutoCloseable
 // #elif WINDOWS
         // var dc = System.Drawing.Graphics.FromHwnd(IntPtr.Zero).GetHdc();
         // return new DisplayMode(GetDeviceCaps(dc, HORZRES), GetDeviceCaps(dc, VERTRES), GetDeviceCaps(dc, VREFRESH), SurfaceFormat.Color);
+		java.awt.GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		int width = gd.getDisplayMode().getWidth();
+		int height = gd.getDisplayMode().getHeight();
+		int refreshRate = gd.getDisplayMode().getRefreshRate();
+		return new DisplayMode(width, height, refreshRate, SurfaceFormat.Color);
 //#else
-		return new DisplayMode(800, 600, 60, SurfaceFormat.Color);
+		// return new DisplayMode(800, 600, 60, SurfaceFormat.Color);
 // #endif
 	}
 
@@ -246,6 +252,7 @@ public class GraphicsAdapter implements AutoCloseable
 	 * }
 	 */
 
+	// TODO: finish this method
 	public DisplayModeCollection getSupportedDisplayModes()
 	{
 		if (_supportedDisplayModes == null)
@@ -312,7 +319,7 @@ public class GraphicsAdapter implements AutoCloseable
 			// modes.Add(new DisplayMode(displayMode.Width, displayMode.Height, refreshRate,
 			// SurfaceFormat.Color));
 			// }
-			// #endif
+// #endif
 			_supportedDisplayModes = new DisplayModeCollection(modes);
 		}
 
