@@ -1145,39 +1145,68 @@ public class GraphicsDevice implements AutoCloseable
 			throw new UnsupportedOperationException("We currently only support PrimitiveType.TriangleList");
 		}
 
+		// TODO: add test code to make sure all 4 color information are the same.
+		// TODO: check if not a quad ?
 		VertexPositionColorTexture[] data = As.as(vertexData, VertexPositionColorTexture[].class);
 
-		int startX, startY, endX, endY, textureWidth, textureHeight;
+		int destStartX, destStartY, destEndX, destEndY;
+		int srcStartX, srcStartY, srcEndX, srcEndY;
+		int destWidth, destHeight, srcWidth, srcHeight;
+		Texture2D texture = (Texture2D) getTextures().getTexture(0);
 		Color tint;
 		int i = 0;
-		while (data[i] != null)
+		while (i < numVertices)
 		{
-			startX = (int) (data[i + 0].position.x);
-			startY = (int) (data[i + 0].position.y);
-			endX = (int) (data[i + 1].position.x);
-			endY = (int) (data[i + 2].position.y);
+			destStartX = (int) (data[i + 0].position.x);
+			destStartY = (int) (data[i + 0].position.y);
+			destEndX = (int) (data[i + 1].position.x);
+			destEndY = (int) (data[i + 2].position.y);
+			
+			// NOTE: Add 0.5f so that the cast always return the right value
+			//		 (rounding error).
+			srcStartX = (int) (data[i + 0].textureCoordinate.x * texture.width + 0.5f);
+			srcStartY = (int) (data[i + 0].textureCoordinate.y * texture.height + 0.5f);
+			srcEndX = (int) (data[i + 1].textureCoordinate.x * texture.width + 0.5f);
+			srcEndY = (int) (data[i + 2].textureCoordinate.y * texture.height + 0.5f);
+			
 			tint = data[i + 0].color;
 
-			textureWidth = (endX - startX);
-			textureHeight = (endY - startY);
-			// TODO: add test code to make sure all 4 color information are the same.
-			// TODO: check if not a quad
+			destWidth = (destEndX - destStartX);
+			destHeight = (destEndY - destStartY);
+			srcWidth = (srcEndX - srcStartX);
+			srcHeight = (srcEndY - srcStartY);
 			// Determine if we need to resize our sprite. If so, we set our local variables
 			// accordingly.
 			// Otherwise, we set our local variables to the original's sprite values.
-			Texture2D tex = (Texture2D) getTextures().getTexture(0);
-			int[] texturePixels = new int[textureWidth * textureHeight];
+			int[] texturePixels = new int[destWidth * destHeight];
 
-			if (textureWidth != tex.width || textureHeight != tex.height)
+			if (destWidth != srcWidth || destHeight != srcHeight)
 			{
-				texturePixels = resizeNearestNeighbor(tex, (int) (data[i + 0].textureCoordinate.x),
-						(int) (data[i + 0].textureCoordinate.y), textureWidth, textureHeight);
+				// TODO: Fix bug in resize
+				texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, destWidth, destHeight);
 			}
 			else
 			{
-				texturePixels = tex.pixels;
+				// NOTE: We are copying the desired pixels when want to draw only a part
+				//		 of a texture (ex: if we have a texture strip for an animation)
+				if (srcWidth * srcHeight < texture.pixels.length)
+				{
+					// TODO: Can I avoid this copy (expansive)
+					// TODO: Look into drawQuad and see if I couldn't do something there instead.
+					for (int y = 0; y < srcHeight; ++y)
+					{
+						for (int x = 0; x < srcWidth; ++x)
+						{
+							texturePixels[x + y * srcWidth] = texture.pixels[(x+srcStartX) + (y*texture.width+srcStartY)];
+						}
+					}
+				}
+				else
+				{
+					texturePixels = texture.pixels;
+				}
 			}
-			drawQuad(startX, startY, endX, endY, texturePixels, tint);
+			drawQuad(destStartX, destStartY, destEndX, destEndY, texturePixels, tint);
 			i += 4;
 		}
 
@@ -1346,7 +1375,6 @@ public class GraphicsDevice implements AutoCloseable
 		}
 	}
 	
-	
 	private void drawRectangle(int startX, int startY, int endX, int endY, int color)
 	{
 		int screenWidth = this._viewport.getWidth();
@@ -1405,6 +1433,7 @@ public class GraphicsDevice implements AutoCloseable
 		if (newWidth <= 0 || newHeight <= 0)
 			throw new IllegalArgumentException("new width or new height cannot be less than or equal to 0");
 		int[] temp = new int[newWidth * newHeight];
+		// FIXME: The oldWith and OldHeight are busted for textureStripes
 		int oldWidth = tex.getWidth();
 		int oldHeight = tex.getHeight();
 		float xRatio = (float) newWidth / (float) oldWidth;
