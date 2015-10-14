@@ -1,44 +1,54 @@
 package gameCore.graphics.vertices;
 
-public class VertexElement {
-
+// C# struct
+public class VertexElement
+{
 	protected int _offset;
 	protected VertexElementFormat _format;
 	protected VertexElementUsage _usage;
 	protected int _usageIndex;
 
-	public int getOffset() {
+	public int getOffset()
+	{
 		return this._offset;
 	}
 
-	public void setOffset(int value) {
+	public void setOffset(int value)
+	{
 		this._offset = value;
 	}
 
-	public VertexElementFormat getVertexElementFormat() {
+	public VertexElementFormat getVertexElementFormat()
+	{
 		return this._format;
 	}
 
-	public void setVertexElementFormat(VertexElementFormat value) {
+	public void setVertexElementFormat(VertexElementFormat value)
+	{
 		this._format = value;
 	}
 
-	public VertexElementUsage getVertexElementUsage() {
+	public VertexElementUsage getVertexElementUsage()
+	{
 		return this._usage;
 	}
 
-	public void setVertexElementUsage(VertexElementUsage value) {
+	public void setVertexElementUsage(VertexElementUsage value)
+	{
 		this._usage = value;
 	}
 
-	public int getUsageIndex() {
+	public int getUsageIndex()
+	{
 		return this._usageIndex;
 	}
 
-	public void setUsageIndex(int value) {
+	public void setUsageIndex(int value)
+	{
 		this._usageIndex = value;
 	}
 
+	// TODO: Since this is a struct, should I add a no-arguments constructor ?
 	public VertexElement(int offset, VertexElementFormat elementFormat, VertexElementUsage elementUsage, int usageIndex)
 	{
 		this._offset = offset;
@@ -48,33 +58,40 @@ public class VertexElement {
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		// TODO: Fix hashes
 		return 0;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "{{Offset:" + this._offset + " Format:" + this.getVertexElementFormat() + " Usage:"
 				+ this.getVertexElementUsage() + " UsageIndex: " + this.getUsageIndex() + "}}";
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+		{
 			return false;
 		}
-		if (obj.getClass() != this.getClass()) {
+		if (obj.getClass() != this.getClass())
+		{
 			return false;
 		}
 		return (staticEquals(this, (VertexElement) obj));
 	}
 
-	public static boolean staticEquals(VertexElement left, VertexElement right) {
+	public static boolean staticEquals(VertexElement left, VertexElement right)
+	{
 		return ((((left._offset == right._offset) && (left._usageIndex == right._usageIndex)) && (left._usage == right._usage)) && (left._format == right._format));
 	}
 
-	public static boolean notEquals(VertexElement left, VertexElement right) {
+	public static boolean notEquals(VertexElement left, VertexElement right)
+	{
 		return (!staticEquals(left, right));
 	}
 

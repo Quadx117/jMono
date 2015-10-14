@@ -40,9 +40,9 @@ public class Shader extends GraphicsResource
 	// TODO: We should convert the sampler info below
 	// into the start of a Shader reflection API.
 
+	// C# struct
 	public class SamplerInfo
 	{
-
 		public SamplerType type;
 		public int textureSlot;
 		public int samplerSlot;

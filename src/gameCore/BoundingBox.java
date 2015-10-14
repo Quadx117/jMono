@@ -2,6 +2,7 @@ package gameCore;
 
 import gameCore.math.Vector3;
 
+//C# struct
 public class BoundingBox
 {
 
@@ -11,7 +12,7 @@ public class BoundingBox
 
 	public final int CORNER_COUNT = 8;
 
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public BoundingBox()
 	{
 		this.min = new Vector3();

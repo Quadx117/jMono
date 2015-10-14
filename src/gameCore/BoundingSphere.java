@@ -3,6 +3,7 @@ package gameCore;
 import gameCore.math.Matrix;
 import gameCore.math.Vector3;
 
+// C# struct
 public class BoundingSphere
 {
 
@@ -22,7 +23,7 @@ public class BoundingSphere
 				"Radius( " + this.radius + " )");
 	}
 
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public BoundingSphere()
 	{
 		this.center = new Vector3();

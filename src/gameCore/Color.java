@@ -4,6 +4,7 @@ import gameCore.math.MathHelper;
 import gameCore.math.Vector3;
 import gameCore.math.Vector4;
 
+// C# struct
 /**
  * Describes a 32-bit packed color.
  * 
@@ -1023,7 +1024,7 @@ public class Color
 	private int _packedValue;
 	// TODO: _packedValue is a uint, test to see if it matters
 	
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public Color()
 	{
 		_packedValue = 0;

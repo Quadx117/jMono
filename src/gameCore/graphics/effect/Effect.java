@@ -28,6 +28,7 @@ import java.nio.ByteOrder;
 public class Effect extends GraphicsResource
 {
 
+	// C# struct
 	class MGFXHeader
 	{
 		/**
