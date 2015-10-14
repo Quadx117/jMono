@@ -3,7 +3,10 @@ package shooter;
 import gameCore.Color;
 import gameCore.Game;
 import gameCore.GraphicsDeviceManager;
+import gameCore.Rectangle;
 import gameCore.graphics.SpriteBatch;
+import gameCore.graphics.SpriteEffects;
+import gameCore.graphics.SpriteFont;
 import gameCore.graphics.SpriteSortMode;
 import gameCore.graphics.SurfaceFormat;
 import gameCore.graphics.Texture2D;
@@ -13,7 +16,6 @@ import gameCore.math.Vector2;
 import gameCore.time.GameTime;
 import gameCore.time.TimeSpan;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -31,6 +33,8 @@ public class ShooterGame extends Game
 	Rectangle boundingRectPlayer;
 	List<Rectangle> boundingRectEnemies;
 	List<Rectangle> boundingRectLaser;
+
+	private FPS_Counter fpsCounter;
 
 	// Represents the Player
 	Player player;
@@ -100,7 +104,7 @@ public class ShooterGame extends Game
 	Texture2D mainMenuScreenBackground;
 	Texture2D endMenuScreenBackground;
 
-	// The enumaration of the various screen states available in the game
+	// The enumeration of the various screen states available in the game
 	enum ScreenState
 	{
 		MainGame,	//
@@ -114,13 +118,13 @@ public class ShooterGame extends Game
 	// Font resources
 	Vector2 fontPos;
 	Vector2 fontOrigin;
-	// SpriteFont gamefont; // The font used to display UI elements
-	// SpriteFont menufont; // The font used in menus
+	SpriteFont gameFont;	// The font used to display UI elements
+	SpriteFont menuFont;	// The font used in menus
 	Color playColor;
 	Color quitColor;
-	int elapsedTimeColor; // The time elapsed since the last fontColor change
-	int menuIndex;        // if 0 means we are on Play; if 1 means we are on Quit
-	float fontAlphaBlend; // Value for transparency. 0 = transparent ; 0.5 = 50% ; 1 = opaque;
+	int elapsedTimeColor;	// The time elapsed since the last fontColor change
+	int menuIndex;			// if 0 means we are on Play; if 1 means we are on Quit
+	float fontAlphaBlend;	// Value for transparency. 0 = transparent ; 0.5 = 50% ; 1 = opaque;
 							// BlendState.AlphaBlend must be set in spritebatch.begin
 
 	// The elapsed time since the player died
@@ -130,11 +134,14 @@ public class ShooterGame extends Game
 	{
 		graphics = new GraphicsDeviceManager(this);
 		getContent().setRootDirectory("content");
+
+		fpsCounter = new FPS_Counter(this);
 	}
 
 	protected void initialize()
 	{
 		// TODO: Add your initialization logic here
+		
 		// Initialize the Player class
 		player = new Player();
 
@@ -178,7 +185,7 @@ public class ShooterGame extends Game
 
 		// Initialize the Font position to be in the center of the screen
 		fontPos = new Vector2(getGraphicsDevice().getViewport().getWidth() / 2,
-				getGraphicsDevice().getViewport().getHeight() / 2);
+							  getGraphicsDevice().getViewport().getHeight() / 2);
 
 		// Initialize ou bool so that MenuMusic will play first
 		isPlayingGameMusic = false;
@@ -209,9 +216,7 @@ public class ShooterGame extends Game
 
 		// Load the Player resources
 		Animation playerAnimation = new Animation();
-		// TODO: Should I do it this way ?
-		// Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
-		Texture2D playerTexture = getContent().load("shipAnimation");
+		Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
 		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1f, true);
 
 		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
@@ -219,41 +224,27 @@ public class ShooterGame extends Game
 						+ getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
 		player.initialize(playerAnimation, playerPosition);
 
-		// TODO: Should I do it this way instead ?
-		// mainBackground = getContent().load("mainbackground", Texture2D.class);
-		mainBackground = getContent().load("mainbackground");
+		mainBackground = getContent().load("mainbackground", Texture2D.class);
 		bgLayer1.initialize(getContent(), "bgLayer1", getGraphicsDevice().getViewport().getWidth(), -1);
 		bgLayer2.initialize(getContent(), "bgLayer2", getGraphicsDevice().getViewport().getWidth(), -2);
-		// TODO: Should I do it this way instead ?
-		// mainMenuScreenBackground = getContent().load("mainMenu", Texture2D.class);
-		mainMenuScreenBackground = getContent().load("mainMenu");
-		// TODO: Should I do it this way instead ?
-		// endMenuScreenBackground = getContent().load("endMenu", Texture2D.class);
-		endMenuScreenBackground = getContent().load("endMenu");
+		mainMenuScreenBackground = getContent().load("mainMenu", Texture2D.class);
+		endMenuScreenBackground = getContent().load("endMenu", Texture2D.class);
 
 		// Load the enemy resources
-		// TODO: Should I do it this way instead ?
-		// enemyTexture = getContent().load("mineAnimation", Texture2D.class);
-		enemyTexture = getContent().load("mineAnimation");
+		enemyTexture = getContent().load("mineAnimation", Texture2D.class);
 
 		// Load the projectiles resources
-		// TODO: Should I do it this way instead ?
-		// projectileTexture = getContent().load("laser", Texture2D.class);
-		projectileTexture = getContent().load("laser");
+		projectileTexture = getContent().load("laser", Texture2D.class);
 
 		// Load the explosions resources
-		// TODO: Should I do it this way instead ?
-		// explosionTexture = getContent().load("explosion", Texture2D.class);
-		explosionTexture = getContent().load("explosion");
+		explosionTexture = getContent().load("explosion", Texture2D.class);
 
 		// Load the Laser, Explosion and LowBeep sound effect
-		// TODO: Should I do it this way instead ?
 		// laserSound = getContent().load("sound/laserFire", SoundEffect.class);
 		// explosionSound = getContent().load("sound/explosion", SoundEffect.class);
 		// lowBeep = getContent().load("sound/LowBeep", SoundEffect.class);
 
 		// Load the music
-		// TODO: Should I do it this way instead ?
 		// gameplayMusic = getContent().load("sound/gameMusic", Song.class);
 		// menuMusic = getContent().load("sound/menuMusic", Song.class);
 
@@ -261,8 +252,8 @@ public class ShooterGame extends Game
 		// PlayMusic(menuMusic);
 
 		// Load the UI font
-		// gamefont = getContent().load("fonts/gameFont", SpriteFont.class);
-		// menufont = getContent().load("fonts/menuFont", SpriteFont.class);
+		gameFont = getContent().load("fonts/gameFont", SpriteFont.class);
+		menuFont = getContent().load("fonts/menuFont", SpriteFont.class);
 	}
 
 	protected void unloadContent()
@@ -278,8 +269,7 @@ public class ShooterGame extends Game
 		projectiles = new ArrayList<Projectiles>();
 		Animation playerAnimation = new Animation();
 
-		// Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
-		Texture2D playerTexture = getContent().load("shipAnimation");
+		Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
 
 		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1f, true);
 
@@ -301,9 +291,10 @@ public class ShooterGame extends Game
 	protected void update(GameTime gameTime)
 	{
 		// TODO: Add your update logic here
+		fpsCounter.update(gameTime);
 
-		// Save the previous state of the Keyboard and GamePad so we can determine single key/button
-		// presses
+		// Save the previous state of the Keyboard and GamePad so we can determine
+		// single key/button presses
 		// previousGamePadState = currentGamePadState;
 		// previousKeyboardState = currentKeyboardState;
 
@@ -464,7 +455,7 @@ public class ShooterGame extends Game
 
 	private void updateEndMenu()
 	{
-		// Test if any key is pressed. If a key is pressed .Lenght = 1 ; if two keys are pressed
+		// Test if any key is pressed. If a key is pressed .Length = 1 ; if two keys are pressed
 		// simultaneously .Length = 2, etc.
 		// if (previousKeyboardState != currentKeyboardState &
 		// currentKeyboardState.GetPressedKeys().Length > 0)
@@ -534,16 +525,16 @@ public class ShooterGame extends Game
 		if ((!player.isActive) & (elapsedTimeDead == 0))
 		{
 			// Add the explosion
-// 			addExplosion(player.position);
+			addExplosion(player.position);
 
 			// Play the explosion sound effect
 			// explosionSound.Play(0.3f, 0.0f, 0.0f);
 
-			elapsedTimeDead += (int)gameTime.getElapsedGameTime().getTotalMilliseconds();
+			elapsedTimeDead += (int) gameTime.getElapsedGameTime().getTotalMilliseconds();
 		}
 		else if ((!player.isActive) & (elapsedTimeDead <= 3000))
 		{
-			elapsedTimeDead += (int)gameTime.getElapsedGameTime().getTotalMilliseconds();
+			elapsedTimeDead += (int) gameTime.getElapsedGameTime().getTotalMilliseconds();
 		}
 		else if ((!player.isActive) & (elapsedTimeDead > 3000))
 		{
@@ -577,11 +568,10 @@ public class ShooterGame extends Game
 
 	private void updateEnemies(GameTime gameTime)
 	{
-		// Spawn a new enemy every 1.5 seconds
+		// Spawn a new enemy every 1.0 seconds
 		if (gameTime.getTotalGameTime().getTicks() - previousSpawnTime.getTicks() > enemySpawnTime.getTicks())
 		{
 			previousSpawnTime.setTimeSpan(gameTime.getTotalGameTime());
-			// Add an enemy
 			addEnemy();
 		}
 
@@ -647,25 +637,25 @@ public class ShooterGame extends Game
 
 		// Only create the rectangle once for the player
 		rectangle1 = new Rectangle((int) player.position.x - (player.getWidth() / 2),
-								   (int) player.position.y - (player.getHeight() / 2),
-								   player.getWidth(),
-								   player.getHeight());
+				(int) player.position.y - (player.getHeight() / 2),
+				player.getWidth(),
+				player.getHeight());
 		boundingRectPlayer = new Rectangle((int) player.position.x - (player.getWidth() / 2),
-										   (int) player.position.y - (player.getHeight() / 2),
-										   player.getWidth(),
-										   player.getHeight());
+				(int) player.position.y - (player.getHeight() / 2),
+				player.getWidth(),
+				player.getHeight());
 
 		// Check collision between Player and Enemies
 		for (int i = 0; i < enemies.size(); ++i)
 		{
 			rectangle2 = new Rectangle((int) enemies.get(i).position.x - (enemies.get(i).getWidth() / 2),
-									   (int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
-									   enemies.get(i).getWidth(),
-									   enemies.get(i).getHeight());
+					(int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
+					enemies.get(i).getWidth(),
+					enemies.get(i).getHeight());
 			boundingRectEnemies.set(i, new Rectangle((int) enemies.get(i).position.x - (enemies.get(i).getWidth() / 2),
-													 (int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
-													 enemies.get(i).getWidth(),
-													 enemies.get(i).getHeight()));
+					(int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
+					enemies.get(i).getWidth(),
+					enemies.get(i).getHeight()));
 
 			// Determine if the two objects collided with each other
 			if (rectangle1.intersects(rectangle2))
@@ -689,14 +679,14 @@ public class ShooterGame extends Game
 			{
 				// Create the rectangles we need to determine if lasers collided with enemies
 				rectangle1 = new Rectangle((int) projectiles.get(i).position.x - (projectiles.get(i).getWidth() / 2),
-										   (int) projectiles.get(i).position.y - (projectiles.get(i).getHeight() / 2),
-										   projectiles.get(i).getWidth(),
-										   projectiles.get(i).getHeight());
-				
+						(int) projectiles.get(i).position.y - (projectiles.get(i).getHeight() / 2),
+						projectiles.get(i).getWidth(),
+						projectiles.get(i).getHeight());
+
 				rectangle2 = new Rectangle((int) enemies.get(j).position.x - (enemies.get(j).getWidth() / 2),
-										   (int) enemies.get(j).position.y - (enemies.get(j).getHeight() / 2),
-										   enemies.get(j).getWidth(),
-										   enemies.get(j).getHeight());
+						(int) enemies.get(j).position.y - (enemies.get(j).getHeight() / 2),
+						enemies.get(j).getWidth(),
+						enemies.get(j).getHeight());
 
 				// Using visible bounding rectangles
 				// boundingRectLaser.get(i) = new Rectangle((int)projectiles.get(i).Position.X -
@@ -723,33 +713,31 @@ public class ShooterGame extends Game
 
 		// Player VS HUD collision
 		// Check if the Player is under the Heath and Score text. If so, the Health and Score text
-		// will be transparent so we
-		// can see the player. We will check which line is longer and use that to test if the player
-		// is under the text.
-		// We have use the offset of our player position since it is in the middle of the ship
-		// if (gamefont.MeasureString("Health : " + player.Health).X >=
-		// gamefont.MeasureString("Score : " + score).X)
-		// {
-		// FontOrigin = new Vector2(gamefont.MeasureString("Health : " + player.Health).X,
-		// gamefont.MeasureString("Score : " + score).Y + 25); // + 25 is the Height that we are
-		// using to set the position of the second Line (Health line)
-		// }
-		// else
-		// {
-		// FontOrigin = new Vector2(gamefont.MeasureString("Score : " + score).X,
-		// gamefont.MeasureString("Score : " + score).Y + 25); // + 25 is the Height that we are
-		// using to set the position of the second Line (Health line)
-		// }
+		// will be transparent so we can see the player. We will check which line is longer and use
+		// that to test if the player is under the text. We have use the offset of our player
+		// position since it is in the middle of the ship.
+		if (gameFont.measureString("Health : " + player.health).x >= gameFont.measureString("Score : " + score).x)
+		{
+			// + 25 is the Height we are using to set the position of the second Line (Health)
+			fontOrigin = new Vector2(gameFont.measureString("Health : " + player.health).x,
+									 gameFont.measureString("Score : " + score).y + 25);
+		}
+		else
+		{
+			// + 25 is the Height we are using to set the position of the second Line (Health)
+			fontOrigin = new Vector2(gameFont.measureString("Score : " + score).x,
+									 gameFont.measureString("Score : " + score).y + 25);
+		}
 
-		// if ((player.Position.X - player.Width / 2 <= FontOrigin.X) &&
-		// (player.Position.Y - player.Height / 2 <= FontOrigin.Y))
-		// {
-		// fontAlphaBlend = 0.25f;
-		// }
-		// else
-		// {
-		// fontAlphaBlend = 1f;
-		// }
+		if ((player.position.x - player.getWidth() / 2 <= fontOrigin.x) &&
+			(player.position.y - player.getHeight() / 2 <= fontOrigin.y))
+		{
+			fontAlphaBlend = 0.25f;
+		}
+		else
+		{
+			fontAlphaBlend = 1f;
+		}
 	}
 
 	private void addExplosion(Vector2 position)
@@ -791,6 +779,7 @@ public class ShooterGame extends Game
 		getGraphicsDevice().clear(Color.CornflowerBlue);
 
 		// TODO: Add your drawing code here
+		fpsCounter.draw(gameTime);
 
 		// Start drawing
 		spriteBatch.begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -821,23 +810,17 @@ public class ShooterGame extends Game
 		super.draw(gameTime);
 	}
 
-	@Override
-	protected void drawText(GameTime gameTime)
-	{
-		// TODO Auto-generated method stub
-	}
-
 	private void drawMainMenu()
 	{
 		// Draw all the elements that are part of the Main Menu
 		spriteBatch.draw(mainMenuScreenBackground, Vector2.ZERO, Color.White);
 
-		// fontOrigin = menufont.MeasureString("Play") / 2;
-		// spriteBatch.drawString(menufont, "Play", new Vector2(FontPos.X, FontPos.Y + 10),
-		// PlayColor, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
-		// fontOrigin = menufont.MeasureString("Quit") / 2;
-		// spriteBatch.drawString(menufont, "Quit", new Vector2(FontPos.X, FontPos.Y + 10 +
-		// FontOrigin.Y * 2), QuitColor, 0, FontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+		fontOrigin = menuFont.measureString("Play").divide(2f);
+		spriteBatch.drawString(menuFont, "Play", new Vector2(fontPos.x, fontPos.y + 10),
+							   playColor, 0, fontOrigin, 1.0f, SpriteEffects.None, 0.5f);
+		fontOrigin = menuFont.measureString("Quit").divide(2f);
+		spriteBatch.drawString(menuFont, "Quit", new Vector2(fontPos.x, fontPos.y + 10 + fontOrigin.y * 2),
+							   quitColor, 0, fontOrigin, 1.0f, SpriteEffects.None, 0.5f);
 	}
 
 	private void drawMainGame()
@@ -872,14 +855,16 @@ public class ShooterGame extends Game
 		}
 
 		// Draw the score
-		// spriteBatch.DrawString(gamefont, "Score : " + score, new Vector2
-		// (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y),
-		// Color.White * fontAlphaBlend);
+		spriteBatch.drawString(gameFont, "Score : " + score,
+				new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
+						    getGraphicsDevice().getViewport().getTitleSafeArea().y),
+						    Color.multiply(Color.White, fontAlphaBlend));
 
 		// Draw the player's health
-		// spriteBatch.DrawString(gamefont, "Health : " + player.Health, new Vector2
-		// (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 25),
-		// Color.White * fontAlphaBlend);
+		spriteBatch.drawString(gameFont, "Health : " + player.health,
+							   new Vector2 (getGraphicsDevice().getViewport().getTitleSafeArea().x,
+									   		getGraphicsDevice().getViewport().getTitleSafeArea().y + 25),
+								Color.multiply(Color.White, fontAlphaBlend));
 
 		// Draw Bounding Rectangles
 		// drawBorder(boundingRectPlayer, 2, Color.BlueViolet);
@@ -902,9 +887,8 @@ public class ShooterGame extends Game
 		spriteBatch.draw(endMenuScreenBackground, Vector2.ZERO, Color.White);
 
 		// Draw the score
-		// FontOrigin = menufont.MeasureString("Score : " + score) / 2;
-		// spriteBatch.DrawString(menufont, "Score : " + score, FontPos, Color.White, 0, FontOrigin,
-		// 1.0f, SpriteEffects.None, 0.5f);
+		fontOrigin = menuFont.measureString("Score : " + score).divide(2);
+		spriteBatch.drawString(menuFont, "Score : " + score, fontPos, Color.White, 0, fontOrigin, 1.0f, SpriteEffects.None, 0.5f);
 	}
 
 	// Used to draw the Bounding Rectangles

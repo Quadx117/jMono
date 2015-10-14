@@ -1,12 +1,11 @@
 package shooter;
 
 import gameCore.Color;
+import gameCore.Rectangle;
 import gameCore.graphics.SpriteBatch;
 import gameCore.graphics.Texture2D;
 import gameCore.math.Vector2;
 import gameCore.time.GameTime;
-
-import java.awt.Rectangle;
 
 public class Animation
 {

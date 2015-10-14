@@ -18,7 +18,7 @@ public class Projectiles
 	// State of the Projectiles
 	public boolean isActive;
 
-	// The amount of Damage the projectiles infilcts to an enemy
+	// The amount of Damage the projectiles inflicts to an enemy
 	public int damage;
 
 	// Represents the viewable boundary of the game

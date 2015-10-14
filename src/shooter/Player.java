@@ -6,9 +6,6 @@ import gameCore.time.GameTime;
 
 public class Player
 {
-	// Image representing the player
-    // public Texture2D PlayerTexture;
-
     // Animation representing the player
     public Animation playerAnimation;
 
@@ -23,26 +20,9 @@ public class Player
 
     // Get the width of the Player ship
     public int getWidth() { return playerAnimation.frameWidth; }
-    // get { return PlayerTexture.Width; }  Ancien code pour une seule image
 
     // Get height of the Player ship
     public int getHeight() { return playerAnimation.frameHeight; }
-    // get { return PlayerTexture.Height; } Ancien code pour une seule image
-
-    // Ancien code pour une seule image
-    // public void Initialize(Texture2D texture, Vector2 position)
-    // {
-    //     PlayerTexture = texture;
-
-           // Set the starting position of the Player around the middle of the screen and to the back
-    //     Position = position;
-
-           // Set the Player to be Active
-    //     Active = true;
-
-           // Set the Player Health
-    //     Health = 100;
-    // }
 
     public void initialize(Animation animation, Vector2 position)
     {
@@ -69,8 +49,6 @@ public class Player
     // Draw the Player
     public void draw(SpriteBatch spriteBatch)
     {
-    	// Ancien code pour une seul image
-        // spriteBatch.Draw(PlayerTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         playerAnimation.draw(spriteBatch);
     }
 }

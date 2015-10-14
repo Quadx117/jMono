@@ -21,9 +21,7 @@ public class ParallaxingBackground
     public void initialize(ContentManager content, String texturePath, int screenWidth, int speed)
     {
         // Load the background texture we will be using
-    	// TODO: Should I do it this way ?
-        // texture = content.load(texturePath, Texture2D.class);
-    	texture = content.load(texturePath);
+        texture = content.load(texturePath, Texture2D.class);
 
         // Set the speed of the background
         this.speed = speed;

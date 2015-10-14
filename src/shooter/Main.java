@@ -6,7 +6,6 @@ package shooter;
  */
 public class Main
 {
-
 	public static void main(String[] args)
 	{
 		try (ShooterGame game = new ShooterGame())
@@ -15,3 +14,7 @@ public class Main
 		}
 	}
 }
+
+// TODO: Inputs
+// TODO: Sound
+// TODO: Should probably create a separate git repo for the Shooter game code.
