@@ -2,6 +2,7 @@ package gameCore;
 
 import gameCore.math.Vector3;
 
+// C# struct
 public class Ray // implements IEquatable<Ray>
 {
 
@@ -9,7 +10,7 @@ public class Ray // implements IEquatable<Ray>
 
 	public Vector3 position;
 
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public Ray()
 	{
 		this.position = new Vector3();

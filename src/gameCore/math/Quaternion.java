@@ -1,5 +1,6 @@
 package gameCore.math;
 
+// C# struct
 /**
  * An efficient mathematical representation for three dimensional rotations.
  * 
@@ -19,7 +20,7 @@ public class Quaternion // implements IEquatable<Quaternion>
 
 	public float w;
 
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public Quaternion()
 	{
 		this.x = 0.0f;

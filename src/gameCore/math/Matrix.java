@@ -1,9 +1,9 @@
 package gameCore.math;
 
-import java.awt.Rectangle;
-
 import gameCore.Plane;
+import gameCore.Rectangle;
 
+// C# struct
 /**
  * Represents the right-handed 4x4 floating point matrix, which can store translation, scale and
  * rotation information.
@@ -20,7 +20,7 @@ public class Matrix // implements IEquatable<Matrix>
 	public float M31, M32, M33, M34;
 	public float M41, M42, M43, M44;
 
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public Matrix()
 	{
 		this.M11 = 0.0f;

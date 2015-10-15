@@ -40,13 +40,14 @@ class PlaneHelper
 	}
 }
 
+// C# struct
 public class Plane // IEquatable<Plane>
 {
 	public float D;
 
 	public Vector3 normal;
 
-	// Note: added this since it is provided by default for struct in C#
+	// Note: Added this since it is provided by default for struct in C#
 	public Plane()
 	{
 		normal = new Vector3();

@@ -1,15 +1,15 @@
 package gameCore.math;
 
+// C# struct
 /**
  * Defines a vector with three float components.
  * 
  * @author Eric Perron (inspired by XNA Framework from Microsoft)
  *
  */
-public class Vector3 {
-
+public class Vector3
+{
 	// TODO: Finish comments
-
 	private static Vector3 zero = new Vector3(0f, 0f, 0f);
 	private static Vector3 one = new Vector3(1f, 1f, 1f);
 	private static Vector3 unitX = new Vector3(1f, 0f, 0f);
@@ -29,88 +29,104 @@ public class Vector3 {
 	// / <summary>
 	// / Returns a <see>Vector3</see> with components 0, 0, 0.
 	// / </summary>
-	public static Vector3 zero() {
+	public static Vector3 zero()
+	{
 		return new Vector3(zero);
 	}
 
 	// / <summary>
 	// / Returns a <see>Vector3</see> with components 1, 1, 1.
 	// / </summary>
-	public static Vector3 one() {
+	public static Vector3 one()
+	{
 		return new Vector3(one);
 	}
 
 	// / <summary>
 	// / Returns a <see>Vector3</see> with components 1, 0, 0.
 	// / </summary>
-	public static Vector3 unitX() {
+	public static Vector3 unitX()
+	{
 		return new Vector3(unitX);
 	}
 
 	// / <summary>
 	// / Returns a <see>Vector3</see> with components 0, 1, 0.
 	// / </summary>
-	public static Vector3 unitY() {
+	public static Vector3 unitY()
+	{
 		return new Vector3(unitY);
 	}
 
 	// / <summary>
 	// / Returns a <see>Vector3</see> with components 0, 0, 1.
 	// / </summary>
-	public static Vector3 unitZ() {
+	public static Vector3 unitZ()
+	{
 		return new Vector3(unitZ);
 	}
 
-	public static Vector3 up() {
+	public static Vector3 up()
+	{
 		return new Vector3(up);
 	}
 
-	public static Vector3 down() {
+	public static Vector3 down()
+	{
 		return new Vector3(down);
 	}
 
-	public static Vector3 right() {
+	public static Vector3 right()
+	{
 		return new Vector3(right);
 	}
 
-	public static Vector3 left() {
+	public static Vector3 left()
+	{
 		return new Vector3(left);
 	}
 
-	public static Vector3 forward() {
+	public static Vector3 forward()
+	{
 		return new Vector3(forward);
 	}
 
-	public static Vector3 backward() {
+	public static Vector3 backward()
+	{
 		return new Vector3(backward);
 	}
 
-	// Note: added this since it is provided by default for struct in C#
-	public Vector3() {
+	// Note: Added this since it is provided by default for struct in C#
+	public Vector3()
+	{
 		this.x = 0.0f;
 		this.y = 0.0f;
 		this.z = 0.0f;
 	}
 
-	public Vector3(float x, float y, float z) {
+	public Vector3(float x, float y, float z)
+	{
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Vector3(float value) {
+	public Vector3(float value)
+	{
 		this.x = value;
 		this.y = value;
 		this.z = value;
 	}
 
-	public Vector3(Vector3 value) {
+	public Vector3(Vector3 value)
+	{
 		this.x = value.x;
 		this.y = value.y;
 		this.z = value.z;
 	}
 
-	public Vector3(Vector2 value, float z) {
+	public Vector3(Vector2 value, float z)
+	{
 		this.x = value.x;
 		this.y = value.y;
 		this.z = z;
@@ -125,7 +141,8 @@ public class Vector3 {
 	 *        The second vector to add.
 	 * @return The result of the vector addition.
 	 */
-	public static Vector3 add(Vector3 value1, Vector3 value2) {
+	public static Vector3 add(Vector3 value1, Vector3 value2)
+	{
 		value1.x += value2.x;
 		value1.y += value2.y;
 		value1.z += value2.z;
@@ -143,7 +160,8 @@ public class Vector3 {
 	 * @param result
 	 *        The result of the vector addition.
 	 */
-	public static void add(final Vector3 value1, final Vector3 value2, Vector3 result) {
+	public static void add(final Vector3 value1, final Vector3 value2, Vector3 result)
+	{
 		result.x = value1.x + value2.x;
 		result.y = value1.y + value2.y;
 		result.z = value1.z + value2.z;
@@ -179,23 +197,27 @@ public class Vector3 {
 		result.z = MathHelper.catmullRom(value1.z, value2.z, value3.z, value4.z, amount);
 	}
 
-	public static Vector3 clamp(Vector3 value1, Vector3 min, Vector3 max) {
+	public static Vector3 clamp(Vector3 value1, Vector3 min, Vector3 max)
+	{
 		return new Vector3(MathHelper.clamp(value1.x, min.x, max.x), MathHelper.clamp(value1.y, min.y, max.y),
 				MathHelper.clamp(value1.z, min.z, max.z));
 	}
 
-	public static void clamp(final Vector3 value1, final Vector3 min, final Vector3 max, Vector3 result) {
+	public static void clamp(final Vector3 value1, final Vector3 min, final Vector3 max, Vector3 result)
+	{
 		result.x = MathHelper.clamp(value1.x, min.x, max.x);
 		result.y = MathHelper.clamp(value1.y, min.y, max.y);
 		result.z = MathHelper.clamp(value1.z, min.z, max.z);
 	}
 
-	public static Vector3 cross(Vector3 vector1, Vector3 vector2) {
+	public static Vector3 cross(Vector3 vector1, Vector3 vector2)
+	{
 		cross(vector1, vector2, vector1);
 		return vector1;
 	}
 
-	public static void cross(final Vector3 vector1, final Vector3 vector2, Vector3 result) {
+	public static void cross(final Vector3 vector1, final Vector3 vector2, Vector3 result)
+	{
 		float x = vector1.y * vector2.z - vector2.y * vector1.z;
 		float y = -(vector1.x * vector2.z - vector2.x * vector1.z);
 		float z = vector1.x * vector2.y - vector2.x * vector1.y;
@@ -237,24 +259,28 @@ public class Vector3 {
 	// (value1.z - value2.z) * (value1.z - value2.z);
 	// }
 
-	public static float distance(Vector3 vector1, Vector3 vector2) {
+	public static float distance(Vector3 vector1, Vector3 vector2)
+	{
 		float result = distanceSquared(vector1, vector2);
 		return (float) Math.sqrt(result);
 	}
 
-	public static float distanceSquared(final Vector3 value1, final Vector3 value2) {
+	public static float distanceSquared(final Vector3 value1, final Vector3 value2)
+	{
 		return (value1.x - value2.x) * (value1.x - value2.x) + (value1.y - value2.y) * (value1.y - value2.y)
 				+ (value1.z - value2.z) * (value1.z - value2.z);
 	}
 
-	public static Vector3 divide(Vector3 value1, Vector3 value2) {
+	public static Vector3 divide(Vector3 value1, Vector3 value2)
+	{
 		value1.x /= value2.x;
 		value1.y /= value2.y;
 		value1.z /= value2.z;
 		return value1;
 	}
 
-	public static Vector3 divide(Vector3 value1, float value2) {
+	public static Vector3 divide(Vector3 value1, float value2)
+	{
 		float factor = 1 / value2;
 		value1.x *= factor;
 		value1.y *= factor;
@@ -262,20 +288,23 @@ public class Vector3 {
 		return value1;
 	}
 
-	public static void divide(final Vector3 value1, float divisor, Vector3 result) {
+	public static void divide(final Vector3 value1, float divisor, Vector3 result)
+	{
 		float factor = 1 / divisor;
 		result.x = value1.x * factor;
 		result.y = value1.y * factor;
 		result.z = value1.z * factor;
 	}
 
-	public static void divide(final Vector3 value1, final Vector3 value2, Vector3 result) {
+	public static void divide(final Vector3 value1, final Vector3 value2, Vector3 result)
+	{
 		result.x = value1.x / value2.x;
 		result.y = value1.y / value2.y;
 		result.z = value1.z / value2.z;
 	}
 
-	public static float dot(Vector3 vector1, Vector3 vector2) {
+	public static float dot(Vector3 vector1, Vector3 vector2)
+	{
 		return vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 	}
 
@@ -285,7 +314,8 @@ public class Vector3 {
 	// }
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj)
+	{
 		if (!(obj instanceof Vector3))
 			return false;
 
@@ -293,12 +323,14 @@ public class Vector3 {
 		return this.x == other.x && this.y == other.y && this.z == other.z;
 	}
 
-	public boolean equals(Vector3 other) {
+	public boolean equals(Vector3 other)
+	{
 		return this.x == other.x && this.y == other.y && this.z == other.z;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return (int) (this.x + this.y + this.z);
 	}
 
@@ -317,70 +349,82 @@ public class Vector3 {
 		result.z = MathHelper.hermite(value1.z, tangent1.z, value2.z, tangent2.z, amount);
 	}
 
-	public float length() {
+	public float length()
+	{
 		float result = distanceSquared(this, zero);
 		return (float) Math.sqrt(result);
 	}
 
-	public float lengthSquared() {
+	public float lengthSquared()
+	{
 		float result = distanceSquared(this, zero);
 		return result;
 	}
 
-	public static Vector3 Lerp(Vector3 value1, Vector3 value2, float amount) {
+	public static Vector3 Lerp(Vector3 value1, Vector3 value2, float amount)
+	{
 		return new Vector3(MathHelper.lerp(value1.x, value2.x, amount), MathHelper.lerp(value1.y, value2.y, amount),
 				MathHelper.lerp(value1.z, value2.z, amount));
 	}
 
-	public static void lerp(final Vector3 value1, final Vector3 value2, float amount, Vector3 result) {
+	public static void lerp(final Vector3 value1, final Vector3 value2, float amount, Vector3 result)
+	{
 		result.x = MathHelper.lerp(value1.x, value2.x, amount);
 		result.y = MathHelper.lerp(value1.y, value2.y, amount);
 		result.z = MathHelper.lerp(value1.z, value2.z, amount);
 	}
 
-	public static Vector3 max(Vector3 value1, Vector3 value2) {
+	public static Vector3 max(Vector3 value1, Vector3 value2)
+	{
 		return new Vector3(MathHelper.max(value1.x, value2.x), MathHelper.max(value1.y, value2.y), MathHelper.max(
 				value1.z, value2.z));
 	}
 
-	public static void max(final Vector3 value1, final Vector3 value2, Vector3 result) {
+	public static void max(final Vector3 value1, final Vector3 value2, Vector3 result)
+	{
 		result.x = MathHelper.max(value1.x, value2.x);
 		result.y = MathHelper.max(value1.y, value2.y);
 		result.z = MathHelper.max(value1.z, value2.z);
 	}
 
-	public static Vector3 min(Vector3 value1, Vector3 value2) {
+	public static Vector3 min(Vector3 value1, Vector3 value2)
+	{
 		return new Vector3(MathHelper.min(value1.x, value2.x), MathHelper.min(value1.y, value2.y), MathHelper.min(
 				value1.z, value2.z));
 	}
 
-	public static void min(final Vector3 value1, final Vector3 value2, Vector3 result) {
+	public static void min(final Vector3 value1, final Vector3 value2, Vector3 result)
+	{
 		result.x = MathHelper.min(value1.x, value2.x);
 		result.y = MathHelper.min(value1.y, value2.y);
 		result.z = MathHelper.min(value1.z, value2.z);
 	}
 
-	public static Vector3 multiply(Vector3 value1, Vector3 value2) {
+	public static Vector3 multiply(Vector3 value1, Vector3 value2)
+	{
 		value1.x *= value2.x;
 		value1.y *= value2.y;
 		value1.z *= value2.z;
 		return value1;
 	}
 
-	public static Vector3 multiply(Vector3 value1, float scaleFactor) {
+	public static Vector3 multiply(Vector3 value1, float scaleFactor)
+	{
 		value1.x *= scaleFactor;
 		value1.y *= scaleFactor;
 		value1.z *= scaleFactor;
 		return value1;
 	}
 
-	public static void multiply(final Vector3 value1, float scaleFactor, Vector3 result) {
+	public static void multiply(final Vector3 value1, float scaleFactor, Vector3 result)
+	{
 		result.x = value1.x * scaleFactor;
 		result.y = value1.y * scaleFactor;
 		result.z = value1.z * scaleFactor;
 	}
 
-	public static void multiply(final Vector3 value1, final Vector3 value2, Vector3 result) {
+	public static void multiply(final Vector3 value1, final Vector3 value2, Vector3 result)
+	{
 		result.x = value1.x * value2.x;
 		result.y = value1.y * value2.y;
 		result.z = value1.z * value2.z;
@@ -393,7 +437,8 @@ public class Vector3 {
 	 *        The vector to negate.
 	 * @return The vector negation of <paramfinal name="value"/>.
 	 */
-	public static Vector3 negate(Vector3 value) {
+	public static Vector3 negate(Vector3 value)
+	{
 		value = new Vector3(-value.x, -value.y, -value.z);
 		return value;
 	}
@@ -407,22 +452,26 @@ public class Vector3 {
 	 * @param result
 	 *        The vector that the negation of <paramfinal name="value"/> will be stored in.
 	 */
-	public static void negate(final Vector3 value, Vector3 result) {
+	public static void negate(final Vector3 value, Vector3 result)
+	{
 		result.x = -value.x;
 		result.y = -value.y;
 		result.z = -value.z;
 	}
 
-	public void normalize() {
+	public void normalize()
+	{
 		normalize(this, this);
 	}
 
-	public static Vector3 normalize(Vector3 vector) {
+	public static Vector3 normalize(Vector3 vector)
+	{
 		normalize(vector, vector);
 		return vector;
 	}
 
-	public static void normalize(final Vector3 value, Vector3 result) {
+	public static void normalize(final Vector3 value, Vector3 result)
+	{
 		float factor = distance(value, zero);
 		factor = 1f / factor;
 		result.x = value.x * factor;
@@ -430,7 +479,8 @@ public class Vector3 {
 		result.z = value.z * factor;
 	}
 
-	public static Vector3 reflect(Vector3 vector, Vector3 normal) {
+	public static Vector3 reflect(Vector3 vector, Vector3 normal)
+	{
 		// I is the original array
 		// N is the normal of the incident plane
 		// R = I - (2 * N * ( DotProduct[ I,N] ))
@@ -444,7 +494,8 @@ public class Vector3 {
 		return reflectedVector;
 	}
 
-	public static void reflect(final Vector3 vector, final Vector3 normal, Vector3 result) {
+	public static void reflect(final Vector3 vector, final Vector3 normal, Vector3 result)
+	{
 		// I is the original array
 		// N is the normal of the incident plane
 		// R = I - (2 * N * ( DotProduct[ I,N] ))
@@ -456,12 +507,14 @@ public class Vector3 {
 		result.z = vector.z - (2.0f * normal.z) * dotProduct;
 	}
 
-	public static Vector3 smoothStep(Vector3 value1, Vector3 value2, float amount) {
+	public static Vector3 smoothStep(Vector3 value1, Vector3 value2, float amount)
+	{
 		return new Vector3(MathHelper.smoothStep(value1.x, value2.x, amount), MathHelper.smoothStep(value1.y,
 				value2.y, amount), MathHelper.smoothStep(value1.z, value2.z, amount));
 	}
 
-	public static void smoothStep(final Vector3 value1, final Vector3 value2, float amount, Vector3 result) {
+	public static void smoothStep(final Vector3 value1, final Vector3 value2, float amount, Vector3 result)
+	{
 		result.x = MathHelper.smoothStep(value1.x, value2.x, amount);
 		result.y = MathHelper.smoothStep(value1.y, value2.y, amount);
 		result.z = MathHelper.smoothStep(value1.z, value2.z, amount);
@@ -473,7 +526,8 @@ public class Vector3 {
 	// / <param name="value1">The vector to be subtracted from.</param>
 	// / <param name="value2">The vector to be subtracted from <paramfinal name="value1"/>.</param>
 	// / <returns>The result of the vector subtraction.</returns>
-	public static Vector3 subtract(Vector3 value1, Vector3 value2) {
+	public static Vector3 subtract(Vector3 value1, Vector3 value2)
+	{
 		value1.x -= value2.x;
 		value1.y -= value2.y;
 		value1.z -= value2.z;
@@ -486,18 +540,21 @@ public class Vector3 {
 	// / <param name="value1">The vector to be subtracted from.</param>
 	// / <param name="value2">The vector to be subtracted from <paramfinal name="value1"/>.</param>
 	// / <param name="result">The result of the vector subtraction.</param>
-	public static void subtract(final Vector3 value1, final Vector3 value2, Vector3 result) {
+	public static void subtract(final Vector3 value1, final Vector3 value2, Vector3 result)
+	{
 		result.x = value1.x - value2.x;
 		result.y = value1.y - value2.y;
 		result.z = value1.z - value2.z;
 	}
 
-	public String debugDisplayString() {
+	public String debugDisplayString()
+	{
 		return (this.x + "  " + this.y + "  " + this.z);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder sb = new StringBuilder(32);
 		sb.append("{X:");
 		sb.append(this.x);
@@ -509,12 +566,14 @@ public class Vector3 {
 		return sb.toString();
 	}
 
-	public static Vector3 transform(Vector3 position, Matrix matrix) {
+	public static Vector3 transform(Vector3 position, Matrix matrix)
+	{
 		transform(position, matrix, position);
 		return position;
 	}
 
-	public static void transform(final Vector3 position, final Matrix matrix, Vector3 result) {
+	public static void transform(final Vector3 position, final Matrix matrix, Vector3 result)
+	{
 		float x = (position.x * matrix.M11) + (position.y * matrix.M21) + (position.z * matrix.M31) + matrix.M41;
 		float y = (position.x * matrix.M12) + (position.y * matrix.M22) + (position.z * matrix.M32) + matrix.M42;
 		float z = (position.x * matrix.M13) + (position.y * matrix.M23) + (position.z * matrix.M33) + matrix.M43;
@@ -523,14 +582,16 @@ public class Vector3 {
 		result.z = z;
 	}
 
-	public static void transform(Vector3[] sourceArray, final Matrix matrix, Vector3[] destinationArray) {
+	public static void transform(Vector3[] sourceArray, final Matrix matrix, Vector3[] destinationArray)
+	{
 		// TODO: Assert
 		// Debug.Assert(destinationArray.Length >= sourceArray.length,
 		// "The destination array is smaller than the source array.");
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
-		for (int i = 0; i < sourceArray.length; ++i) {
+		for (int i = 0; i < sourceArray.length; ++i)
+		{
 			Vector3 position = sourceArray[i];
 			destinationArray[i] = new Vector3((position.x * matrix.M11) + (position.y * matrix.M21)
 					+ (position.z * matrix.M31) + matrix.M41, (position.x * matrix.M12) + (position.y * matrix.M22)
@@ -550,7 +611,8 @@ public class Vector3 {
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++)
+		{
 			Vector3 position = sourceArray[sourceIndex + i];
 			destinationArray[destinationIndex + i] = new Vector3((position.x * matrix.M11) + (position.y * matrix.M21)
 					+ (position.z * matrix.M31) + matrix.M41, (position.x * matrix.M12) + (position.y * matrix.M22)
@@ -565,7 +627,8 @@ public class Vector3 {
 	// / <param name="vec">The vector to transform.</param>
 	// / <param name="quat">The quaternion to rotate the vector by.</param>
 	// / <returns>The result of the operation.</returns>
-	public static Vector3 transform(Vector3 vec, Quaternion quat) {
+	public static Vector3 transform(Vector3 vec, Quaternion quat)
+	{
 		Vector3 result = Vector3.one();
 		transform(vec, quat, result);
 		return result;
@@ -597,7 +660,8 @@ public class Vector3 {
 	// / <param name="value">The vector to transform.</param>
 	// / <param name="rotation">The quaternion to rotate the vector by.</param>
 	// / <param name="result">The result of the operation.</param>
-	public static void transform(final Vector3 value, final Quaternion rotation, Vector3 result) {
+	public static void transform(final Vector3 value, final Quaternion rotation, Vector3 result)
+	{
 		float x = 2 * (rotation.y * value.z - rotation.z * value.y);
 		float y = 2 * (rotation.z * value.x - rotation.x * value.z);
 		float z = 2 * (rotation.x * value.y - rotation.y * value.x);
@@ -613,14 +677,16 @@ public class Vector3 {
 	// / <param name="sourceArray">The vectors to transform</param>
 	// / <param name="rotation">The quaternion to rotate the vector by.</param>
 	// / <param name="destinationArray">The result of the operation.</param>
-	public static void Transform(Vector3[] sourceArray, final Quaternion rotation, Vector3[] destinationArray) {
+	public static void Transform(Vector3[] sourceArray, final Quaternion rotation, Vector3[] destinationArray)
+	{
 		// TODO: Assert
 		// Debug.Assert(destinationArray.length >= sourceArray.Length,
 		// "The destination array is smaller than the source array.");
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
-		for (int i = 0; i < sourceArray.length; i++) {
+		for (int i = 0; i < sourceArray.length; i++)
+		{
 			Vector3 position = sourceArray[i];
 
 			float x = 2 * (rotation.y * position.z - rotation.z * position.y);
@@ -653,7 +719,8 @@ public class Vector3 {
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++)
+		{
 			Vector3 position = sourceArray[sourceIndex + i];
 
 			float x = 2 * (rotation.y * position.z - rotation.z * position.y);
@@ -667,12 +734,14 @@ public class Vector3 {
 		}
 	}
 
-	public static Vector3 transformNormal(Vector3 normal, Matrix matrix) {
+	public static Vector3 transformNormal(Vector3 normal, Matrix matrix)
+	{
 		transformNormal(normal, matrix, normal);
 		return normal;
 	}
 
-	public static void transformNormal(final Vector3 normal, final Matrix matrix, Vector3 result) {
+	public static void transformNormal(final Vector3 normal, final Matrix matrix, Vector3 result)
+	{
 		float x = (normal.x * matrix.M11) + (normal.y * matrix.M21) + (normal.z * matrix.M31);
 		float y = (normal.x * matrix.M12) + (normal.y * matrix.M22) + (normal.z * matrix.M32);
 		float z = (normal.x * matrix.M13) + (normal.y * matrix.M23) + (normal.z * matrix.M33);
@@ -681,12 +750,14 @@ public class Vector3 {
 		result.z = z;
 	}
 
-	public static void transformNormal(Vector3[] sourceArray, final Matrix matrix, Vector3[] destinationArray) {
+	public static void transformNormal(Vector3[] sourceArray, final Matrix matrix, Vector3[] destinationArray)
+	{
 		// TODO: Assert
 		// Debug.Assert(destinationArray.length >= sourceArray.length,
 		// "The destination array is smaller than the source array.");
 
-		for (int i = 0; i < sourceArray.length; ++i) {
+		for (int i = 0; i < sourceArray.length; ++i)
+		{
 			Vector3 normal = sourceArray[i];
 			destinationArray[i] = new Vector3((normal.x * matrix.M11) + (normal.y * matrix.M21)
 					+ (normal.z * matrix.M31), (normal.x * matrix.M12) + (normal.y * matrix.M22)
