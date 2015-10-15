@@ -34,7 +34,7 @@ public class Texture3D extends Texture
 		{
 			throw new NullPointerException("graphicsDevice");
 		}
-		this.graphicsDevice = graphicsDevice;
+		this.setGraphicsDevice(graphicsDevice);
 		this._width = width;
 		this._height = height;
 		this._depth = depth;

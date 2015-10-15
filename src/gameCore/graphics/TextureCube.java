@@ -1,6 +1,6 @@
 package gameCore.graphics;
 
-import java.awt.Rectangle;
+import gameCore.Rectangle;
 
 public class TextureCube extends Texture
 {
@@ -29,7 +29,7 @@ public class TextureCube extends Texture
 			throw new NullPointerException("graphicsDevice");
 		}
 
-		this.graphicsDevice = graphicsDevice;
+		this.setGraphicsDevice(graphicsDevice);
 		this.size = size;
 		this._format = format;
 		this._levelCount = mipMap ? calculateMipLevels(size) : 1;

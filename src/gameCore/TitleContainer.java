@@ -18,7 +18,7 @@ public class TitleContainer
 	static
 	{
 // #if WINDOWS || DESKTOPGL
-		// TODO: In VisualStudio for FrameworkTest :
+		// NOTE: In VisualStudio for FrameworkTest :
 		// "C:\\Users\\Eric\\Documents\\Visual Studio 2013\\Projects\\FrameworkTest\\FrameworkTest\\bin\\Windows\\Debug\\"
 		// Location = AppDomain.CurrentDomain.BaseDirectory;
 		Location = getBaseDirectory();

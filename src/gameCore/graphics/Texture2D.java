@@ -1,8 +1,8 @@
 package gameCore.graphics;
 
 import gameCore.Color;
+import gameCore.Rectangle;
 
-import java.awt.Rectangle;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -56,7 +56,7 @@ public class Texture2D extends Texture
 		if (arraySize > 1 && !graphicsDevice.getGraphicsCapabilities().supportsTextureArrays)
 			throw new IllegalArgumentException("Texture arrays are not supported on this graphics device: arraySize");
 
-		this.graphicsDevice = graphicsDevice;
+		this.setGraphicsDevice(graphicsDevice);
 		this.width = width;
 		this.height = height;
 		this._format = format;
@@ -342,7 +342,7 @@ public class Texture2D extends Texture
 	private void platformSetData(int level, int arraySlice, Rectangle rect, byte[] data, int startIndex,
 			int elementCount)
 	{
-		int elementSize = _format.getSize();
+		int elementSize = 4; //_format.getSize();
 		this.pixels = new int[elementCount / elementSize];
 		for (int i = 0, j = 0; i < elementCount; i += 4, ++j)
 		{
