@@ -104,7 +104,7 @@ public class ShaderProgramCache {
 //#if GLES && !ANGLE && !ANDROID
 //            GL.GetProgram(program, GetProgramParameterName.LinkStatus, ref linked);
 //#else
-            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out linked);
+            GL.GetProgram(program, GetProgramParameterName.LinkStatus, linked);
 //#endif
             GraphicsExtensions.LogGLError("VertexShaderCache.Link(), GL.GetProgram");
             if (linked == 0)

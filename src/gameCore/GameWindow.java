@@ -3,9 +3,6 @@ package gameCore;
 import gameCore.events.EventArgs;
 import gameCore.events.EventHandler;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-
 public abstract class GameWindow
 {
 	public boolean allowUserResizing;

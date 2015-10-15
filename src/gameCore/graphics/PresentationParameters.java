@@ -2,9 +2,8 @@ package gameCore.graphics;
 
 import gameCore.DisplayOrientation;
 import gameCore.GraphicsDeviceManager;
+import gameCore.Rectangle;
 import gameCore.graphics.states.DepthFormat;
-
-import java.awt.Rectangle;
 
 public class PresentationParameters implements AutoCloseable
 {

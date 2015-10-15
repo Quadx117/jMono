@@ -5,7 +5,6 @@ import gameCore.events.EventArgs;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,11 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-public class JavaGameWindow extends GameWindow {
+public class JavaGameWindow extends GameWindow
+{
 
 	// protected WinFormsGameForm _form;
+	// TODO: Need to create subclass of JFrame so I can add the events
 	protected JFrame frame;
 
 	static private List<JavaGameWindow> _allWindows = new ArrayList<JavaGameWindow>();
@@ -33,27 +34,33 @@ public class JavaGameWindow extends GameWindow {
 	// protected Game Game { get; private set; }
 	private Game game;
 
-	public Game getGame() {
+	public Game getGame()
+	{
 		return this.game;
 	}
 
 	// public override IntPtr Handle { get { return _form.Handle; } }
 
-	public String getScreenDeviceName() {
+	public String getScreenDeviceName()
+	{
 		return "";
 	}
 
-	public Rectangle getClientBounds() {
-		Rectangle clientRect = frame.getContentPane().getBounds();
+	public Rectangle getClientBounds()
+	{
+		java.awt.Rectangle clientRect = frame.getContentPane().getBounds();
 		return new Rectangle(clientRect.x, clientRect.y, clientRect.width, clientRect.height);
 	}
 
-	public boolean allowUserResizing() {
+	public boolean allowUserResizing()
+	{
 		return _isResizable;
 	}
 
-	public void allowUserResizing(boolean value) {
-		if (_isResizable != value) {
+	public void allowUserResizing(boolean value)
+	{
+		if (_isResizable != value)
+		{
 			_isResizable = value;
 			frame.setResizable(_isResizable);
 		}
@@ -70,41 +77,49 @@ public class JavaGameWindow extends GameWindow {
 	}
 
 	@Override
-	public boolean allowAltF4() {
+	public boolean allowAltF4()
+	{
 		return super.allowAltF4();
 	}
 
-	public void setAllowAltF4(boolean value) {
+	public void setAllowAltF4(boolean value)
+	{
 		// _form.AllowAltF4 = value;
 		super.setAllowAltF4(value);
 	}
 
-	public DisplayOrientation getCurrentOrientation() {
+	public DisplayOrientation getCurrentOrientation()
+	{
 		return DisplayOrientation.Default;
 	}
 
 	// TODO: Implement XnaPoint ? What's the difference with java.Point.
 	// TODO: See using declarations : XnaPoint = Point.cs
 	// public XnaPoint getPosition() {
-	public Point getPosition() {
+	public Point getPosition()
+	{
 		return frame.getLocationOnScreen();
 	}
 
 	// public void setPosition(XnaPoint value) {
-	public void setPosition(Point value) {
+	public void setPosition(Point value)
+	{
 		// _form.DesktopLocation = new Point(value.X, value.Y);
 		frame.setLocation(value);
 	}
 
 	@Override
-	protected void setSupportedOrientations(DisplayOrientation orientations) {}
+	protected void setSupportedOrientations(DisplayOrientation orientations)
+	{}
 
 	@Override
-	public boolean isBorderless() {
+	public boolean isBorderless()
+	{
 		return _isBorderless;
 	}
 
-	public void isBorderless(boolean value) {
+	public void isBorderless(boolean value)
+	{
 		if (_isBorderless != value)
 			_isBorderless = value;
 		else
@@ -121,13 +136,17 @@ public class JavaGameWindow extends GameWindow {
 	// TODO: KeyListener I guess.
 	// protected List<XnaKey> keyState;
 
-	protected JavaGameWindow(JavaGamePlatform platform) {
+	protected JavaGameWindow(JavaGamePlatform platform)
+	{
 		_platform = platform;
 		this.game = platform.getGame();
 
-		try {
+		try
+		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 
@@ -147,34 +166,37 @@ public class JavaGameWindow extends GameWindow {
 		// _form.FormBorderStyle = FormBorderStyle.FixedSingle;
 		frame.setResizable(false);
 		// _form.StartPosition = FormStartPosition.CenterScreen;
-		
+
 		frame.add(game);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		// TODO: Need to create subclass of JFrame so I can add the events
 		// TODO: Mouse events
 		// Capture mouse events.
-		// _form.MouseWheel += OnMouseScroll;
-		// _form.MouseEnter += OnMouseEnter;
-		// _form.MouseLeave += OnMouseLeave;
+		// _frame.MouseWheel += OnMouseScroll;
+		// frame.MouseEnter += OnMouseEnter;
+		// frame.MouseLeave += OnMouseLeave;
 
 		// Use RawInput to capture key events.
 		// Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.None);
 		// Device.KeyboardInput += OnRawKeyEvent;
 
-		// _form.Activated += OnActivated;
-		// _form.Deactivate += OnDeactivate;
-		// _form.ClientSizeChanged += OnClientSizeChanged;
+		// frame.Activated += OnActivated;
+		// frame.Deactivate += OnDeactivate;
+		// frame.clientSizeChanged += OnClientSizeChanged;
 
 		// _form.KeyPress += OnKeyPress;
 
 		_allWindows.add(this);
 	}
 
-	private void onActivated(Object sender, EventArgs eventArgs) {
+	private void onActivated(Object sender, EventArgs eventArgs)
+	{
 		_platform.setActive(true);
 	}
 
-	private void onDeactivate(Object sender, EventArgs eventArgs) {
+	private void onDeactivate(Object sender, EventArgs eventArgs)
+	{
 		_platform.setActive(false);
 
 		// TODO: Keyboard input
@@ -184,12 +206,14 @@ public class JavaGameWindow extends GameWindow {
 
 	// TODO: How can I port this
 	// private void onMouseScroll(Object sender, MouseEventArgs mouseEventArgs) {
-	private void onMouseScroll(Object sender, EventArgs mouseEventArgs) {
+	private void onMouseScroll(Object sender, EventArgs mouseEventArgs)
+	{
 		// TODO: Mouse input
 		// MouseState.ScrollWheelValue += mouseEventArgs.Delta;
 	}
 
-	private void updateMouseState() {
+	private void updateMouseState()
+	{
 		// If we call the form client functions before the form has
 		// been made visible it will cause the wrong window size to
 		// be applied at startup.
@@ -232,17 +256,21 @@ public class JavaGameWindow extends GameWindow {
 
 	// TODO: Don't think I need these two methods. I think I could just hide the cursor in the
 	// constructor as java re-enables the cursor when it leaves the bounds of the JFrame.
-	private void onMouseEnter(Object sender, EventArgs e) {
+	private void onMouseEnter(Object sender, EventArgs e)
+	{
 		_isMouseInBounds = true;
-		if (!_platform.isMouseVisible() && !_isMouseHidden) {
+		if (!_platform.isMouseVisible() && !_isMouseHidden)
+		{
 			_isMouseHidden = true;
 			hideCursor();
 		}
 	}
 
-	private void onMouseLeave(Object sender, EventArgs e) {
+	private void onMouseLeave(Object sender, EventArgs e)
+	{
 		_isMouseInBounds = false;
-		if (_isMouseHidden) {
+		if (_isMouseHidden)
+		{
 			_isMouseHidden = false;
 			showCursor();
 		}
@@ -250,7 +278,8 @@ public class JavaGameWindow extends GameWindow {
 
 	// TODO: How can I port this.
 	// private void onRawKeyEvent(Object sender, KeyboardInputEventArgs args) {
-	private void onRawKeyEvent(Object sender, EventArgs args) {
+	private void onRawKeyEvent(Object sender, EventArgs args)
+	{
 		// if (KeyState == null)
 		// return;
 		//
@@ -294,11 +323,13 @@ public class JavaGameWindow extends GameWindow {
 	}
 
 	// private void onKeyPress(Object sender, KeyPressEventArgs e) {
-	private void onKeyPress(Object sender, EventArgs e) {
+	private void onKeyPress(Object sender, EventArgs e)
+	{
 		// onTextInput(sender, new TextInputEventArgs(e.KeyChar));
 	}
 
-	protected void initialize(int width, int height) {
+	protected void initialize(int width, int height)
+	{
 		// _form.ClientSize = new Size(width, height);
 		frame.getContentPane().setPreferredSize(new Dimension(width, height));
 		// TODO: Do I need this line of code ?
@@ -309,8 +340,10 @@ public class JavaGameWindow extends GameWindow {
 		frame.requestFocus();
 	}
 
-	private void onClientSizeChanged(Object sender, EventArgs eventArgs) {
-		if (game.getWindow() == this) {
+	private void onClientSizeChanged(Object sender, EventArgs eventArgs)
+	{
+		if (game.getWindow() == this)
+		{
 			GraphicsDeviceManager manager = game.getGraphicsDeviceManager();
 
 			// Set the default new back buffer size and viewport, but this
@@ -332,17 +365,20 @@ public class JavaGameWindow extends GameWindow {
 	}
 
 	@Override
-	protected void SetTitle(String title) {
+	protected void SetTitle(String title)
+	{
 		frame.setTitle(title);
 	}
 
-	protected void runLoop() {
-		
-		while (true) {
+	protected void runLoop()
+	{
+
+		while (true)
+		{
 			updateWindows();
 			game.tick();
 		}
-		
+
 		/*
 		 * Application.Idle += onIdle;
 		 * Application.Run(_form);
@@ -369,19 +405,21 @@ public class JavaGameWindow extends GameWindow {
 		 */
 	}
 
-/*	private void onIdle(Object sender, EventArgs eventArgs) {
-		// While there are no pending messages
-		// to be processed tick the game.
-		// NativeMessage msg;
-		// while (!PeekMessage(out msg, IntPtr.Zero, 0, 0, 0))
-		{
-			updateWindows();
-			game.tick();
-		}
-	}
-*/
-	
-	protected void updateWindows() {
+	/*
+	 * private void onIdle(Object sender, EventArgs eventArgs) {
+	 * // While there are no pending messages
+	 * // to be processed tick the game.
+	 * // NativeMessage msg;
+	 * // while (!PeekMessage(out msg, IntPtr.Zero, 0, 0, 0))
+	 * {
+	 * updateWindows();
+	 * game.tick();
+	 * }
+	 * }
+	 */
+
+	protected void updateWindows()
+	{
 		// Update the mouse state for each window.
 		for (JavaGameWindow window : _allWindows)
 			window.updateMouseState();
@@ -400,7 +438,8 @@ public class JavaGameWindow extends GameWindow {
 	 * public System.Drawing.Point p;
 	 * }
 	 */
-	protected void changeClientSize(Dimension clientBounds) {
+	protected void changeClientSize(Dimension clientBounds)
+	{
 		// this._form.ClientSize = clientBounds;
 		frame.getContentPane().setPreferredSize(clientBounds);
 	}
@@ -408,8 +447,10 @@ public class JavaGameWindow extends GameWindow {
 	// private static extern boolean PeekMessage(out NativeMessage msg, IntPtr hWnd, uint
 	// messageFilterMin, uint messageFilterMax, uint flags);
 
-	public void dispose() {
-		if (frame != null) {
+	public void dispose()
+	{
+		if (frame != null)
+		{
 			_allWindows.remove(this);
 			// NOTE: This may cause the JVM to terminate
 			// see : https://docs.oracle.com/javase/8/docs/api/java/awt/Window.html#dispose--
@@ -419,31 +460,39 @@ public class JavaGameWindow extends GameWindow {
 	}
 
 	@Override
-	public void beginScreenDeviceChange(boolean willBeFullScreen) {}
+	public void beginScreenDeviceChange(boolean willBeFullScreen)
+	{}
 
 	@Override
-	public void endScreenDeviceChange(String screenDeviceName, int clientWidth, int clientHeight) {}
+	public void endScreenDeviceChange(String screenDeviceName, int clientWidth, int clientHeight)
+	{}
 
-	public void mouseVisibleToggled() {
-		if (_platform.isMouseVisible()) {
-			if (_isMouseHidden) {
+	public void mouseVisibleToggled()
+	{
+		if (_platform.isMouseVisible())
+		{
+			if (_isMouseHidden)
+			{
 				showCursor();
 				_isMouseHidden = false;
 			}
 		}
-		else if (!_isMouseHidden && _isMouseInBounds) {
+		else if (!_isMouseHidden && _isMouseInBounds)
+		{
 			hideCursor();
 			_isMouseHidden = true;
 		}
 	}
 
 	// Helper method that I added
-	private void hideCursor() {
+	private void hideCursor()
+	{
 		frame.setCursor(frame.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB),
 				new Point(0, 0), null));
 	}
 
-	private void showCursor() {
+	private void showCursor()
+	{
 		frame.setCursor(Cursor.getDefaultCursor());
 	}
 }

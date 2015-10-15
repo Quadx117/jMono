@@ -1,6 +1,6 @@
 package gameCore.graphics;
 
-import java.awt.Rectangle;
+import gameCore.Rectangle;
 
 public class DisplayMode
 {
