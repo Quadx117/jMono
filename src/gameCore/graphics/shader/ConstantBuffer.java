@@ -1,11 +1,11 @@
 package gameCore.graphics.shader;
 
+import gameCore.dotNet.As;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.graphics.GraphicsResource;
 import gameCore.graphics.effect.EffectParameter;
 import gameCore.graphics.effect.EffectParameterClass;
 import gameCore.graphics.effect.EffectParameterCollection;
-import gameCore.utilities.As;
 
 public class ConstantBuffer extends GraphicsResource
 {
