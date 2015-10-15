@@ -1,11 +1,14 @@
 package gameCore.content;
 
 import gameCore.TitleContainer;
+import gameCore.content.contentReaders.SpriteFontReader;
 import gameCore.content.contentReaders.Texture2DReader;
 import gameCore.dotNet.BinaryReader;
 import gameCore.dotNet.IServiceProvider;
 import gameCore.graphics.GraphicsResource;
 import gameCore.graphics.IGraphicsDeviceService;
+import gameCore.graphics.SpriteFont;
+import gameCore.graphics.Texture;
 import gameCore.graphics.Texture2D;
 import gameCore.graphics.effect.Effect;
 import gameCore.utilities.StringHelpers;
@@ -199,7 +202,7 @@ public class ContentManager implements AutoCloseable
 	// TODO: Delete this comment when done testing
 	// NOTE: I had to add a parameter for the type because of Java's type erasure
 	@SuppressWarnings("unchecked")
-	public <T> T load(String assetName)
+	public <T> T load(String assetName, Class<?> type)
 	{
 		if (StringHelpers.isNullOrEmpty(assetName))
 		{
@@ -210,6 +213,7 @@ public class ContentManager implements AutoCloseable
 			throw new RuntimeException("ContentManager is disposed");
 		}
 
+		// TODO: Should I do = null or create my own default method
 		// T result = default(T);
 		T result;
 
@@ -226,15 +230,14 @@ public class ContentManager implements AutoCloseable
 		Object asset = loadedAssets.get(key);
 		if (asset != null)
 		{
-			// TODO: test. maybe add parameter Class<?> type to do the check
-			// if (asset instanceof T)
-			//{
+			if (type.isAssignableFrom(asset.getClass()))
+			{
 				return (T) asset;
-			//}
+			}
 		}
 
 		// Load the asset.
-		result = readAsset(assetName, null);
+		result = readAsset(assetName, null, type);
 
 		loadedAssets.put(key, result);
 		return result;
@@ -288,7 +291,7 @@ public class ContentManager implements AutoCloseable
 		return stream;
 	}
 
-	protected <T> T readAsset(String assetName, Consumer<AutoCloseable> recordDisposableObject)
+	protected <T> T readAsset(String assetName, Consumer<AutoCloseable> recordDisposableObject, Class<?> type)
 	{
 		if (StringHelpers.isNullOrEmpty(assetName))
 		{
@@ -357,14 +360,14 @@ public class ContentManager implements AutoCloseable
 
             assetName = TitleContainer.getFilename(Paths.get(_rootDirectory, assetName).toString());
 
-            assetName = normalize(assetName);
+            assetName = normalize(assetName, type);
 
 			if (StringHelpers.isNullOrEmpty(assetName))
 			{
 				throw new ContentLoadException("Could not load " + originalAssetName + " asset as a non-content file!", ex);
 			}
 
-            result = readRawAsset(assetName, originalAssetName);
+            result = readRawAsset(assetName, originalAssetName, type);
 
             // Because Raw Assets skip the ContentReader step, they need to have their
             // disopsables recorded here. Doing it outside of this catch will 
@@ -389,36 +392,37 @@ public class ContentManager implements AutoCloseable
 	}
 
 	// TODO: typeof(T) problem
-	protected <T> String normalize(String assetName)
+	protected <T> String normalize(String assetName, Class<?> type)
 	{
-		if (typeof(T) == typeof(Texture2D) || typeof(T) == typeof(Texture))
+		if (type.getClass().equals(Texture2D.class) || type.getClass().equals(Texture.class))
 		{
 			return Texture2DReader.normalize(assetName);
 		}
-		else if ((typeof(T) == typeof(SpriteFont)))
+		else if (type.getClass().equals(SpriteFont.class))
 		{
 			return SpriteFontReader.normalize(assetName);
 		}
-		// #if !WINRT
-		else if ((typeof(T) == typeof(Song)))
-		{
-			return SongReader.normalize(assetName);
-		}
-		else if ((typeof(T) == typeof(SoundEffect)))
-		{
-			return SoundEffectReader.normalize(assetName);
-		}
-		// #endif
-		else if ((typeof(T) == typeof(Effect)))
-		{
-			return EffectReader.normalize(assetName);
-		}
+// #if !WINRT
+		// TODO: Do I need these ?
+//		else if ((typeof(T) == typeof(Song)))
+//		{
+//			return SongReader.normalize(assetName);
+//		}
+//		else if ((typeof(T) == typeof(SoundEffect)))
+//		{
+//			return SoundEffectReader.normalize(assetName);
+//		}
+// #endif
+//		else if (type.getClass().equals(Effect.class))
+//		{
+//			return EffectReader.normalize(assetName);
+//		}
 		return null;
 	}
 
-	protected <T> Object readRawAsset(String assetName, String originalAssetName)
+	protected <T> Object readRawAsset(String assetName, String originalAssetName, Class<?> type)
     {
-        if (typeof(T) == typeof(Texture2D) || typeof(T) == typeof(Texture))
+        if (type.getClass().equals(Texture2D.class) || type.getClass().equals(Texture.class))
         {
             try (InputStream assetStream = TitleContainer.openStream(assetName))
             {
@@ -427,34 +431,50 @@ public class ContentManager implements AutoCloseable
                 texture.name = originalAssetName;
                 return texture;
             }
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
         }
-        else if ((typeof(T) == typeof(SpriteFont)))
+        else if (type.getClass().equals(SpriteFont.class))
         {
         	// NOTE: This was already commented in the original file.
             //result = new SpriteFont(Texture2D.FromFile(graphicsDeviceService.GraphicsDevice,assetName), null, null, null, 0, 0.0f, null, null);
             throw new UnsupportedOperationException();
         }
 // #if !DIRECTX
-        else if ((typeof(T) == typeof(Song)))
-        {
-            return new Song(assetName);
-        }
-        else if ((typeof(T) == typeof(SoundEffect)))
-        {
-            try (InputStream s = TitleContainer.openStream(assetName))
-            {
-                return SoundEffect.fromStream(s);
-            }
-        }
+        // TODO: Do I need these ?
+//        else if ((typeof(T) == typeof(Song)))
+//        {
+//            return new Song(assetName);
+//        }
+//        else if ((typeof(T) == typeof(SoundEffect)))
+//        {
+//            try (InputStream s = TitleContainer.openStream(assetName))
+//            {
+//                return SoundEffect.fromStream(s);
+//            }
+//        }
 // #endif
-        else if ((typeof(T) == typeof(Effect)))
+        else if (type.getClass().equals(Effect.class))
         {
             try (InputStream assetStream = TitleContainer.openStream(assetName))
             {
-            	byte[] data = new byte[assetStream.length];
-                assetStream.read(data, 0, (int)assetStream.length);
+            	ByteArrayOutputStream output = new ByteArrayOutputStream();
+            	long count = 0;
+            	int n = 0;
+            	byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            	while (EOF != (n = assetStream.read(buffer))) {
+            	    output.write(buffer, 0, n);
+            	    count += n;
+            	}
+            	byte[] data = output.toByteArray();
                 return new Effect(this.graphicsDeviceService.getGraphicsDevice(), data);
             }
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
         }
         return null;
     }
@@ -621,7 +641,7 @@ public class ContentManager implements AutoCloseable
 		}
 	}
 
-	protected <T> void reloadAsset(String originalAssetName, T currentAsset)
+	protected <T> void reloadAsset(String originalAssetName, T currentAsset, Class<?> type)
     {
 		String assetName = originalAssetName;
 		if (StringHelpers.isNullOrEmpty(assetName))
@@ -657,7 +677,7 @@ public class ContentManager implements AutoCloseable
                     try (ContentReader reader = getContentReaderFromXnb(assetName, stream, xnbReader, null))
                     {
                         reader.initializeTypeReaders();
-                        reader.readObject(currentAsset);
+                        reader.readObject2(currentAsset);
                         reader.readSharedResources();
                     }
                 }
@@ -688,7 +708,7 @@ public class ContentManager implements AutoCloseable
 
             assetName = TitleContainer.getFilename(Paths.get(_rootDirectory, assetName).toString());
 
-            assetName = normalize(assetName);
+            assetName = normalize(assetName, type);
 
             reloadRawAsset(currentAsset, assetName, originalAssetName);
         }
@@ -751,4 +771,8 @@ public class ContentManager implements AutoCloseable
 		return this.serviceProvider;
 	}
 	
+	// NOTE: Added these for the readRawAsset() method
+	private final int EOF = -1;
+	
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 }

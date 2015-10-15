@@ -1,14 +1,8 @@
 package gameCore.content;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
-
 import gameCore.BoundingSphere;
 import gameCore.Color;
+import gameCore.dotNet.As;
 import gameCore.dotNet.BinaryReader;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.math.Matrix;
@@ -20,6 +14,13 @@ import gameCore.utilities.FileHelpers;
 import gameCore.utilities.ReflectionHelpers;
 import gameCore.utilities.StringHelpers;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+
 public class ContentReader extends BinaryReader
 {
 	private ContentManager contentManager;
@@ -28,11 +29,11 @@ public class ContentReader extends BinaryReader
     private GraphicsDevice graphicsDevice;
     private String assetName;
     private List<Map.Entry<Integer, Consumer<Object>>> sharedResourceFixups;
-    private ContentTypeReader[] typeReaders;
+    private ContentTypeReader<?>[] typeReaders;
 	protected int version;
 	protected int sharedResourceCount;
 
-    protected ContentTypeReader[] getTypeReaders()
+    public ContentTypeReader<?>[] getTypeReaders()
     {
     	return typeReaders;
     }
@@ -137,7 +138,7 @@ public class ContentReader extends BinaryReader
     private <T> void recordDisposable(T result)
     {
     	// TODO: Should I us As.as here ?
-    	AutoCloseable disposable = (AutoCloseable) result;
+    	AutoCloseable disposable = As.as(result, AutoCloseable.class);
         if (disposable == null)
             return;
 
@@ -153,7 +154,7 @@ public class ContentReader extends BinaryReader
     	return readObject2(null);
     }
 
-    public <T> T readObject(ContentTypeReader typeReader)
+    public <T> T readObject(ContentTypeReader<?> typeReader)
     {
         // T result = (T)typeReader.read(this, default(T));
     	T result = (T)typeReader.read(this, null);
@@ -208,31 +209,30 @@ public class ContentReader extends BinaryReader
         return result;
     }
 
-    public <T> T readRawObject()
+    public <T> T readRawObject(Class<?> type)
     {
 		// return (T)readRawObject(default(T));
-    	return (T)readRawObject(null);
+    	return (T)readRawObject(null, type);
     }
 
-    public <T> T readRawObject(ContentTypeReader typeReader)
+    public <T> T readRawObject(ContentTypeReader<?> typeReader, Class<?> type)
     {
     	// return (T)readRawObject(typeReader, default(T));
-        return (T)readRawObject(typeReader, null);
+        return (T)readRawObject(typeReader, null, type);
     }
 
-    public <T> T readRawObject(T existingInstance)
+    public <T> T readRawObject(T existingInstance, Class<?> objectType)
     {
-        Class<?> objectType = typeof(T);
-        for(ContentTypeReader typeReader : typeReaders)
+        for(ContentTypeReader<?> typeReader : typeReaders)
         {
             if(typeReader.getTargetType().equals(objectType))
-                return (T)readRawObject(typeReader,existingInstance);
+                return (T)readRawObject(typeReader,existingInstance, objectType);
         }
         throw new IllegalArgumentException("Unsuported type");
     }
 
     @SuppressWarnings("unchecked")
-	public <T> T readRawObject(ContentTypeReader typeReader, T existingInstance)
+	public <T> T readRawObject(ContentTypeReader typeReader, T existingInstance, Class<?> type)
     {
         return (T)typeReader.read(this, existingInstance);
     }
@@ -290,7 +290,7 @@ public class ContentReader extends BinaryReader
         return result;
     }
 
-    protected int read7BitEncodedInt()
+    public int read7BitEncodedInt()
     {
         return super.read7BitEncodedInt();
     }

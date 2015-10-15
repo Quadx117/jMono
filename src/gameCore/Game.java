@@ -7,6 +7,7 @@ import gameCore.components.IDrawable;
 import gameCore.components.IGameComponent;
 import gameCore.components.IUpdateable;
 import gameCore.content.ContentManager;
+import gameCore.content.ContentTypeReaderManager;
 import gameCore.events.EventArgs;
 import gameCore.events.EventHandler;
 import gameCore.graphics.GraphicsDevice;
@@ -295,20 +296,20 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 					// Platform.Activated -= OnActivated;
 					// Platform.Deactivated -= OnDeactivated;
 					_services.removeService(GamePlatform.class);
-					// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
+// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 					// Platform.ViewStateChanged -= Platform_ApplicationViewChanged;
-					// #endif
+// #endif
 					platform.close();
 					platform = null;
 				}
 
-				// ContentTypeReaderManager.ClearTypeCreators();
+				ContentTypeReaderManager.clearTypeCreators();
 
 				// SoundEffect.PlatformShutdown();
 			}
-			// #if ANDROID
+// #if ANDROID
 			// Activity = null;
-			// #endif
+// #endif
 			_isDisposed = true;
 			_instance = null;
 		}
@@ -496,13 +497,13 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	public EventHandler<EventArgs> disposed;
 	public EventHandler<EventArgs> exiting;
 
-	// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
+// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 	// public event EventHandler<ViewStateChangedEventArgs> ApplicationViewChanged;
-	// #endif
+// #endif
 
-	// #if WINRT
+// #if WINRT
 	// public ApplicationExecutionState PreviousExecutionState { get; internal set; }
-	// #endif
+// #endif
 
 	public void exit()
 	{
@@ -797,6 +798,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	{
 		platform.present();
 		// TODO: Added this, but is it in the right place ?
+		// Maybe platform.present()
 		g.dispose();
 		buffStrat.show();
 	}
@@ -940,12 +942,12 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		doExiting();
 	}
 
-	// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
+// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 	// private void Platform_ApplicationViewChanged(object sender, ViewStateChangedEventArgs e) {
 	// AssertNotDisposed();
 	// Raise(ApplicationViewChanged, e);
 	// }
-	// #endif
+// #endif
 
 	protected void applyChanges(GraphicsDeviceManager manager)
 	{
@@ -991,8 +993,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		{
 			draw(gameTime);
 			// TODO: Should this be in the JavaGamePlatform or JavaGameWindow ?
+			// Maybe platform.present()
 			drawImageToScreen();
-			drawText(gameTime);  // FIXME: Temporary until I start using Glyphs and DrawOrder
 			endDraw();
 		}
 	}
@@ -1136,24 +1138,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		g.drawImage(image, 0, 0, getGraphicsDeviceManager().getPreferredBackBufferWidth(), getGraphicsDeviceManager()
 				.getPreferredBackBufferHeight(), null);
 	}
-
-	/**
-	 * Draws text to the screen. Subclasses must override this method.
-	 */
-	protected abstract void drawText(GameTime gameTime);
-
-	// TODO: TEMP until I use Glyphs ?
-	// TODO: Can I use this elsewhere in the meantime.
-	/**
-	 * Returns the current {@code Graphics} object.
-	 * 
-	 * @return The current {@code Graphics} object.
-	 */
-	public Graphics getGraphics()
-	{
-		return g;
-	}
-
 }
 
 // TODO: validate SortingFilteringCollection

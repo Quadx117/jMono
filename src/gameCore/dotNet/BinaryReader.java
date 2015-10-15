@@ -27,7 +27,6 @@ public class BinaryReader extends FilterInputStream
 	 * the stream by four bytes.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public int readInt32()
 	{
@@ -39,7 +38,6 @@ public class BinaryReader extends FilterInputStream
 	 * stream by four bytes. Returns a long as java does not have the means to have unsigned values.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public long readUInt32()
 	{
@@ -51,7 +49,6 @@ public class BinaryReader extends FilterInputStream
 	 * the stream by two bytes. Returns a 32-bit int as there are not 16-bit ints in java.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public int readInt16()
 	{
@@ -64,7 +61,6 @@ public class BinaryReader extends FilterInputStream
 	 * 16-bit ints in java.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public int readUInt16()
 	{
@@ -76,7 +72,6 @@ public class BinaryReader extends FilterInputStream
 	 * integer seven bits at a time.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public String readString()
 	{
@@ -97,7 +92,6 @@ public class BinaryReader extends FilterInputStream
 	 * by one byte.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public boolean readBoolean()
 	{
@@ -109,7 +103,6 @@ public class BinaryReader extends FilterInputStream
 	 * of the stream by four bytes.
 	 * 
 	 * @return
-	 * @throws IOException
 	 */
 	public float readSingle()
 	{
@@ -126,7 +119,6 @@ public class BinaryReader extends FilterInputStream
 	 * 
 	 * @param bytes
 	 * @return
-	 * @throws IOException
 	 */
 	private int getStringLength() throws IOException
 	{
@@ -159,7 +151,6 @@ public class BinaryReader extends FilterInputStream
 	 * 
 	 * @param length
 	 * @return
-	 * @throws IOException
 	 */
 	public byte[] readBytes(int length)
 	{
@@ -174,28 +165,54 @@ public class BinaryReader extends FilterInputStream
 		}
 		return bytes;
 	}
-	
-	protected int read7BitEncodedInt() {
-        // Read out an Int32 7 bits at a time.  The high bit
-        // of the byte when on means to continue reading more bytes.
-        int count = 0;
-        int shift = 0;
-        byte b;
-        do {
-            // Check for a corrupted stream.  Read a max of 5 bytes.
-            // In a future version, add a DataFormatException.
-            if (shift == 5 * 7)  // 5 bytes max per Int32, shift += 7
-            	// TODO: Environment.GetResourceString
-                // throw new IllegalFormatException(Environment.GetResourceString("Format_Bad7BitInt32"));
-            	throw new NumberFormatException("Format_Bad7BitInt32");
 
-            // ReadByte handles end of stream cases for us.
-            b = readByte();
-            count |= (b & 0x7F) << shift;
-            shift += 7;
-        } while ((b & 0x80) != 0);
-        return count;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public char readChar()
+	{
+		int value = -1;
+		try
+		{
+			value = read();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		// TODO: Should I do something when I get to the end of the file ?
+//		if (value == -1)
+//		{
+//			__Error.EndOfFile();
+//		}
+		return (char) value;
+	}
+
+	protected int read7BitEncodedInt()
+	{
+		// Read out an Int32 7 bits at a time. The high bit
+		// of the byte when on means to continue reading more bytes.
+		int count = 0;
+		int shift = 0;
+		byte b;
+		do
+		{
+			// Check for a corrupted stream. Read a max of 5 bytes.
+			// In a future version, add a DataFormatException.
+			if (shift == 5 * 7)  // 5 bytes max per Int32, shift += 7
+				// TODO: Environment.GetResourceString
+				// throw new
+				// IllegalFormatException(Environment.GetResourceString("Format_Bad7BitInt32"));
+				throw new NumberFormatException("Format_Bad7BitInt32");
+
+			// ReadByte handles end of stream cases for us.
+			b = readByte();
+			count |= (b & 0x7F) << shift;
+			shift += 7;
+		} while ((b & 0x80) != 0);
+		return count;
+	}
 }
 // TODO: Finish comments as per MSDN :
 // https://msdn.microsoft.com/en-us/library/system.io.binaryreader%28v=vs.110%29.aspx

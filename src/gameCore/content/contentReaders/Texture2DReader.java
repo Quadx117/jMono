@@ -23,7 +23,7 @@ public class Texture2DReader extends ContentTypeReader<Texture2D>
 	static String[] supportedExtensions = new String[] { ".jpg", ".bmp", ".jpeg", ".png", ".gif", ".pict", ".tga" };
 // #endif
 
-	protected static String normalize(String fileName)
+	public static String normalize(String fileName)
 	{
 		return normalize(fileName, supportedExtensions);
 	}

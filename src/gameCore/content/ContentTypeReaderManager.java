@@ -1,8 +1,14 @@
 package gameCore.content;
 
+import gameCore.Rectangle;
+import gameCore.content.contentReaders.CharReader;
+import gameCore.content.contentReaders.ListReader;
+import gameCore.content.contentReaders.RectangleReader;
+import gameCore.content.contentReaders.SpriteFontReader;
 import gameCore.content.contentReaders.Texture2DReader;
+import gameCore.content.contentReaders.Vector3Reader;
+import gameCore.math.Vector3;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -13,16 +19,16 @@ public class ContentTypeReaderManager
 {
 	private static Object _locker;
 
-	private static Map<Class<?>, ContentTypeReader> _contentReadersCache;
+	private static Map<String, ContentTypeReader<?>> _contentReadersCache;
 
-	private Map<Class<?>, ContentTypeReader> _contentReaders;
+	private Map<Class<?>, ContentTypeReader<?>> _contentReaders;
 
 	private static final String _assemblyName;
 
 	static
 	{
 		_locker = new Object();
-		_contentReadersCache = new HashMap<Class<?>, ContentTypeReader>(255);
+		_contentReadersCache = new HashMap<String, ContentTypeReader<?>>(255);
 
 // #if WINRT
 		// _assemblyName = typeof(ContentTypeReaderManager).GetTypeInfo().Assembly.FullName;
@@ -33,7 +39,7 @@ public class ContentTypeReaderManager
 // #endif
 	}
 
-	public ContentTypeReader getTypeReader(Class<?> targetType)
+	public ContentTypeReader<?> getTypeReader(Class<?> targetType)
 	{
 		return _contentReaders.get(targetType);
 	}
@@ -41,7 +47,7 @@ public class ContentTypeReaderManager
 	// Trick to prevent the linker removing the code, but not actually execute the code
 	static boolean falseflag = false;
 
-	protected ContentTypeReader[] loadAssetReaders(ContentReader reader)
+	protected ContentTypeReader<?>[] loadAssetReaders(ContentReader reader)
 	{
 		// Trick to prevent the linker removing the code, but not actually execute the code
 		if (falseflag)
@@ -56,19 +62,19 @@ public class ContentTypeReaderManager
 			// BoundingSphereReader hBoundingSphereReader = new BoundingSphereReader();
 			// BoundingFrustumReader hBoundingFrustumReader = new BoundingFrustumReader();
 			// RayReader hRayReader = new RayReader();
-			// ListReader hCharListReader = new ListReader<Char>();
-			// ListReader hRectangleListReader = new ListReader<Rectangle>();
+			ListReader<Character> hCharListReader = new ListReader<Character>(Character.class);
+			ListReader<Rectangle> hRectangleListReader = new ListReader<Rectangle>(Rectangle.class);
 			// ArrayReader hRectangleArrayReader = new ArrayReader<Rectangle>();
-			// ListReader hVector3ListReader = new ListReader<Vector3>();
+			ListReader<Vector3> hVector3ListReader = new ListReader<Vector3>(Vector3.class);
 			// ListReader hStringListReader = new ListReader<StringReader>();
 			// ListReader hIntListReader = new ListReader<Int32>();
-			// SpriteFontReader hSpriteFontReader = new SpriteFontReader();
+			SpriteFontReader hSpriteFontReader = new SpriteFontReader();
 			Texture2DReader hTexture2DReader = new Texture2DReader();
-			// CharReader hCharReader = new CharReader();
-			// RectangleReader hRectangleReader = new RectangleReader();
+			CharReader hCharReader = new CharReader();
+			RectangleReader hRectangleReader = new RectangleReader();
 			// StringReader hStringReader = new StringReader();
 			// Vector2Reader hVector2Reader = new Vector2Reader();
-			// Vector3Reader hVector3Reader = new Vector3Reader();
+			Vector3Reader hVector3Reader = new Vector3Reader();
 			// Vector4Reader hVector4Reader = new Vector4Reader();
 			// CurveReader hCurveReader = new CurveReader();
 			// IndexBufferReader hIndexBufferReader = new IndexBufferReader();
@@ -100,9 +106,9 @@ public class ContentTypeReaderManager
 
 		// The first content byte i read tells me the number of content readers in this XNB file
 		int numberOfReaders = reader.read7BitEncodedInt();
-		ContentTypeReader[] contentReaders = new ContentTypeReader[numberOfReaders];
+		ContentTypeReader<?>[] contentReaders = new ContentTypeReader[numberOfReaders];
 		BitSet needsInitialize = new BitSet(numberOfReaders);
-		_contentReaders = new HashMap<Class<?>, ContentTypeReader>(numberOfReaders);
+		_contentReaders = new HashMap<Class<?>, ContentTypeReader<?>>(numberOfReaders);
 
 		// Lock until we're done allocating and initializing any new
 		// content type readers... this ensures we can load content
@@ -119,7 +125,7 @@ public class ContentTypeReaderManager
 				// string readerTypeString = reader.ReadString();
 				String originalReaderTypeString = reader.readString();
 
-				Supplier<ContentTypeReader> readerFunc;
+				Supplier<ContentTypeReader<?>> readerFunc;
 				readerFunc = typeCreators.get(originalReaderTypeString);
 				if (readerFunc != null)
 				{
@@ -132,14 +138,22 @@ public class ContentTypeReaderManager
 
 					// Need to resolve namespace differences
 					String readerTypeString = originalReaderTypeString;
+					String parameterType = originalReaderTypeString;
+					String readerMapKey = originalReaderTypeString;
 
 					readerTypeString = prepareType(readerTypeString);
+					parameterType = prepareParameter(parameterType);
+					readerMapKey = prepareMapKey(readerMapKey);
 
-					// Class<?> l_readerType = readerTypeString.getClass();
 					Class<?> l_readerType = null;
+					Class<?> l_parameterType = null;
 					try
 					{
 						l_readerType = Class.forName(readerTypeString);
+						if (parameterType != null)
+						{
+							l_parameterType = Class.forName(parameterType);
+						}
 					}
 					catch (ClassNotFoundException e1)
 					{
@@ -148,12 +162,21 @@ public class ContentTypeReaderManager
 					}
 					if (l_readerType != null)
 					{
-						ContentTypeReader typeReader = _contentReadersCache.get(l_readerType);
+						ContentTypeReader<?> typeReader = _contentReadersCache.get(readerMapKey);
 						if (typeReader == null)
 						{
 							try
 							{
-								typeReader = (ContentTypeReader) l_readerType.getConstructor().newInstance();
+								// For parameterized types get the 1 argument constructor
+								if (l_readerType.equals(ListReader.class))
+								{
+									typeReader = (ContentTypeReader<?>) l_readerType.getConstructor(l_parameterType.getClass()).newInstance(l_parameterType);
+								}
+								// Otherwise, get the no arguments constructor
+								else
+								{
+									typeReader = (ContentTypeReader<?>) l_readerType.getConstructor().newInstance();
+								}
 							}
 							catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 									| InvocationTargetException | NoSuchMethodException | SecurityException e)
@@ -165,13 +188,12 @@ public class ContentTypeReaderManager
 								e.printStackTrace();
 								throw new UnsupportedOperationException(
 										"Failed to get default constructor for ContentTypeReader. To work around, add a creation function to ContentTypeReaderManager.addTypeCreator() "
-												+ "with the following failed type string: " + originalReaderTypeString,
-										e);
+												+ "with the following failed type string: " + originalReaderTypeString, e);
 							}
 
 							needsInitialize.set(i, true);
 
-							_contentReadersCache.put(l_readerType, typeReader);
+							_contentReadersCache.put(readerMapKey, typeReader);
 						}
 
 						contentReaders[i] = typeReader;
@@ -218,34 +240,88 @@ public class ContentTypeReaderManager
 	// / </returns>
 	public static String prepareType(String type)
 	{
-		// TODO: validate the regex. was new[] {"[["} in orignial code
-		// but that's a char[]
 		// Needed to support nested types
-		int count = type.split("\\[").length - 1;
+		int count = type.split("\\[\\[").length - 1;
 
 		String preparedType = type;
 
 		for (int i = 0; i < count; ++i)
 		{
-			// TODO: Need to check what "[$1]" means in .NET
-			preparedType = preparedType.replaceAll("[(.+?), Version=.+?]", "[$1]");
+			// NOTE: In .NET we keep , MyAssembly to use in the getType(String) method
+			// preparedType = preparedType.replaceAll("\\[(.+?), Version=.+?\\]", "\\[$1\\]");
+			// preparedType = preparedType.replaceAll("\\[(.+?), .+?\\]", "\\[$1\\]");
+			preparedType = preparedType.replaceAll("(.+?)`.+?$", "$1");
 		}
 
 		// Handle non generic types
 		if (preparedType.contains("PublicKeyToken"))
-			preparedType = preparedType.replaceAll("(.+?), Version=.+?$", "$1");
+			// NOTE: In .NET we keep , MyAssembly to use in the getType(String) method
+			// preparedType = preparedType.replaceAll("(.+?), Version=.+?$", "$1");
+			preparedType = preparedType.replaceAll("(.+?), .+?$", "$1");
 
 		// TODO: For WinRT this is most likely broken!
+		// TODO: Debug this when we need it
 		preparedType = preparedType.replace(", Microsoft.Xna.Framework.Graphics", String.format(", %s", _assemblyName));
 		preparedType = preparedType.replace(", Microsoft.Xna.Framework.Video", String.format(", %s", _assemblyName));
 		preparedType = preparedType.replace(", Microsoft.Xna.Framework", String.format(", %s", _assemblyName));
 
 		return preparedType;
 	}
+	
+	// NOTE: Added this method to take care of parameters for parameterized types
+	// i.e.: List<Rectangle>
+	public static String prepareParameter(String parameter)
+	{
+		String preparedParameter = parameter;
+
+		if (parameter.contains("["))
+		{
+			// Needed to support nested types
+			int count = parameter.split("\\[\\[").length - 1;
+	
+			for (int i = 0; i < count; ++i)
+			{
+				preparedParameter = preparedParameter.replaceAll(".+?\\[\\[(.+?), .+?\\]\\]", "$1");
+			}
+	
+			// Handle non generic types
+			if (preparedParameter.contains("PublicKeyToken"))
+				preparedParameter = preparedParameter.replaceAll("(.+?), .+?$", "$1");
+		}
+		else
+		{
+			preparedParameter = null;
+		}
+
+		return preparedParameter;
+	}
+	
+	// NOTE: Added this method to take care of the mapKey
+	// This is needed because of Java's type erasure.
+	// i.e. List<Rectangle> becomes List so there is no difference
+	// between List<Rectangle> and List<Vector3>
+	public static String prepareMapKey(String mapKey)
+	{
+		String preparedMapKey = mapKey;
+
+		// Needed to support nested types
+		int count = mapKey.split("\\[\\[").length - 1;
+		
+		for (int i = 0; i < count; ++i)
+		{
+			preparedMapKey = preparedMapKey.replaceAll("\\[(.+?), .+?\\]", "\\[$1\\]");
+		}
+	
+		// Handle non generic types
+		if (preparedMapKey.contains("PublicKeyToken"))
+			preparedMapKey = preparedMapKey.replaceAll("(.+?), .+?$", "$1");
+
+		return preparedMapKey;
+	}
 
 	// Static map of type names to creation functions. Required as iOS requires all types at compile
 	// time
-	private static Map<String, Supplier<ContentTypeReader>> typeCreators = new HashMap<String, Supplier<ContentTypeReader>>();
+	private static Map<String, Supplier<ContentTypeReader<?>>> typeCreators = new HashMap<String, Supplier<ContentTypeReader<?>>>();
 
 	// / <summary>
 	// / Adds the type creator.
@@ -256,7 +332,7 @@ public class ContentTypeReaderManager
 	// / <param name='createFunction'>
 	// / Create function.
 	// / </param>
-	public static void addTypeCreator(String typeString, Supplier<ContentTypeReader> createFunction)
+	public static void addTypeCreator(String typeString, Supplier<ContentTypeReader<?>> createFunction)
 	{
 		if (!typeCreators.containsKey(typeString))
 			typeCreators.put(typeString, createFunction);
