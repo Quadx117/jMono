@@ -1,6 +1,8 @@
 package gameCore.graphics;
 
 import gameCore.Color;
+import gameCore.Rectangle;
+import gameCore.graphics.SpriteFont.CharacterSource;
 import gameCore.graphics.effect.Effect;
 import gameCore.graphics.effect.EffectParameter;
 import gameCore.graphics.effect.EffectPass;
@@ -12,8 +14,6 @@ import gameCore.graphics.states.SamplerState;
 import gameCore.math.Matrix;
 import gameCore.math.Vector2;
 import gameCore.math.Vector4;
-
-import java.awt.Rectangle;
 
 /**
  * Helper class for drawing text strings and sprites in one or more optimized batches.
@@ -82,7 +82,7 @@ public class SpriteBatch extends GraphicsResource
 		{
 			setup();
 		}
-		
+
 		_beginCalled = true;
 	}
 
@@ -149,32 +149,27 @@ public class SpriteBatch extends GraphicsResource
 					"Draw was called, but Begin has not yet been called. Begin must be called successfully before you can call Draw.");
 	}
 
-	// TODO: SpriteFont
-	/*
-	 * void CheckValid(SpriteFont spriteFont, String text)
-	 * {
-	 * if (spriteFont == null)
-	 * throw new NullPointerException("spriteFont");
-	 * if (text == null)
-	 * throw new NullPointerException("text");
-	 * if (!_beginCalled)
-	 * throw new IllegalStateException(
-	 * "DrawString was called, but Begin has not yet been called. Begin must be called successfully before you can call DrawString."
-	 * );
-	 * }
-	 * 
-	 * void CheckValid(SpriteFont spriteFont, StringBuilder text)
-	 * {
-	 * if (spriteFont == null)
-	 * throw new NullPointerException("spriteFont");
-	 * if (text == null)
-	 * throw new NullPointerException("text");
-	 * if (!_beginCalled)
-	 * throw new IllegalStateException(
-	 * "DrawString was called, but Begin has not yet been called. Begin must be called successfully before you can call DrawString."
-	 * );
-	 * }
-	 */
+	void checkValid(SpriteFont spriteFont, String text)
+	{
+		if (spriteFont == null)
+			throw new NullPointerException("spriteFont");
+		if (text == null)
+			throw new NullPointerException("text");
+		if (!_beginCalled)
+			throw new IllegalStateException(
+					"DrawString was called, but Begin has not yet been called. Begin must be called successfully before you can call DrawString.");
+	}
+
+	void checkValid(SpriteFont spriteFont, StringBuilder text)
+	{
+		if (spriteFont == null)
+			throw new NullPointerException("spriteFont");
+		if (text == null)
+			throw new NullPointerException("text");
+		if (!_beginCalled)
+			throw new IllegalStateException(
+					"DrawString was called, but Begin has not yet been called. Begin must be called successfully before you can call DrawString.");
+	}
 
 	// Overloads because of default parameters in C#
 	public void draw(Texture2D texture, Rectangle drawRectangle, Rectangle sourceRectangle, Vector2 origin,
@@ -338,20 +333,22 @@ public class SpriteBatch extends GraphicsResource
 		drawInternal(										//
 				texture,									//
 				new Vector4(destinationRectangle.x,			//
-							destinationRectangle.y,			//
-							destinationRectangle.width,		//
-							destinationRectangle.height),	//
+						destinationRectangle.y,			//
+						destinationRectangle.width,		//
+						destinationRectangle.height),	//
 				sourceRectangle,							//
 				color,										//
 				rotation,									//
 				new Vector2(								//
 						origin.x * ((float) destinationRectangle.width /	//
 								(float) ((sourceRectangle != null && sourceRectangle.width != 0) ?	//
-											sourceRectangle.width : texture.width)),	//
+								sourceRectangle.width
+										: texture.width)),	//
 						origin.y							//
-								* ((float) destinationRectangle.height)	/ 	//
+								* ((float) destinationRectangle.height) / 	//
 								(float) ((sourceRectangle != null && sourceRectangle.height != 0) ?	//
-											sourceRectangle.height : texture.height)),	//
+								sourceRectangle.height
+										: texture.height)),	//
 				effects,									//
 				layerDepth,									//
 				true);										//
@@ -383,14 +380,12 @@ public class SpriteBatch extends GraphicsResource
 		_texCoordBR.y = (_tempRect.y + _tempRect.height) / (float) texture.height;
 
 		if ((effect.getValue() & SpriteEffects.FlipVertically.getValue()) != 0)
-		//if ((effect.equals(SpriteEffects.FlipVertically)) || (effect.equals(SpriteEffects.FlipBothAxis)))
 		{
 			float temp = _texCoordBR.y;
 			_texCoordBR.y = _texCoordTL.y;
 			_texCoordTL.y = temp;
 		}
 		if ((effect.getValue() & SpriteEffects.FlipHorizontally.getValue()) != 0)
-		// if ((effect.equals(SpriteEffects.FlipHorizontally)) || (effect.equals(SpriteEffects.FlipBothAxis)))
 		{
 			float temp = _texCoordBR.x;
 			_texCoordBR.x = _texCoordTL.x;
@@ -436,71 +431,68 @@ public class SpriteBatch extends GraphicsResource
 		draw(texture, rectangle, null, color);
 	}
 
-	// TODO: DrawString
-	/*
-	 * public void DrawString (SpriteFont spriteFont, String text, Vector2 position, Color color)
-	 * {
-	 * CheckValid(spriteFont, text);
-	 * 
-	 * var source = new SpriteFont.CharacterSource(text);
-	 * spriteFont.DrawInto (
-	 * this, source, position, color, 0, Vector2.ZERO, Vector2.ONE, SpriteEffects.None, 0f);
-	 * }
-	 * 
-	 * public void DrawString (
-	 * SpriteFont spriteFont, String text, Vector2 position, Color color,
-	 * float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
-	 * {
-	 * CheckValid(spriteFont, text);
-	 * 
-	 * Vector2 scaleVec = new Vector2(scale, scale);
-	 * var source = new SpriteFont.CharacterSource(text);
-	 * spriteFont.DrawInto(this, source, position, color, rotation, origin, scaleVec, effects,
-	 * depth);
-	 * }
-	 * 
-	 * public void DrawString (
-	 * SpriteFont spriteFont, String text, Vector2 position, Color color,
-	 * float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect, float depth)
-	 * {
-	 * CheckValid(spriteFont, text);
-	 * 
-	 * var source = new SpriteFont.CharacterSource(text);
-	 * spriteFont.DrawInto(this, source, position, color, rotation, origin, scale, effect, depth);
-	 * }
-	 * 
-	 * public void DrawString (SpriteFont spriteFont, StringBuilder text, Vector2 position, Color
-	 * color)
-	 * {
-	 * CheckValid(spriteFont, text);
-	 * 
-	 * var source = new SpriteFont.CharacterSource(text);
-	 * spriteFont.DrawInto(this, source, position, color, 0, Vector2.ZERO, Vector2.ONE,
-	 * SpriteEffects.None, 0f);
-	 * }
-	 * 
-	 * public void DrawString (
-	 * SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
-	 * float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
-	 * {
-	 * CheckValid(spriteFont, text);
-	 * 
-	 * Vector2 scaleVec = new Vector2(scale, scale);
-	 * var source = new SpriteFont.CharacterSource(text);
-	 * spriteFont.DrawInto(this, source, position, color, rotation, origin, scaleVec, effects,
-	 * depth);
-	 * }
-	 * 
-	 * public void DrawString (
-	 * SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
-	 * float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect, float depth)
-	 * {
-	 * CheckValid(spriteFont, text);
-	 * 
-	 * var source = new SpriteFont.CharacterSource(text);
-	 * spriteFont.DrawInto(this, source, position, color, rotation, origin, scale, effect, depth);
-	 * }
-	 */
+	public void drawString(SpriteFont spriteFont, String text, Vector2 position, Color color)
+	{
+		checkValid(spriteFont, text);
+
+		CharacterSource source = spriteFont.new CharacterSource(text);
+		spriteFont.drawInto(
+				this, source, position, color, 0, Vector2.ZERO, Vector2.ONE, SpriteEffects.None, 0f);
+	}
+
+	public void drawString(
+			SpriteFont spriteFont, String text, Vector2 position, Color color,
+			float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
+	{
+		checkValid(spriteFont, text);
+
+		Vector2 scaleVec = new Vector2(scale, scale);
+		CharacterSource source = spriteFont.new CharacterSource(text);
+		spriteFont.drawInto(this, source, position, color, rotation, origin, scaleVec, effects,
+				depth);
+	}
+
+	public void drawString(
+			SpriteFont spriteFont, String text, Vector2 position, Color color,
+			float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect, float depth)
+	{
+		checkValid(spriteFont, text);
+
+		CharacterSource source = spriteFont.new CharacterSource(text);
+		spriteFont.drawInto(this, source, position, color, rotation, origin, scale, effect, depth);
+	}
+
+	public void drawString(SpriteFont spriteFont, StringBuilder text, Vector2 position, Color
+			color)
+	{
+		checkValid(spriteFont, text);
+
+		CharacterSource source = spriteFont.new CharacterSource(text);
+		spriteFont.drawInto(this, source, position, color, 0, Vector2.ZERO, Vector2.ONE,
+				SpriteEffects.None, 0f);
+	}
+
+	public void drawString(
+			SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
+			float rotation, Vector2 origin, float scale, SpriteEffects effects, float depth)
+	{
+		checkValid(spriteFont, text);
+
+		Vector2 scaleVec = new Vector2(scale, scale);
+		CharacterSource source = spriteFont.new CharacterSource(text);
+		spriteFont.drawInto(this, source, position, color, rotation, origin, scaleVec, effects,
+				depth);
+	}
+
+	public void drawString(
+			SpriteFont spriteFont, StringBuilder text, Vector2 position, Color color,
+			float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect, float depth)
+	{
+		checkValid(spriteFont, text);
+
+		CharacterSource source = spriteFont.new CharacterSource(text);
+		spriteFont.drawInto(this, source, position, color, rotation, origin, scale, effect, depth);
+	}
 
 	@Override
 	protected void dispose(boolean disposing)
