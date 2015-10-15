@@ -2,44 +2,64 @@ package gameCore.utilities;
 
 import java.lang.reflect.Modifier;
 
-public class ReflectionHelpers {
-
-	// TODO: Need more research to make sure this method has the correct behavior
-	public static boolean isValueType(Class<?> targetType) {
-		if (targetType == null) {
+public class ReflectionHelpers
+{
+	public static boolean isValueType(Class<?> targetType)
+	{
+		if (targetType == null)
+		{
 			throw new NullPointerException("Must supply the targetType parameter");
 		}
+		// NOTE: Added this since struct are considere value types (primitives) in C#
+		//       and since we are using wrapper Classes for our primitives
+//		System.out.println(targetType.getSimpleName());
+		switch (targetType.getSimpleName())
+		{
+			// TODO: Need to add other types here
+			case "Integer":
+			case "Character":
+			case "Rectangle":
+			case "Vector2":
+			case "Vector3":
+			case "Vector4":
+				return true;
+		}
+		// NOTE: This only works on "real" primitives not their wrapper types
 		return (targetType.isEnum() || targetType.isPrimitive());
 	}
 
-	public static Class<?> getBaseType(Class<?> targetType) {
-		if (targetType == null) {
+	public static Class<?> getBaseType(Class<?> targetType)
+	{
+		if (targetType == null)
+		{
 			throw new NullPointerException("Must supply the targetType parameter");
 		}
-		// #if WINRT
+// #if WINRT
 		// var type = targetType.GetTypeInfo().BaseType;
-		// #else
+// #else
 		Class<?> type = targetType.getSuperclass();
-		// #endif
+// #endif
 		return type;
 	}
 
 	// / <summary>
 	// / Returns true if the given type represents a class that is not abstract
 	// / </summary>
-	public static boolean isConcreteClass(Class<?> t) {
-		if (t == null) {
+	public static boolean isConcreteClass(Class<?> t)
+	{
+		if (t == null)
+		{
 			throw new NullPointerException("Must supply the t (type) parameter");
 		}
-		// #if WINRT
+// #if WINRT
 		// var ti = t.GetTypeInfo();
 		// if (ti.IsClass && !ti.IsAbstract)
 		// return true;
-		// #else
+// #else
 		// if (t.IsClass && !t.IsAbstract)
 		if (Modifier.isAbstract(t.getModifiers()))
 			return true;
-		// #endif
+// #endif
 		return false;
 	}
 
@@ -50,11 +70,11 @@ public class ReflectionHelpers {
 	// throw new NullPointerException("Must supply the property parameter");
 	// }
 	//
-	// #if WINRT
+// #if WINRT
 	// return property.GetMethod;
-	// #else
+// #else
 	// return property.GetGetMethod();
-	// #endif
+// #endif
 	// }
 
 	// public static MethodInfo GetPropertySetMethod(PropertyInfo property)
@@ -64,11 +84,11 @@ public class ReflectionHelpers {
 	// throw new NullPointerException("Must supply the property parameter");
 	// }
 	//
-	// #if WINRT
+// #if WINRT
 	// return property.SetMethod;
-	// #else
+// #else
 	// return property.GetSetMethod();
-	// #endif
+// #endif
 	// }
 
 	// public static Attribute GetCustomAttribute(MemberInfo member, Type memberType)
@@ -81,11 +101,11 @@ public class ReflectionHelpers {
 	// {
 	// throw new NullPointerException("Must supply the memberType parameter");
 	// }
-	// #if WINRT
+// #if WINRT
 	// return member.GetCustomAttribute(memberType);
-	// #else
+// #else
 	// return Attribute.GetCustomAttribute(member, memberType);
-	// #endif
+// #endif
 	// }
 
 	// / <summary>
@@ -112,7 +132,8 @@ public class ReflectionHelpers {
 	// / <summary>
 	// / Returns true if the given type can be assigned the given value
 	// / </summary>
-	public static boolean isAssignableFrom(Class<?> type, Object value) {
+	public static boolean isAssignableFrom(Class<?> type, Object value)
+	{
 		if (type == null)
 			throw new NullPointerException("type");
 		if (value == null)
@@ -124,18 +145,19 @@ public class ReflectionHelpers {
 	// / <summary>
 	// / Returns true if the given type can be assigned a value with the given object type
 	// / </summary>
-	public static boolean isAssignableFromType(Class<?> type, Class<?> objectType) {
+	public static boolean isAssignableFromType(Class<?> type, Class<?> objectType)
+	{
 		if (type == null)
 			throw new NullPointerException("type");
 		if (objectType == null)
 			throw new NullPointerException("objectType");
-		// #if WINRT
+// #if WINRT
 		// if (type.GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
 		// return true;
-		// #else
+// #else
 		if (type.isAssignableFrom(objectType))
 			return true;
-		// #endif
+// #endif
 		return false;
 	}
 
