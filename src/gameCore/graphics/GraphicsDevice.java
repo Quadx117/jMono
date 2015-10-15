@@ -2,6 +2,8 @@ package gameCore.graphics;
 
 import gameCore.Color;
 import gameCore.GraphicsDeviceInformation;
+import gameCore.Rectangle;
+import gameCore.dotNet.As;
 import gameCore.events.EventArgs;
 import gameCore.events.EventHandler;
 import gameCore.graphics.effect.Effect;
@@ -21,9 +23,7 @@ import gameCore.graphics.vertices.VertexDeclaration;
 import gameCore.graphics.vertices.VertexDeclarationCache;
 import gameCore.graphics.vertices.VertexPositionColorTexture;
 import gameCore.math.Vector4;
-import gameCore.utilities.As;
 
-import java.awt.Rectangle;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class GraphicsDevice implements AutoCloseable
 {
-	// TODO: I added this for testing, see where this should go.
+	// TODO: I added this for the software renderer, see where this should go.
 	/** The array of pixels to be painted on the screen */
 	public int[] pixels;
 
@@ -207,15 +207,14 @@ public class GraphicsDevice implements AutoCloseable
 		return adapter;
 	}
 
-	// TODO: GraphicsMetrics
-	// protected GraphicsMetrics _graphicsMetrics;
+	protected GraphicsMetrics _graphicsMetrics = new GraphicsMetrics();
 
 	// / <summary>
 	// / The rendering information for debugging and profiling.
 	// / The metrics are reset every frame after draw within <see cref="GraphicsDevice.Present"/>.
 	// / </summary>
-	// public GraphicsMetrics getMetrics() { return _graphicsMetrics; }
-	// public void setGraphicsMetrics(GraphicsMetrics value) { _graphicsMetrics = value; } }
+	public GraphicsMetrics getMetrics() { return _graphicsMetrics; }
+	public void setGraphicsMetrics(GraphicsMetrics value) { _graphicsMetrics = value; }
 
 	protected GraphicsDevice(GraphicsDeviceInformation gdi)
 	{
@@ -254,10 +253,6 @@ public class GraphicsDevice implements AutoCloseable
 	{
 		this.adapter = adapter;
 
-		// TODO: I added this for testing. Check where that would go
-		pixels = new int[adapter.getCurrentDisplayMode().getWidth() * adapter.getCurrentDisplayMode().getHeight()];
-		// end TODO
-
 		if (presentationParameters == null)
 			throw new NullPointerException("presentationParameters");
 		this.presentationParameters = presentationParameters;
@@ -265,6 +260,10 @@ public class GraphicsDevice implements AutoCloseable
 		this.graphicsCapabilities = new GraphicsCapabilities(this);
 		setGraphicsProfile(graphicsProfile);
 		initialize();
+		
+		// TODO: I added this for the software renderer. Check where that would go
+		pixels = new int[this.getViewport().getWidth() * this.getViewport().getHeight()];
+		// end TODO
 	}
 
 	private void setup()
@@ -341,7 +340,7 @@ public class GraphicsDevice implements AutoCloseable
 
 		// Set the default scissor rect.
 		_scissorRectangleDirty = true;
-		_scissorRectangle = _viewport.getBounds();
+		_scissorRectangle = new Rectangle(_viewport.getBounds());
 
 		// Set the default render target.
 		applyRenderTargets(null);
@@ -571,7 +570,7 @@ public class GraphicsDevice implements AutoCloseable
 
 	public void present()
 	{
-		// _graphicsMetrics = new GraphicsMetrics();
+		_graphicsMetrics = new GraphicsMetrics();
 		// TODO: See other GraphicsDevice files
 		// PlatformPresent();
 	}
@@ -702,7 +701,7 @@ public class GraphicsDevice implements AutoCloseable
 		if (_scissorRectangle == value)
 			return;
 
-		_scissorRectangle = value;
+		_scissorRectangle = new Rectangle(value);
 		_scissorRectangleDirty = true;
 	}
 
@@ -936,8 +935,8 @@ public class GraphicsDevice implements AutoCloseable
 		if (primitiveCount <= 0)
 			throw new IllegalArgumentException("primitiveCount is out of range");
 
-		// _graphicsMetrics._drawCount++;
-		// _graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._drawCount++;
+		_graphicsMetrics._primitiveCount += primitiveCount;
 
 		// TODO: See other GraphicsDevice files
 		// PlatformDrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
@@ -975,8 +974,8 @@ public class GraphicsDevice implements AutoCloseable
 		if (vertexDeclaration == null)
 			throw new NullPointerException("vertexDeclaration is null");
 
-		// _graphicsMetrics._drawCount++;
-		// _graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._drawCount++;
+		_graphicsMetrics._primitiveCount += primitiveCount;
 
 		// TODO: See other GraphicsDevice files
 		// PlatformDrawUserPrimitives(primitiveType, vertexData, vertexOffset, vertexDeclaration,
@@ -996,8 +995,8 @@ public class GraphicsDevice implements AutoCloseable
 
 		int vertexCount = getElementCountArray(primitiveType, primitiveCount);
 
-		// _graphicsMetrics._drawCount++;
-		// _graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._drawCount++;
+		_graphicsMetrics._primitiveCount += primitiveCount;
 
 		// TODO: See other GraphicsDevice files
 		// PlatformDrawPrimitives(primitiveType, vertexStart, vertexCount);
@@ -1046,8 +1045,8 @@ public class GraphicsDevice implements AutoCloseable
 		if (vertexDeclaration == null)
 			throw new NullPointerException("vertexDeclaration is null");
 
-		// _graphicsMetrics._drawCount++;
-		// _graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._drawCount++;
+		_graphicsMetrics._primitiveCount += primitiveCount;
 
 		// TODO: See other GraphicsDevice files
 		// PlatformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices,
@@ -1100,8 +1099,8 @@ public class GraphicsDevice implements AutoCloseable
 		if (vertexDeclaration == null)
 			throw new NullPointerException("vertexDeclaration is null");
 
-		// _graphicsMetrics._drawCount++;
-		// _graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._drawCount++;
+		_graphicsMetrics._primitiveCount += primitiveCount;
 
 		// TODO: See other GraphicsDevice files
 		// PlatformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices,
@@ -1155,6 +1154,7 @@ public class GraphicsDevice implements AutoCloseable
 		Texture2D texture = (Texture2D) getTextures().getTexture(0);
 		Color tint;
 		int i = 0;
+
 		while (i < numVertices)
 		{
 			destStartX = (int) (data[i + 0].position.x);
@@ -1183,13 +1183,13 @@ public class GraphicsDevice implements AutoCloseable
 			if (destWidth != srcWidth || destHeight != srcHeight)
 			{
 				// TODO: Fix bug in resize
-				texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, destWidth, destHeight);
+				texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
 			}
 			else
 			{
 				// NOTE: We are copying the desired pixels when want to draw only a part
 				//		 of a texture (ex: if we have a texture strip for an animation)
-				if (srcWidth * srcHeight < texture.pixels.length)
+/*				if (srcWidth * srcHeight < texture.pixels.length)
 				{
 					// TODO: Can I avoid this copy (expansive)
 					// TODO: Look into drawQuad and see if I couldn't do something there instead.
@@ -1197,16 +1197,16 @@ public class GraphicsDevice implements AutoCloseable
 					{
 						for (int x = 0; x < srcWidth; ++x)
 						{
-							texturePixels[x + y * srcWidth] = texture.pixels[(x+srcStartX) + (y*texture.width+srcStartY)];
+							texturePixels[x + y * srcWidth] = texture.pixels[(x+srcStartX) + ((y+srcStartY)*texture.width)];
 						}
 					}
 				}
 				else
-				{
+				{*/
 					texturePixels = texture.pixels;
-				}
+				//}
 			}
-			drawQuad(destStartX, destStartY, destEndX, destEndY, texturePixels, tint);
+			drawQuad(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, texture.width, texturePixels, tint);
 			i += 4;
 		}
 
@@ -1265,7 +1265,8 @@ public class GraphicsDevice implements AutoCloseable
 
 	// NOTE: XNA uses premultiplied alpha by default and the color values in
 	//		 the xnb files are premultiplied.
-	private void drawQuad(int startX, int startY, int endX, int endY, int[] imagePixels, Color tint)
+	private void drawQuad(int destStartX, int destStartY, int destEndX, int destEndY,
+						  int srcStartX, int srcStartY, int srcWidth, int[] srcPixels, Color tint)
 	{
 		// TODO: find out alphaFactor (from CardGame SpriteBatch.draw)
 		// TODO: Looks like if the alphaFactor is less than 0, we keep the original alpha value of
@@ -1275,29 +1276,29 @@ public class GraphicsDevice implements AutoCloseable
 		int screenWidth = this._viewport.getWidth();
 		int screenHeight = this._viewport.getHeight();
 
-		int sourceWidth = endX - startX;
-
 		// check the bounds
-		int sourceOffsetX = 0;
-		if (startX < 0)
+		int sourceOffsetX = srcStartX;
+		if (destStartX < 0)
 		{
-			sourceOffsetX = -startX;
-			startX = 0;
+			sourceOffsetX += -destStartX;
+			destStartX = 0;
 		}
 		
-		int sourceOffsetY = 0;
-		if (startY < 0)
+		int sourceOffsetY = srcStartY;
+		if (destStartY < 0)
 		{
-			sourceOffsetY = -startY;
-			startY = 0;
+			sourceOffsetY += -destStartY;
+			destStartY = 0;
 		}
-		if (endX > screenWidth)
+		
+		if (destEndX > screenWidth)
 		{
-			endX = screenWidth;
+			destEndX = screenWidth;
 		}
-		if (endY > screenHeight)
+		
+		if (destEndY > screenHeight)
 		{
-			endY = screenHeight;
+			destEndY = screenHeight;
 		}
 
 		// Extract our tint components
@@ -1311,14 +1312,14 @@ public class GraphicsDevice implements AutoCloseable
 		// Cycle through all the sprites pixels. and apply tint and
 		// alpha-blending
 		// Set our starting index position for the source Texture.
-		int sourceRow = sourceOffsetX + sourceOffsetY * sourceWidth;
-		for (int y = startY; y < endY; ++y, sourceRow += sourceWidth)
+		int sourceRow = sourceOffsetX + sourceOffsetY * srcWidth;
+		for (int y = destStartY; y < destEndY; ++y, sourceRow += srcWidth)
 		{
 			int sourceIndex = sourceRow;
-			for (int x = startX; x < endX; ++x)
+			for (int x = destStartX; x < destEndX; ++x)
 			{
 				// The color of the pixel about to be drawn.
-				int foregroundCol = imagePixels[sourceIndex];
+				int foregroundCol = srcPixels[sourceIndex];
 				// The alpha value of the pixel about to be drawn.
 				if (alphaFactor < 0.0f)
 				{
@@ -1360,6 +1361,13 @@ public class GraphicsDevice implements AutoCloseable
 					int r = foregroundR + (backgroundR * (255 - foregroundAlpha) / 255);
 					int g = foregroundG + (backgroundG * (255 - foregroundAlpha) / 255);
 					int b = foregroundB + (backgroundB * (255 - foregroundAlpha) / 255);
+					
+					// NOTE: for some reason, spritefonts could produce value greater
+					// than 255 for a single channel so we need to clamp to value.
+					r = r > 255 ? 255 : r;
+					g = g > 255 ? 255 : g;
+					b = b > 255 ? 255 : b;
+					
 					col = r << 16 | g << 8 | b;
 				}
 				else
@@ -1375,37 +1383,126 @@ public class GraphicsDevice implements AutoCloseable
 		}
 	}
 	
-	private void drawRectangle(int startX, int startY, int endX, int endY, int color)
+/*
+	private void drawQuad(int destStartX, int destStartY, int destEndX, int destEndY, int[] srcPixels, Color tint)
 	{
+		// TODO: find out alphaFactor (from CardGame SpriteBatch.draw)
+		// TODO: Looks like if the alphaFactor is less than 0, we keep the original alpha value of
+		// the pixel
+		int alphaFactor = -1;
+
 		int screenWidth = this._viewport.getWidth();
 		int screenHeight = this._viewport.getHeight();
 
+		int sourceWidth = destEndX - destStartX;
+
 		// check the bounds
-		if (startX < 0)
+		int sourceOffsetX = 0;
+		if (destStartX < 0)
 		{
-			startX = 0;
+			sourceOffsetX = -destStartX;
+			destStartX = 0;
 		}
-		if (startY < 0)
+		
+		int sourceOffsetY = 0;
+		if (destStartY < 0)
 		{
-			startY = 0;
+			sourceOffsetY = -destStartY;
+			destStartY = 0;
 		}
-		if (endX > screenWidth)
+		
+		if (destEndX > screenWidth)
 		{
-			endX = screenWidth;
+			destEndX = screenWidth;
 		}
-		if (endY > screenHeight)
+		
+		if (destEndY > screenHeight)
 		{
-			endY = screenHeight;
+			destEndY = screenHeight;
 		}
 
-		for (int y = startY; y < endY; ++y)
+		// Extract our tint components
+		int rTint = tint.getRed();
+		int gTint = tint.getGreen();
+		int bTint = tint.getBlue();
+
+		// Calculate the new foreground color alpha component
+		int foregroundAlpha = (int) (alphaFactor * 255);
+
+		// Cycle through all the sprites pixels. and apply tint and
+		// alpha-blending
+		// Set our starting index position for the source Texture.
+		int sourceRow = sourceOffsetX + sourceOffsetY * sourceWidth;
+		for (int y = destStartY; y < destEndY; ++y, sourceRow += sourceWidth)
 		{
-			for (int x = startX; x < endX; ++x)
+			int sourceIndex = sourceRow;
+			for (int x = destStartX; x < destEndX; ++x)
 			{
-				pixels[x + y * screenWidth] = color;
+				// The color of the pixel about to be drawn.
+				int foregroundCol = srcPixels[sourceIndex];
+				// The alpha value of the pixel about to be drawn.
+				if (alphaFactor < 0.0f)
+				{
+					foregroundAlpha = (foregroundCol >> 24) & 0xff;
+				}
+
+				// The color of the pixel already there.
+				int backgroundCol = pixels[x + y * screenWidth];
+				// The resulting color of the pixel to be drawn
+				int col;
+
+				// The components of the pixel about to be drawn.
+				int foregroundR = (foregroundCol >> 16) & 0xff;
+				int foregroundG = (foregroundCol >> 8) & 0xff;
+				int foregroundB = (foregroundCol) & 0xff;
+
+				// Using Color.WHITE would have no effect so skip this
+				if (!tint.equals(Color.White))
+				{
+					// Typical tint formula -> original component * tint / 255
+					foregroundR = foregroundR * rTint / 255;
+					foregroundG = foregroundG * gTint / 255;
+					foregroundB = foregroundB * bTint / 255;
+				}
+
+				// If alpha is 255 it completely overrides the existing color.
+				if (foregroundAlpha == 255 || _blendState == BlendState.Opaque)
+				{
+					col = (foregroundAlpha << 24 & 0xff000000) | (foregroundR << 16 & 0x00ff0000) |
+							(foregroundG << 8 & 0x0000ff00) | (foregroundB & 0x000000ff);
+				}
+				else if (_blendState == BlendState.AlphaBlend)
+				{
+					// Do the alpha-blending with the premultiplied alpha source.
+					int backgroundR = (backgroundCol >> 16) & 0xff;
+					int backgroundG = (backgroundCol >> 8) & 0xff;
+					int backgroundB = (backgroundCol) & 0xff;
+					// Typical over blend formula
+					int r = foregroundR + (backgroundR * (255 - foregroundAlpha) / 255);
+					int g = foregroundG + (backgroundG * (255 - foregroundAlpha) / 255);
+					int b = foregroundB + (backgroundB * (255 - foregroundAlpha) / 255);
+					
+					// NOTE: for some reason, spritefonts could produce value greater
+					// than 255 for a single channel so we need to clamp to value.
+					r = r > 255 ? 255 : r;
+					g = g > 255 ? 255 : g;
+					b = b > 255 ? 255 : b;
+					
+					col = r << 16 | g << 8 | b;
+				}
+				else
+				{
+					// TODO: Should do the other BlendStates
+					// Defaults to BlendState.OPAQUE after tinting.
+					col = foregroundAlpha << 24 | foregroundR << 16 | foregroundG << 8 | foregroundB;
+				}
+				pixels[x + y * screenWidth] = col;
+				++sourceIndex;
 			}
+			// sourceRow += sourceWidth;
 		}
 	}
+*/
 	
 	/**
 	 * Resizes a portion of an ARGB sprite using the nearest neighbor
@@ -1418,6 +1515,10 @@ public class GraphicsDevice implements AutoCloseable
 	 *        The starting location on the x axis.
 	 * @param startY
 	 *        The starting location on the y axis.
+	 * @param oldWidth
+	 *        The old sprite width.
+	 * @param oldHeight
+	 *        The old sprite height.
 	 * @param newWidth
 	 *        The new sprite width.
 	 * @param newHeight
@@ -1428,14 +1529,11 @@ public class GraphicsDevice implements AutoCloseable
 	 *         If the new width or the new height is less than or equal to
 	 *         0.
 	 */
-	public int[] resizeNearestNeighbor(Texture2D tex, int startX, int startY, int newWidth, int newHeight)
+	public int[] resizeNearestNeighbor(Texture2D tex, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
 	{
 		if (newWidth <= 0 || newHeight <= 0)
 			throw new IllegalArgumentException("new width or new height cannot be less than or equal to 0");
 		int[] temp = new int[newWidth * newHeight];
-		// FIXME: The oldWith and OldHeight are busted for textureStripes
-		int oldWidth = tex.getWidth();
-		int oldHeight = tex.getHeight();
 		float xRatio = (float) newWidth / (float) oldWidth;
 		float yRatio = (float) newHeight / (float) oldHeight;
 
@@ -1443,6 +1541,7 @@ public class GraphicsDevice implements AutoCloseable
 		{
 			for (int x = startX; x < newWidth; ++x)
 			{
+				// TODO: This needs to be fixed
 				temp[x + y * newWidth] = tex.pixels[(int) (x / xRatio) + (int) (y / yRatio) * oldWidth];
 			}
 		}

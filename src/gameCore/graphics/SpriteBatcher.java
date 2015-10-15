@@ -231,8 +231,7 @@ public class SpriteBatcher
 		int batchIndex = 0;
 		int batchCount = _batchItemList.size();
 		
-		// TODO: GraphicsMetrics
-		// _device._graphicsMetrics._spriteCount += (ulong)batchCount;
+		_device._graphicsMetrics._spriteCount += (long) batchCount;
 		
 		// Iterate through the batches, doing short.MaxValue sets of vertices only.
 		while (batchCount > 0)
