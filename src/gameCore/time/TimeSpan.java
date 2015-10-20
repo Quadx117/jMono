@@ -1,5 +1,7 @@
 package gameCore.time;
 
+// C# struct
+
 /**
  * A TimeSpan object represents a time interval (duration of time or elapsed
  * time) that is measured as a positive or negative number of days, hours,
@@ -23,9 +25,9 @@ package gameCore.time;
  * ten-millionth of a second. The value of a TimeSpan object can be negative or
  * positive and can range from TimeSpan.MIN_VALUE to TimeSpan.MAX_VALUE.
  */
-public class TimeSpan implements Comparable<Object> {
-	// TODO : Add missing methods (Parse, TryParse, TimeSpan.Equality,
-	// TimeSpan.UnaryNegationetc)
+public class TimeSpan implements Comparable<Object>
+{
+	// TODO : Add missing methods (Parse, TryParse, TimeSpan.Equality, TimeSpan.UnaryNegation, etc)
 	// TODO : Re-calibrate to work in nanoseconds and test it before and after
 
 	/**
@@ -72,11 +74,10 @@ public class TimeSpan implements Comparable<Object> {
 	 * Represents the zero TimeSpan value. This field is read-only.
 	 * 
 	 * <p>
-	 * Because the value of the Zero field is a TimeSpan object that represents
-	 * a zero time value, you can compare it with other TimeSpan objects to
-	 * determine whether the latter represent positive, non-zero, or negative
-	 * time intervals. You can also use this field to initialize a TimeSpan
-	 * object to a zero time value.
+	 * Because the value of the Zero field is a TimeSpan object that represents a zero time value,
+	 * you can compare it with other TimeSpan objects to determine whether the latter represent
+	 * positive, non-zero, or negative time intervals. You can also use this field to initialize a
+	 * TimeSpan object to a zero time value.
 	 */
 	public static final TimeSpan ZERO = new TimeSpan(0);
 
@@ -102,26 +103,33 @@ public class TimeSpan implements Comparable<Object> {
 	 * Unit used to represent a TimeSpan.
 	 * 
 	 * <p>
-	 * A single tick represents one hundred nanoseconds or one ten-millionth of
-	 * a second. There are 10,000 ticks in a millisecond.
+	 * A single tick represents one hundred nanoseconds or one ten-millionth of a second.
+	 * There are 10,000 ticks in a millisecond.
 	 */
 	private long ticks;
 
 	// ++++++++++ CONSTRUCTORS ++++++++++ //
+
+	// Note: Added this since it is provided by default for struct in C#
+	public TimeSpan()
+	{
+		this.ticks = 0L;
+	}
 
 	/**
 	 * Initializes a new instance of the TimeSpan structure to the specified
 	 * number of ticks.
 	 * 
 	 * <p>
-	 * A single tick represents one hundred nanoseconds or one ten-millionth of
-	 * a second. There are 10,000 ticks in a millisecond.
+	 * A single tick represents one hundred nanoseconds or one ten-millionth of a second.
+	 * There are 10,000 ticks in a millisecond.
 	 * 
 	 * @param ticks
-	 *            The value used to set the number of ticks for this TimeSpan.
-	 *            One tick represents 100-nanosecond.
+	 *        The value used to set the number of ticks for this TimeSpan.
+	 *        One tick represents 100-nanosecond.
 	 */
-	public TimeSpan(long ticks) {
+	public TimeSpan(long ticks)
+	{
 		this.ticks = ticks;
 	}
 
@@ -134,17 +142,18 @@ public class TimeSpan implements Comparable<Object> {
 	 * that value initializes this instance.
 	 * 
 	 * @param hours
-	 *            The value used to set the hours for this TimeSpan.
+	 *        The value used to set the hours for this TimeSpan.
 	 * @param minutes
-	 *            The value used to set the minutes for this TimeSpan.
+	 *        The value used to set the minutes for this TimeSpan.
 	 * @param seconds
-	 *            The value used to set the seconds for this TimeSpan.
+	 *        The value used to set the seconds for this TimeSpan.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If the parameters specify a TimeSpan value less than
-	 *             TimeSpan.MIN_VALUE or greater than TimeSpan.MAX_VALUE.
+	 *         If the parameters specify a TimeSpan value less than
+	 *         TimeSpan.MIN_VALUE or greater than TimeSpan.MAX_VALUE.
 	 */
-	public TimeSpan(int hours, int minutes, int seconds) throws IllegalArgumentException {
+	public TimeSpan(int hours, int minutes, int seconds) throws IllegalArgumentException
+	{
 		this(0, hours, minutes, seconds, 0);
 	}
 
@@ -157,19 +166,20 @@ public class TimeSpan implements Comparable<Object> {
 	 * and that value initializes this instance.
 	 * 
 	 * @param days
-	 *            The value used to set the days for this TimeSpan.
+	 *        The value used to set the days for this TimeSpan.
 	 * @param hours
-	 *            The value used to set the hours for this TimeSpan.
+	 *        The value used to set the hours for this TimeSpan.
 	 * @param minutes
-	 *            The value used to set the minutes for this TimeSpan.
+	 *        The value used to set the minutes for this TimeSpan.
 	 * @param seconds
-	 *            The value used to set the seconds for this TimeSpan.
+	 *        The value used to set the seconds for this TimeSpan.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If the parameters specify a TimeSpan value less than
-	 *             TimeSpan.MIN_VALUE or greater than TimeSpan.MAX_VALUE.
+	 *         If the parameters specify a TimeSpan value less than
+	 *         TimeSpan.MIN_VALUE or greater than TimeSpan.MAX_VALUE.
 	 */
-	public TimeSpan(int days, int hours, int minutes, int seconds) throws IllegalArgumentException {
+	public TimeSpan(int days, int hours, int minutes, int seconds) throws IllegalArgumentException
+	{
 		this(days, hours, minutes, seconds, 0);
 	}
 
@@ -178,24 +188,25 @@ public class TimeSpan implements Comparable<Object> {
 	 * number of days, hours, minutes, seconds, and milliseconds.
 	 * 
 	 * <p>
-	 * The specified days, hours, minutes, seconds, and milliseconds are
-	 * converted to ticks, and that value initializes this instance.
+	 * The specified days, hours, minutes, seconds, and milliseconds are converted to ticks,
+	 * and that value initializes this instance.
 	 * 
 	 * @param days
-	 *            The value used to set the days for this TimeSpan.
+	 *        The value used to set the days for this TimeSpan.
 	 * @param hours
-	 *            The value used to set the hours for this TimeSpan.
+	 *        The value used to set the hours for this TimeSpan.
 	 * @param minutes
-	 *            The value used to set the minutes for this TimeSpan.
+	 *        The value used to set the minutes for this TimeSpan.
 	 * @param seconds
-	 *            The value used to set the seconds for this TimeSpan.
+	 *        The value used to set the seconds for this TimeSpan.
 	 * @param milliseconds
-	 *            The value used to set the milliseconds for this TimeSpan.
+	 *        The value used to set the milliseconds for this TimeSpan.
 	 * @throws IllegalArgumentException
-	 *             If the parameters specify a TimeSpan value less than
-	 *             TimeSpan.MIN_VALUE or greater than TimeSpan.MAX_VALUE.
+	 *         If the parameters specify a TimeSpan value less than
+	 *         TimeSpan.MIN_VALUE or greater than TimeSpan.MAX_VALUE.
 	 */
-	public TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds) throws IllegalArgumentException {
+	public TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds) throws IllegalArgumentException
+	{
 		long totalMilliSeconds = ((long) days * 3600 * 24 + (long) hours * 3600 + (long) minutes * 60 + seconds) * 1000
 				+ milliseconds;
 		if (totalMilliSeconds > MAX_MILLISECONDS || totalMilliSeconds < MIN_MILLISECONDS)
@@ -208,9 +219,10 @@ public class TimeSpan implements Comparable<Object> {
 	 * the specified TimeSpan.
 	 * 
 	 * @param ts
-	 *            The TimeSpan used to create this TimeSpan.
+	 *        The TimeSpan used to create this TimeSpan.
 	 */
-	public TimeSpan(TimeSpan ts) {
+	public TimeSpan(TimeSpan ts)
+	{
 		this.ticks = ts.getTicks();
 	}
 
@@ -224,7 +236,8 @@ public class TimeSpan implements Comparable<Object> {
 	 * 
 	 * @return A TimeSpan that represents the current system
 	 */
-	public static TimeSpan now() {
+	public static TimeSpan now()
+	{
 		return new TimeSpan(System.currentTimeMillis() * TimeSpan.TICKS_PER_MILLISECOND);
 	}
 
@@ -233,14 +246,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * specification is accurate to the nearest millisecond.
 	 * 
 	 * <p>
-	 * The value parameter is converted to milliseconds, which is converted to
-	 * ticks, and that number of ticks is used to initialize the new TimeSpan.
-	 * Therefore, value will only be considered accurate to the nearest
-	 * millisecond. Note that, because of the loss of precision of the Double
-	 * data type, this conversion can cause an OverflowException for values that
-	 * are near to but still in the range of either MIN_VALUE or MAX_VALUE. For
-	 * example, this causes an OverflowException in the following attempt to
-	 * instantiate a TimeSpan object.
+	 * The value parameter is converted to milliseconds, which is converted to ticks, and that
+	 * number of ticks is used to initialize the new TimeSpan. Therefore, value will only be
+	 * considered accurate to the nearest millisecond. Note that, because of the loss of precision
+	 * of the Double data type, this conversion can cause an OverflowException for values that are
+	 * near to but still in the range of either MIN_VALUE or MAX_VALUE. For example, this causes an
+	 * OverflowException in the following attempt to instantiate a TimeSpan object.
 	 * 
 	 * {@code
 	 * // The following throws an OverflowException at runtime
@@ -248,15 +259,16 @@ public class TimeSpan implements Comparable<Object> {
 	 * }
 	 * 
 	 * @param value
-	 *            A number of days, accurate to the nearest millisecond.
+	 *        A number of days, accurate to the nearest millisecond.
 	 * @return A TimeSpan that represents the specified value.
 	 * @throws IllegalArgumentException
-	 *             If value is equal to Double.NaN or value is less than
-	 *             MIN_VALUE or greater than MAX_VALUE or value is
-	 *             Double.POSITIVE_INFINITY or value is
-	 *             Double.NEGATIVE_INFINITY.
+	 *         If value is equal to Double.NaN or value is less than
+	 *         MIN_VALUE or greater than MAX_VALUE or value is
+	 *         Double.POSITIVE_INFINITY or value is
+	 *         Double.NEGATIVE_INFINITY.
 	 */
-	public static TimeSpan fromDays(double value) throws IllegalArgumentException {
+	public static TimeSpan fromDays(double value) throws IllegalArgumentException
+	{
 		return interval(value, MILLIS_PER_DAY);
 	}
 
@@ -265,14 +277,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * specification is accurate to the nearest millisecond.
 	 * 
 	 * <p>
-	 * The value parameter is converted to milliseconds, which is converted to
-	 * ticks, and that number of ticks is used to initialize the new TimeSpan.
-	 * Therefore, value will only be considered accurate to the nearest
-	 * millisecond. Note that, because of the loss of precision of the Double
-	 * data type, this conversion can cause an OverflowException for values that
-	 * are near to but still in the range of either MIN_VALUE or MAX_VALUE. For
-	 * example, this causes an OverflowException in the following attempt to
-	 * instantiate a TimeSpan object.
+	 * The value parameter is converted to milliseconds, which is converted to ticks, and that
+	 * number of ticks is used to initialize the new TimeSpan. Therefore, value will only be
+	 * considered accurate to the nearest millisecond. Note that, because of the loss of precision
+	 * of the Double data type, this conversion can cause an OverflowException for values that are
+	 * near to but still in the range of either MIN_VALUE or MAX_VALUE. For example, this causes an
+	 * OverflowException in the following attempt to instantiate a TimeSpan object.
 	 * 
 	 * {@code
 	 * // The following throws an OverflowException at runtime
@@ -280,15 +290,16 @@ public class TimeSpan implements Comparable<Object> {
 	 * }
 	 * 
 	 * @param value
-	 *            A number of hours, accurate to the nearest millisecond.
+	 *        A number of hours, accurate to the nearest millisecond.
 	 * @return A TimeSpan that represents the specified value.
 	 * @throws IllegalArgumentException
-	 *             If value is equal to Double.NaN or value is less than
-	 *             MIN_VALUE or greater than MAX_VALUE or value is
-	 *             Double.POSITIVE_INFINITY or value is
-	 *             Double.NEGATIVE_INFINITY.
+	 *         If value is equal to Double.NaN or value is less than
+	 *         MIN_VALUE or greater than MAX_VALUE or value is
+	 *         Double.POSITIVE_INFINITY or value is
+	 *         Double.NEGATIVE_INFINITY.
 	 */
-	public static TimeSpan fromHours(double value) throws IllegalArgumentException {
+	public static TimeSpan fromHours(double value) throws IllegalArgumentException
+	{
 		return interval(value, MILLIS_PER_HOUR);
 	}
 
@@ -298,14 +309,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * specification is accurate to the nearest millisecond.
 	 * 
 	 * <p>
-	 * The value parameter is converted to milliseconds, which is converted to
-	 * ticks, and that number of ticks is used to initialize the new TimeSpan.
-	 * Therefore, value will only be considered accurate to the nearest
-	 * millisecond. Note that, because of the loss of precision of the Double
-	 * data type, this conversion can cause an OverflowException for values that
-	 * are near to but still in the range of either MIN_VALUE or MAX_VALUE. For
-	 * example, this causes an OverflowException in the following attempt to
-	 * instantiate a TimeSpan object.
+	 * The value parameter is converted to milliseconds, which is converted to ticks, and that
+	 * number of ticks is used to initialize the new TimeSpan. Therefore, value will only be
+	 * considered accurate to the nearest millisecond. Note that, because of the loss of precision
+	 * of the Double data type, this conversion can cause an OverflowException for values that are
+	 * near to but still in the range of either MIN_VALUE or MAX_VALUE. For example, this causes an
+	 * OverflowException in the following attempt to instantiate a TimeSpan object.
 	 * 
 	 * {@code
 	 * // The following throws an OverflowException at runtime
@@ -313,15 +322,16 @@ public class TimeSpan implements Comparable<Object> {
 	 * }
 	 * 
 	 * @param value
-	 *            A number of minutes, accurate to the nearest millisecond.
+	 *        A number of minutes, accurate to the nearest millisecond.
 	 * @return A TimeSpan that represents the specified value.
 	 * @throws IllegalArgumentException
-	 *             If value is equal to Double.NaN or value is less than
-	 *             MIN_VALUE or greater than MAX_VALUE or value is
-	 *             Double.POSITIVE_INFINITY or value is
-	 *             Double.NEGATIVE_INFINITY.
+	 *         If value is equal to Double.NaN or value is less than
+	 *         MIN_VALUE or greater than MAX_VALUE or value is
+	 *         Double.POSITIVE_INFINITY or value is
+	 *         Double.NEGATIVE_INFINITY.
 	 */
-	public static TimeSpan fromMinutes(double value) throws IllegalArgumentException {
+	public static TimeSpan fromMinutes(double value) throws IllegalArgumentException
+	{
 		return interval(value, MILLIS_PER_MINUTE);
 	}
 
@@ -330,14 +340,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * the specification is accurate to the nearest millisecond.
 	 * 
 	 * <p>
-	 * The value parameter is converted to milliseconds, which is converted to
-	 * ticks, and that number of ticks is used to initialize the new TimeSpan.
-	 * Therefore, value will only be considered accurate to the nearest
-	 * millisecond. Note that, because of the loss of precision of the Double
-	 * data type, this conversion can cause an OverflowException for values that
-	 * are near to but still in the range of either MIN_VALUE or MAX_VALUE. For
-	 * example, this causes an OverflowException in the following attempt to
-	 * instantiate a TimeSpan object.
+	 * The value parameter is converted to milliseconds, which is converted to ticks, and that
+	 * number of ticks is used to initialize the new TimeSpan. Therefore, value will only be
+	 * considered accurate to the nearest millisecond. Note that, because of the loss of precision
+	 * of the Double data type, this conversion can cause an OverflowException for values that are
+	 * near to but still in the range of either MIN_VALUE or MAX_VALUE. For example, this causes an
+	 * OverflowException in the following attempt to instantiate a TimeSpan object.
 	 * 
 	 * {@code
 	 * // The following throws an OverflowException at runtime
@@ -345,15 +353,16 @@ public class TimeSpan implements Comparable<Object> {
 	 * }
 	 * 
 	 * @param value
-	 *            A number of seconds, accurate to the nearest millisecond.
+	 *        A number of seconds, accurate to the nearest millisecond.
 	 * @return A TimeSpan that represents the specified value.
 	 * @throws IllegalArgumentException
-	 *             If value is equal to Double.NaN or value is less than
-	 *             MIN_VALUE or greater than MAX_VALUE or value is
-	 *             Double.POSITIVE_INFINITY or value is
-	 *             Double.NEGATIVE_INFINITY.
+	 *         If value is equal to Double.NaN or value is less than
+	 *         MIN_VALUE or greater than MAX_VALUE or value is
+	 *         Double.POSITIVE_INFINITY or value is
+	 *         Double.NEGATIVE_INFINITY.
 	 */
-	public static TimeSpan fromSeconds(double value) throws IllegalArgumentException {
+	public static TimeSpan fromSeconds(double value) throws IllegalArgumentException
+	{
 		return interval(value, MILLIS_PER_SECOND);
 	}
 
@@ -361,14 +370,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * Returns a TimeSpan that represents a specified number of milliseconds.
 	 * 
 	 * <p>
-	 * The value parameter is converted to ticks, and that number of ticks is
-	 * used to initialize the new TimeSpan. Therefore, value will only be
-	 * considered accurate to the nearest millisecond. Note that, because of the
-	 * loss of precision of the Double data type, this conversion can cause an
-	 * OverflowException for values that are near to but still in the range of
-	 * either MIN_VALUE or MAX_VALUE. For example, this causes an
-	 * OverflowException in the following attempt to instantiate a TimeSpan
-	 * object.
+	 * The value parameter is converted to ticks, and that number of ticks is used to initialize the
+	 * new TimeSpan. Therefore, value will only be considered accurate to the nearest millisecond.
+	 * Note that, because of the loss of precision of the Double data type, this conversion can
+	 * cause an OverflowException for values that are near to but still in the range of either
+	 * MIN_VALUE or MAX_VALUE. For example, this causes an OverflowException in the following
+	 * attempt to instantiate a TimeSpan object.
 	 * 
 	 * {@code
 	 * // The following throws an OverflowException at runtime
@@ -376,15 +383,16 @@ public class TimeSpan implements Comparable<Object> {
 	 * }
 	 * 
 	 * @param value
-	 *            A number of milliseconds.
+	 *        A number of milliseconds.
 	 * @return A TimeSpan that represents the specified value.
 	 * @throws IllegalArgumentException
-	 *             If value is equal to Double.NaN or value is less than
-	 *             MIN_VALUE or greater than MAX_VALUE or value is
-	 *             Double.POSITIVE_INFINITY or value is
-	 *             Double.NEGATIVE_INFINITY.
+	 *         If value is equal to Double.NaN or value is less than
+	 *         MIN_VALUE or greater than MAX_VALUE or value is
+	 *         Double.POSITIVE_INFINITY or value is
+	 *         Double.NEGATIVE_INFINITY.
 	 */
-	public static TimeSpan fromMilliseconds(double value) throws IllegalArgumentException {
+	public static TimeSpan fromMilliseconds(double value) throws IllegalArgumentException
+	{
 		return interval(value, 1);
 	}
 
@@ -393,16 +401,16 @@ public class TimeSpan implements Comparable<Object> {
 	 * specification is in units of ticks.
 	 * 
 	 * <p>
-	 * This is a convenience method with the same behavior as the
-	 * TimeSpan.TimeSpan(long) constructor. A single tick represents one hundred
-	 * nanoseconds or one ten-millionth of a second. There are 10,000 ticks in a
-	 * millisecond.
+	 * This is a convenience method with the same behavior as the TimeSpan.TimeSpan(long) constructor.
+	 * A single tick represents one hundred nanoseconds or one ten-millionth of a second.
+	 * There are 10,000 ticks in a millisecond.
 	 * 
 	 * @param value
-	 *            A number of ticks that represent a time.
+	 *        A number of ticks that represent a time.
 	 * @return A TimeSpan that represents the specified value.
 	 */
-	public static TimeSpan fromTicks(long value) {
+	public static TimeSpan fromTicks(long value)
+	{
 		return new TimeSpan(value);
 	}
 
@@ -414,11 +422,13 @@ public class TimeSpan implements Comparable<Object> {
 	 * @param scale
 	 * @return A new TimeSpan object representing the specified interval
 	 * @throws IllegalArgumentException
-	 *             If the specified value is not a number {@code Double.NaN} or
-	 *             if the resulting interval created an overflow.
+	 *         If the specified value is not a number {@code Double.NaN} or
+	 *         if the resulting interval created an overflow.
 	 */
-	private static TimeSpan interval(double value, int scale) throws IllegalArgumentException {
-		if (Double.isNaN(value)) throw new IllegalArgumentException("Argument cannot be NaN");
+	private static TimeSpan interval(double value, int scale) throws IllegalArgumentException
+	{
+		if (Double.isNaN(value))
+			throw new IllegalArgumentException("Argument cannot be NaN");
 		double tmp = value * scale;
 		double millis = tmp + (value >= 0 ? 0.5 : -0.5);
 		if ((millis > Long.MAX_VALUE / TICKS_PER_MILLISECOND) || (millis < Long.MIN_VALUE / TICKS_PER_MILLISECOND))
@@ -438,16 +448,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * Adds two specified TimeSpan instances.
 	 * 
 	 * @param ts1
-	 *            The first time interval to add.
+	 *        The first time interval to add.
 	 * @param ts2
-	 *            The second time interval to add.
+	 *        The second time interval to add.
 	 * @return A TimeSpan object whose value is the sum of the values of t1 and
 	 *         t2.
 	 * @throws Exception
-	 *             If the resulting TimeSpan is less than MIN_VALUE or greater
-	 *             than MAX_VALUE.
+	 *         If the resulting TimeSpan is less than MIN_VALUE or greater
+	 *         than MAX_VALUE.
 	 */
-	public static TimeSpan add(TimeSpan ts1, TimeSpan ts2) throws Exception {
+	public static TimeSpan add(TimeSpan ts1, TimeSpan ts2) throws Exception
+	{
 		long result = ts1.ticks + ts2.ticks;
 		// Overflow if signs of operands was identical and result's sign was
 		// opposite.
@@ -461,16 +472,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * Subtracts a specified TimeSpan from another specified TimeSpan.
 	 * 
 	 * @param ts1
-	 *            The minuend.
+	 *        The minuend.
 	 * @param ts2
-	 *            The subtrahend.
+	 *        The subtrahend.
 	 * @return A TimeSpan object whose value is the result of the value of t1
 	 *         minus the value of t2.
 	 * @throws Exception
-	 *             If the resulting TimeSpan is less than MIN_VALUE or greater
-	 *             than MAX_VALUE.
+	 *         If the resulting TimeSpan is less than MIN_VALUE or greater
+	 *         than MAX_VALUE.
 	 */
-	public static TimeSpan subtract(TimeSpan ts1, TimeSpan ts2) throws Exception {
+	public static TimeSpan subtract(TimeSpan ts1, TimeSpan ts2) throws Exception
+	{
 		long result = ts1.ticks - ts2.ticks;
 		// Overflow if signs of operands was different and result's
 		// sign was opposite from the first argument's sign.
@@ -486,15 +498,18 @@ public class TimeSpan implements Comparable<Object> {
 	 * second value.
 	 * 
 	 * @param t1
-	 *            The first time interval to compare.
+	 *        The first time interval to compare.
 	 * @param t2
-	 *            The second time interval to compare.
+	 *        The second time interval to compare.
 	 * @return -1 if t1 is shorter than t2, 0 if t1 is equal to t2 or 1 if t1 is
 	 *         longer than t2.
 	 */
-	public static int compare(TimeSpan t1, TimeSpan t2) {
-		if (t1.ticks > t2.ticks) return 1;
-		if (t1.ticks < t2.ticks) return -1;
+	public static int compare(TimeSpan t1, TimeSpan t2)
+	{
+		if (t1.ticks > t2.ticks)
+			return 1;
+		if (t1.ticks < t2.ticks)
+			return -1;
 		return 0;
 	}
 
@@ -503,13 +518,13 @@ public class TimeSpan implements Comparable<Object> {
 	 * TimeSpan are equal.
 	 * 
 	 * @param t1
-	 *            The first time interval to compare.
+	 *        The first time interval to compare.
 	 * @param t2
-	 *            The second time interval to compare.
-	 * @return {@code true} if the values of t1 and t2 are equal; otherwise,
-	 *         {@code false}.
+	 *        The second time interval to compare.
+	 * @return {@code true} if the values of t1 and t2 are equal; otherwise, {@code false}.
 	 */
-	public static boolean equals(TimeSpan t1, TimeSpan t2) {
+	public static boolean equals(TimeSpan t1, TimeSpan t2)
+	{
 		return t1.ticks == t2.ticks;
 	}
 
@@ -553,16 +568,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * interval of this instance.
 	 * 
 	 * <p>
-	 * The resulting value must be between TimeSpan.MIN_VALUE and
-	 * TimeSpan.MAX_VALUE; otherwise, an exception is thrown.
+	 * The resulting value must be between TimeSpan.MIN_VALUE and TimeSpan.MAX_VALUE;
+	 * otherwise, an exception is thrown.
 	 * 
 	 * @param ts
-	 *            The time interval to add to this instance.
+	 *        The time interval to add to this instance.
 	 * @throws Exception
-	 *             If the resulting TimeSpan is less than TimeSpan.MIN_VALUE or
-	 *             greater than TimeSpan.MAX_VALUE.
+	 *         If the resulting TimeSpan is less than TimeSpan.MIN_VALUE or
+	 *         greater than TimeSpan.MAX_VALUE.
 	 */
-	public void add(TimeSpan ts) throws Exception {
+	public void add(TimeSpan ts) throws Exception
+	{
 		long result = ticks + ts.ticks;
 		// Overflow if signs of operands was identical and result's sign was
 		// opposite.
@@ -610,16 +626,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * interval of this instance.
 	 * 
 	 * <p>
-	 * The resulting value must be between TimeSpan.MIN_VALUE and
-	 * TimeSpan.MAX_VALUE; otherwise, an exception is thrown.
+	 * The resulting value must be between TimeSpan.MIN_VALUE and TimeSpan.MAX_VALUE;
+	 * otherwise, an exception is thrown.
 	 * 
 	 * @param ts
-	 *            The time interval to be subtracted to this instance.
+	 *        The time interval to be subtracted to this instance.
 	 * @throws Exception
-	 *             If the resulting TimeSpan is less than TimeSpan.MIN_VALUE or
-	 *             greater than TimeSpan.MAX_VALUE.
+	 *         If the resulting TimeSpan is less than TimeSpan.MIN_VALUE or
+	 *         greater than TimeSpan.MAX_VALUE.
 	 */
-	public void subtract(TimeSpan ts) throws Exception {
+	public void subtract(TimeSpan ts) throws Exception
+	{
 		long result = ticks - ts.ticks;
 		// Overflow if signs of operands was different and result's
 		// sign was opposite from the first argument's sign.
@@ -654,11 +671,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * Negates the value of this instance, that is, flip the sign.
 	 * 
 	 * @throws Exception
-	 *             If the negated value of this instance cannot be represented
-	 *             by a TimeSpan; that is, the value of this instance is
-	 *             MIN_VALUE.
+	 *         If the negated value of this instance cannot be represented
+	 *         by a TimeSpan; that is, the value of this instance is
+	 *         MIN_VALUE.
 	 */
-	public void negate() throws Exception {
+	public void negate() throws Exception
+	{
 		if (ticks == TimeSpan.MIN_VALUE.ticks)
 			throw new Exception("Overflow: Negate Two's Complement Number is too big");
 		ticks = -ticks;
@@ -671,10 +689,12 @@ public class TimeSpan implements Comparable<Object> {
 	 * @return A new object whose value is the absolute value of the current
 	 *         TimeSpan object.
 	 * @throws Exception
-	 *             If the value of this instance is TimeSpan.MIN_VALUE.
+	 *         If the value of this instance is TimeSpan.MIN_VALUE.
 	 */
-	public TimeSpan getDuration() throws Exception {
-		if (ticks == TimeSpan.MIN_VALUE.ticks) throw new Exception("Overflow_Duration");
+	public TimeSpan getDuration() throws Exception
+	{
+		if (ticks == TimeSpan.MIN_VALUE.ticks)
+			throw new Exception("Overflow_Duration");
 		return new TimeSpan(ticks >= 0 ? ticks : -ticks);
 	}
 
@@ -683,16 +703,19 @@ public class TimeSpan implements Comparable<Object> {
 	 * specified object.
 	 * 
 	 * @param other
-	 *            The other object to compare with this instance.
+	 *        The other object to compare with this instance.
 	 * @return {@code true} if value is a TimeSpan object that represents the
-	 *         same time interval as the current TimeSpan structure; otherwise,
-	 *         {@code false}.
+	 *         same time interval as the current TimeSpan structure; otherwise, {@code false}.
 	 */
 	@Override
-	public boolean equals(Object other) {
-		if (other == null) return false;
-		if (other == this) return true;
-		if (other instanceof TimeSpan) {
+	public boolean equals(Object other)
+	{
+		if (other == null)
+			return false;
+		if (other == this)
+			return true;
+		if (other instanceof TimeSpan)
+		{
 			return ticks == ((TimeSpan) other).ticks;
 		}
 		return false;
@@ -704,26 +727,30 @@ public class TimeSpan implements Comparable<Object> {
 	 * the specified object.
 	 * 
 	 * <p>
-	 * Any instance of TimeSpan, regardless of its value, is considered greater
-	 * than null.
+	 * Any instance of TimeSpan, regardless of its value, is considered greater than null.
 	 * 
-	 * The value parameter must be an instance of TimeSpan or null; otherwise,
-	 * an exception is thrown.
+	 * The value parameter must be an instance of TimeSpan or null; otherwise, an exception is
+	 * thrown.
 	 * 
 	 * @param other
-	 *            The other object to compare with this instance, or null.
+	 *        The other object to compare with this instance, or null.
 	 * @return -1 if t1 is shorter than t2, 0 if t1 is equal to t2 or 1 if t1 is
 	 *         longer than t2.
 	 * @throws IllegalArgumentException
-	 *             If other is not a TimeSpan.
+	 *         If other is not a TimeSpan.
 	 */
 	@Override
-	public int compareTo(Object other) throws IllegalArgumentException {
-		if (other == null) return 1;
-		if (!(other instanceof TimeSpan)) throw new IllegalArgumentException("Argument must be TimeSpan");
+	public int compareTo(Object other) throws IllegalArgumentException
+	{
+		if (other == null)
+			return 1;
+		if (!(other instanceof TimeSpan))
+			throw new IllegalArgumentException("Argument must be TimeSpan");
 		long t = ((TimeSpan) other).ticks;
-		if (ticks > t) return 1;
-		if (ticks < t) return -1;
+		if (ticks > t)
+			return 1;
+		if (ticks < t)
+			return -1;
 		return 0;
 	}
 
@@ -736,15 +763,14 @@ public class TimeSpan implements Comparable<Object> {
 	 * 
 	 * {@code [-][d.]hh:mm:ss[.fffffff]}
 	 * 
-	 * Elements in square brackets ([ and ]) may not be included in the returned
-	 * string. Colons and periods (: and .) are literal characters. The
-	 * non-literal elements are listed here :
+	 * Elements in square brackets ([ and ]) may not be included in the returned string. Colons and
+	 * periods (: and .) are literal characters. The non-literal elements are listed here :
 	 * 
-	 * "-" A minus sign, which indicates a negative time interval. No sign is
-	 * included for a positive time span.
+	 * "-" A minus sign, which indicates a negative time interval. No sign is included for a
+	 * positive time span.
 	 * 
-	 * "d" The number of days in the time interval. This element is omitted if
-	 * the time interval is less than one day.
+	 * "d" The number of days in the time interval. This element is omitted if the time interval is
+	 * less than one day.
 	 * 
 	 * "hh" The number of hours in the time interval, ranging from 0 to 23.
 	 * 
@@ -752,17 +778,18 @@ public class TimeSpan implements Comparable<Object> {
 	 * 
 	 * "ss" The number of seconds in the time interval, ranging from 0 to 59.
 	 * 
-	 * "fffffff" Fractional seconds in the time interval. This element is
-	 * omitted if the time interval does not include fractional seconds. If
-	 * present, fractional seconds are always expressed using seven decimal
-	 * digits.
+	 * "fffffff" Fractional seconds in the time interval. This element is omitted if the time
+	 * interval does not include fractional seconds. If present, fractional seconds are always
+	 * expressed using seven decimal digits.
 	 * 
 	 * @return The string representation of the current TimeSpan value.
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder str = new StringBuilder();
-		if (getDays() >= 1 || getDays() <= -1) str.append(String.format("%02d.", getDays()));
+		if (getDays() >= 1 || getDays() <= -1)
+			str.append(String.format("%02d.", getDays()));
 		str.append(String.format("%02d:", getHours()));
 		str.append(String.format("%02d:", getMinutes()));
 		str.append(String.format("%02d", getSeconds()));
@@ -780,23 +807,28 @@ public class TimeSpan implements Comparable<Object> {
 
 	// ----------------------------------------------//
 	// TODO : Validate and adjust name to java's naming convention
-	public boolean greaterThan(TimeSpan other) {
+	public boolean greaterThan(TimeSpan other)
+	{
 		return this.ticks > other.ticks;
 	}
 
-	public boolean greaterThanOrEqual(TimeSpan other) {
+	public boolean greaterThanOrEqual(TimeSpan other)
+	{
 		return this.ticks >= other.ticks;
 	}
 
-	public boolean notEquals(TimeSpan other) {
+	public boolean notEquals(TimeSpan other)
+	{
 		return !equals(other);
 	}
 
-	public boolean lessThan(TimeSpan other) {
+	public boolean lessThan(TimeSpan other)
+	{
 		return this.ticks < other.ticks;
 	}
 
-	public boolean lessThanOrEqual(TimeSpan other) {
+	public boolean lessThanOrEqual(TimeSpan other)
+	{
 		return this.ticks <= other.ticks;
 	}
 
@@ -807,20 +839,20 @@ public class TimeSpan implements Comparable<Object> {
 	 * TimeSpan structure.
 	 * 
 	 * <p>
-	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the
-	 * optional minus sign indicates a negative time interval, the d component
-	 * is days, hh is hours as measured on a 24-hour clock, mm is minutes, ss is
-	 * seconds, and ff is fractions of a second. The returned value is the day
-	 * component, d.
+	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the optional minus sign
+	 * indicates a negative time interval, the d component is days, hh is hours as measured on a
+	 * 24-hour clock, mm is minutes, ss is seconds, and ff is fractions of a second. The returned
+	 * value is the day component, d.
 	 * 
 	 * <p>
-	 * The returned value represents whole days, whereas the value returned by
-	 * getTotalDays() represents whole and fractional days.
+	 * The returned value represents whole days, whereas the value returned by getTotalDays()
+	 * represents whole and fractional days.
 	 * 
 	 * @return The day component of this instance. The return value can be
 	 *         positive or negative.
 	 */
-	public int getDays() {
+	public int getDays()
+	{
 		return (int) (ticks / TICKS_PER_DAY);
 	}
 
@@ -829,20 +861,20 @@ public class TimeSpan implements Comparable<Object> {
 	 * TimeSpan structure.
 	 * 
 	 * <p>
-	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the
-	 * optional minus sign indicates a negative time interval, the d component
-	 * is days, hh is hours as measured on a 24-hour clock, mm is minutes, ss is
-	 * seconds, and ff is fractions of a second. The returned value is the hours
-	 * component, hh.
+	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the optional minus sign
+	 * indicates a negative time interval, the d component is days, hh is hours as measured on a
+	 * 24-hour clock, mm is minutes, ss is seconds, and ff is fractions of a second. The returned
+	 * value is the hours component, hh.
 	 * 
 	 * <p>
-	 * The returned value represents whole hours, whereas the value returned by
-	 * getTotalHours() represents whole and fractional hours.
+	 * The returned value represents whole hours, whereas the value returned by getTotalHours()
+	 * represents whole and fractional hours.
 	 * 
 	 * @return The hour component of the current TimeSpan structure. The return
 	 *         value ranges from -23 through 23.
 	 */
-	public int getHours() {
+	public int getHours()
+	{
 		return (int) ((ticks / TICKS_PER_HOUR) % 24);
 	}
 
@@ -851,20 +883,20 @@ public class TimeSpan implements Comparable<Object> {
 	 * current TimeSpan structure.
 	 * 
 	 * <p>
-	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the
-	 * optional minus sign indicates a negative time interval, the d component
-	 * is days, hh is hours as measured on a 24-hour clock, mm is minutes, ss is
-	 * seconds, and ff is fractions of a second. The returned value is the
-	 * minute component, mm.
+	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the optional minus sign
+	 * indicates a negative time interval, the d component is days, hh is hours as measured on a
+	 * 24-hour clock, mm is minutes, ss is seconds, and ff is fractions of a second. The returned
+	 * value is the minute component, mm.
 	 * 
 	 * <p>
-	 * The returned value represents whole minutes, whereas the value returned
-	 * by getTotalMinutes() represents whole and fractional minutes.
+	 * The returned value represents whole minutes, whereas the value returned by getTotalMinutes()
+	 * represents whole and fractional minutes.
 	 * 
 	 * @return The minute component of the current TimeSpan structure. The
 	 *         return value ranges from -59 through 59.
 	 */
-	public int getMinutes() {
+	public int getMinutes()
+	{
 		return (int) ((ticks / TICKS_PER_MINUTE) % 60);
 	}
 
@@ -873,20 +905,20 @@ public class TimeSpan implements Comparable<Object> {
 	 * current TimeSpan structure.
 	 * 
 	 * <p>
-	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the
-	 * optional minus sign indicates a negative time interval, the d component
-	 * is days, hh is hours as measured on a 24-hour clock, mm is minutes, ss is
-	 * seconds, and ff is fractions of a second. The returned value is the
-	 * seconds component, ss.
+	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the optional minus sign
+	 * indicates a negative time interval, the d component is days, hh is hours as measured on a
+	 * 24-hour clock, mm is minutes, ss is seconds, and ff is fractions of a second. The returned
+	 * value is the seconds component, ss.
 	 * 
 	 * <p>
-	 * The returned value represents whole seconds, whereas the value returned
-	 * by getTotalSeconds() represents whole and fractional seconds.
+	 * The returned value represents whole seconds, whereas the value returned by getTotalSeconds()
+	 * represents whole and fractional seconds.
 	 * 
 	 * @return The second component of the current TimeSpan structure. The
 	 *         return value ranges from -59 through 59.
 	 */
-	public int getSeconds() {
+	public int getSeconds()
+	{
 		return (int) ((ticks / TICKS_PER_SECOND) % 60);
 	}
 
@@ -895,21 +927,20 @@ public class TimeSpan implements Comparable<Object> {
 	 * current TimeSpan structure.
 	 * 
 	 * <p>
-	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the
-	 * optional minus sign indicates a negative time interval, the d component
-	 * is days, hh is hours as measured on a 24-hour clock, mm is minutes, ss is
-	 * seconds, and ff is fractions of a second. The returned value is the
-	 * fractional second component, ff.
+	 * A TimeSpan value can be represented as [-]d.hh:mm:ss.ff, where the optional minus sign
+	 * indicates a negative time interval, the d component is days, hh is hours as measured on a
+	 * 24-hour clock, mm is minutes, ss is seconds, and ff is fractions of a second. The returned
+	 * value is the fractional second component, ff.
 	 * 
 	 * <p>
-	 * The returned value represents whole milliseconds, whereas the value
-	 * returned by getTotalMilliseconds represents whole and fractional
-	 * milliseconds.
+	 * The returned value represents whole milliseconds, whereas the value returned by
+	 * getTotalMilliseconds represents whole and fractional milliseconds.
 	 * 
 	 * @return The millisecond component of the current TimeSpan structure. The
 	 *         return value ranges from -999 through 999.
 	 */
-	public int getMilliseconds() {
+	public int getMilliseconds()
+	{
 		return (int) ((ticks / TICKS_PER_MILLISECOND) % 1000);
 	}
 
@@ -918,14 +949,14 @@ public class TimeSpan implements Comparable<Object> {
 	 * structure.
 	 * 
 	 * <p>
-	 * The smallest unit of time is the tick, which is equal to 100 nanoseconds
-	 * or one ten-millionth of a second. There are 10,000 ticks in a
-	 * millisecond. The returned value can be negative or positive to represent
-	 * a negative or positive time interval.
+	 * The smallest unit of time is the tick, which is equal to 100 nanoseconds or one ten-millionth
+	 * of a second. There are 10,000 ticks in a millisecond. The returned value can be negative or
+	 * positive to represent a negative or positive time interval.
 	 * 
 	 * @return The number of ticks contained in this instance.
 	 */
-	public long getTicks() {
+	public long getTicks()
+	{
 		return ticks;
 	}
 
@@ -934,16 +965,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * fractional days.
 	 * 
 	 * <p>
-	 * This method converts the value of this instance from ticks to days. This
-	 * number might include whole and fractional days.
+	 * This method converts the value of this instance from ticks to days. This number might include
+	 * whole and fractional days.
 	 * 
 	 * <p>
-	 * The returned value represents whole and fractional days, whereas the
-	 * value returned by getDays() represents whole days.
+	 * The returned value represents whole and fractional days, whereas the value returned by
+	 * getDays() represents whole days.
 	 * 
 	 * @return The total number of days represented by this instance.
 	 */
-	public double getTotalDays() {
+	public double getTotalDays()
+	{
 		return ((double) ticks) * DAYS_PER_TICK;
 	}
 
@@ -952,16 +984,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * fractional hours.
 	 * 
 	 * <p>
-	 * This method converts the value of this instance from ticks to hours. This
-	 * number might include whole and fractional hours.
+	 * This method converts the value of this instance from ticks to hours. This number might
+	 * include whole and fractional hours.
 	 * 
 	 * <p>
-	 * The returned value represents whole and fractional hours, whereas the
-	 * value returned by getTotalHours() represents whole hours.
+	 * The returned value represents whole and fractional hours, whereas the value returned by
+	 * getTotalHours() represents whole hours.
 	 * 
 	 * @return The total number of hours represented by this instance.
 	 */
-	public double getTotalHours() {
+	public double getTotalHours()
+	{
 		return (double) ticks * HOURS_PER_TICK;
 	}
 
@@ -970,16 +1003,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * fractional minutes.
 	 * 
 	 * <p>
-	 * This method converts the value of this instance from ticks to minutes.
-	 * This number might include whole and fractional minutes.
+	 * This method converts the value of this instance from ticks to minutes. This number might
+	 * include whole and fractional minutes.
 	 * 
 	 * <p>
-	 * The returned value represents whole and fractional minutes, whereas the
-	 * value returned by getTotalMinutes() represents whole minutes.
+	 * The returned value represents whole and fractional minutes, whereas the value returned by
+	 * getTotalMinutes() represents whole minutes.
 	 * 
 	 * @return The total number of minutes represented by this instance.
 	 */
-	public double getTotalMinutes() {
+	public double getTotalMinutes()
+	{
 		return (double) ticks * MINUTES_PER_TICK;
 	}
 
@@ -988,16 +1022,17 @@ public class TimeSpan implements Comparable<Object> {
 	 * fractional seconds.
 	 * 
 	 * <p>
-	 * This method converts the value of this instance from ticks to seconds.
-	 * This number might include whole and fractional seconds.
+	 * This method converts the value of this instance from ticks to seconds. This number might
+	 * include whole and fractional seconds.
 	 * 
 	 * <p>
-	 * The returned value represents whole and fractional seconds, whereas the
-	 * value returned by getTotalSeconds() represents whole seconds.
+	 * The returned value represents whole and fractional seconds, whereas the value returned by
+	 * getTotalSeconds() represents whole seconds.
 	 * 
 	 * @return The total number of seconds represented by this instance.
 	 */
-	public double getTotalSeconds() {
+	public double getTotalSeconds()
+	{
 		return (double) ticks * SECONDS_PER_TICK;
 	}
 
@@ -1006,22 +1041,23 @@ public class TimeSpan implements Comparable<Object> {
 	 * fractional milliseconds.
 	 * 
 	 * <p>
-	 * This method converts the value of this instance from ticks to
-	 * milliseconds. This number might include whole and fractional
-	 * milliseconds.
+	 * This method converts the value of this instance from ticks to milliseconds. This number might
+	 * include whole and fractional milliseconds.
 	 * 
 	 * <p>
-	 * The returned value represents whole and fractional milliseconds, whereas
-	 * the value returned by getTotalMilliseconds() represents whole
-	 * milliseconds.
+	 * The returned value represents whole and fractional milliseconds, whereas the value returned
+	 * by getTotalMilliseconds() represents whole milliseconds.
 	 * 
 	 * @return The total number of milliseconds represented by this instance.
 	 */
-	public double getTotalMilliseconds() {
+	public double getTotalMilliseconds()
+	{
 		double temp = (double) ticks * MILLISECONDS_PER_TICK;
-		if (temp > MAX_MILLISECONDS) return (double) MAX_MILLISECONDS;
+		if (temp > MAX_MILLISECONDS)
+			return (double) MAX_MILLISECONDS;
 
-		if (temp < MIN_MILLISECONDS) return (double) MIN_MILLISECONDS;
+		if (temp < MIN_MILLISECONDS)
+			return (double) MIN_MILLISECONDS;
 
 		return temp;
 	}
@@ -1032,19 +1068,21 @@ public class TimeSpan implements Comparable<Object> {
 	 * Set this TimeSpan's tick to the specified TimeSpan's tick value.
 	 * 
 	 * @param TimeSpan
-	 *            The new tick value for this TimeSpan.
+	 *        The new tick value for this TimeSpan.
 	 */
-	public void setTimeSpan(TimeSpan ts) {
+	public void setTimeSpan(TimeSpan ts)
+	{
 		this.ticks = ts.ticks;
 	}
-	
+
 	/**
 	 * Set this TimeSpan's tick to the specified value.
 	 * 
 	 * @param ticks
-	 *            the new tick value for this TimeSpan.
+	 *        the new tick value for this TimeSpan.
 	 */
-	public void setTimeSpan(long ticks) {
+	public void setTimeSpan(long ticks)
+	{
 		this.ticks = ticks;
 	}
 
