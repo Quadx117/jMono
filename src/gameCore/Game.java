@@ -13,6 +13,7 @@ import gameCore.events.EventHandler;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.graphics.IGraphicsDeviceService;
 import gameCore.graphics.Viewport;
+import gameCore.input.KeyboardRawInput;
 import gameCore.input.Mouse;
 import gameCore.time.GameTime;
 import gameCore.time.Stopwatch;
@@ -233,6 +234,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 				GraphicsDeviceManager.DefaultBackBufferHeight, BufferedImage.TYPE_INT_RGB);
 
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		KeyboardRawInput keyboard = new KeyboardRawInput();
+		addKeyListener(keyboard);
 	}
 
 	@Override
@@ -511,24 +514,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		_suppressDraw = true;
 	}
 
-	// TODO: Think about how to stop the application
-	// This is only called when we get out of the gameloop abnormally.
-	/** Stop the game thread and exit */
-	public synchronized void stop()
-	{
-		_suppressDraw = true;
-		// simulate clicking on the X button on the frame
-		// frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-		try
-		{
-			gameThread.join();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * Resets the elapsed time counter.
 	 * 
@@ -624,9 +609,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 				throw new IllegalArgumentException(String.format(
 						"Handling for the run behavior %s is not implemented.", runBehavior));
 		}
-		// TODO: This was added by me, seems useless
-		// We call stop in case we got out of the game loop abnormally
-		stop();
 	}
 
 	/** The accumulated elapsed time between each tick */
@@ -803,24 +785,20 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		buffStrat.show();
 	}
 
-	protected void beginRun()
-	{}
+	protected void beginRun() {}
 
-	protected void endRun()
-	{}
+	protected void endRun() {}
 
 	/**
 	 * LoadContent will be called once per game and is the place to load all of
 	 * your content.
 	 */
-	protected void loadContent()
-	{}
+	protected void loadContent() {}
 
 	/**
 	 * Unload any unmanaged content here
 	 */
-	protected void unloadContent()
-	{}
+	protected void unloadContent() {}
 
 	protected void initialize()
 	{
@@ -936,7 +914,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	{
 		assertNotDisposed();
 
-		GamePlatform platform = (GamePlatform) sender;
+		// GamePlatform platform = (GamePlatform) sender;
 		// platform.asyncRunLoopEnded -= Platform_AsyncRunLoopEnded;
 		endRun();
 		doExiting();
@@ -1093,17 +1071,12 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			handler.accept(this, e);
 	}
 
-	// TODO : Do I keep the SortingFilteringCollection class int its own file ?
-
 	// Stuff that I added
 	// TODO: Delete these at some point
 
+	// TODO: Should I use this in JavaGameWindow in the while loop ?
 	/** True if the game is running */
-	// TODO: Should I use this in JavaGameWindow in the while loop ? private boolean isRunning;
-
-	/** The thread the game is running on */
-	// TODO: Not used for now.
-	private Thread gameThread;
+	// private boolean isRunning;
 
 	// TODO: All this should probably be added to the JavaGameWindow or some sort of
 	// SoftRenderedPlatform
@@ -1140,6 +1113,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 }
 
+// TODO : Do I keep the SortingFilteringCollection class in its own file ?
 // TODO: validate SortingFilteringCollection
 // TODO: refactor all setIsSomething to setSomething
 // TODO: Search for equivalent of GC.SuppressFinalize(this)

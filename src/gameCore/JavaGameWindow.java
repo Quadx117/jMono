@@ -1,10 +1,15 @@
 package gameCore;
 
 import gameCore.events.EventArgs;
+import gameCore.input.KeyState;
+import gameCore.input.KeyboardRawInput;
+import gameCore.input.KeyboardInputEventArgs;
+import gameCore.input.Keys;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +17,15 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-public class JavaGameWindow extends GameWindow
+public class JavaGameWindow extends GameWindow implements AutoCloseable
 {
 
 	// protected WinFormsGameForm _form;
 	// TODO: Need to create subclass of JFrame so I can add the events
 	protected JFrame frame;
 
+	// static private ReaderWriterLockSlim _allWindowsReaderWriterLockSlim = new
+	// ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 	static private List<JavaGameWindow> _allWindows = new ArrayList<JavaGameWindow>();
 
 	private JavaGamePlatform _platform;
@@ -93,15 +100,11 @@ public class JavaGameWindow extends GameWindow
 		return DisplayOrientation.Default;
 	}
 
-	// TODO: Implement XnaPoint ? What's the difference with java.Point.
-	// TODO: See using declarations : XnaPoint = Point.cs
-	// public XnaPoint getPosition() {
 	public Point getPosition()
 	{
 		return frame.getLocationOnScreen();
 	}
 
-	// public void setPosition(XnaPoint value) {
 	public void setPosition(Point value)
 	{
 		// _form.DesktopLocation = new Point(value.X, value.Y);
@@ -109,8 +112,7 @@ public class JavaGameWindow extends GameWindow
 	}
 
 	@Override
-	protected void setSupportedOrientations(DisplayOrientation orientations)
-	{}
+	protected void setSupportedOrientations(DisplayOrientation orientations) {}
 
 	@Override
 	public boolean isBorderless()
@@ -133,8 +135,7 @@ public class JavaGameWindow extends GameWindow
 			frame.setUndecorated(false);
 	}
 
-	// TODO: KeyListener I guess.
-	// protected List<XnaKey> keyState;
+	protected List<Keys> keyState;
 
 	protected JavaGameWindow(JavaGamePlatform platform)
 	{
@@ -180,6 +181,7 @@ public class JavaGameWindow extends GameWindow
 		// Use RawInput to capture key events.
 		// Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.None);
 		// Device.KeyboardInput += OnRawKeyEvent;
+		KeyboardRawInput.onRawKeyEvent = this::onRawKeyEvent;
 
 		// frame.Activated += OnActivated;
 		// frame.Deactivate += OnDeactivate;
@@ -187,11 +189,59 @@ public class JavaGameWindow extends GameWindow
 
 		// _form.KeyPress += OnKeyPress;
 
-		_allWindows.add(this);
+		registerToAllWindows();
+	}
+
+	@Override
+	public void finalize()
+	{
+		dispose(false);
+	}
+
+	private void registerToAllWindows()
+	{
+		// _allWindowsReaderWriterLockSlim.EnterWriteLock();
+
+		try
+		{
+			_allWindows.add(this);
+		}
+		finally
+		{
+			// _allWindowsReaderWriterLockSlim.ExitWriteLock();
+		}
+	}
+
+	private void unregisterFromAllWindows()
+	{
+		// _allWindowsReaderWriterLockSlim.EnterWriteLock();
+
+		try
+		{
+			_allWindows.remove(this);
+		}
+		finally
+		{
+			// _allWindowsReaderWriterLockSlim.ExitWriteLock();
+		}
 	}
 
 	private void onActivated(Object sender, EventArgs eventArgs)
 	{
+// #if (WINDOWS && DIRECTX)
+		if (getGame().getGraphicsDevice() != null)
+		{
+			if (getGame().getGraphicsDeviceManager().getHardwareModeSwitch())
+			{
+				if (!_platform.isActive() && getGame().getGraphicsDevice().getPresentationParameters().isFullScreen())
+				{
+					getGame().getGraphicsDevice().getPresentationParameters().setFullScreen(true);
+					// getGame().getGraphicsDevice().createSizeDependentResources(true);
+					getGame().getGraphicsDevice().applyRenderTargets(null);
+				}
+			}
+		}
+// #endif
 		_platform.setActive(true);
 	}
 
@@ -199,9 +249,8 @@ public class JavaGameWindow extends GameWindow
 	{
 		_platform.setActive(false);
 
-		// TODO: Keyboard input
-		// if (keyState != null)
-		// keyState.clear();
+		if (keyState != null)
+			keyState.clear();
 	}
 
 	// TODO: How can I port this
@@ -276,50 +325,71 @@ public class JavaGameWindow extends GameWindow
 		}
 	}
 
-	// TODO: How can I port this.
-	// private void onRawKeyEvent(Object sender, KeyboardInputEventArgs args) {
-	private void onRawKeyEvent(Object sender, EventArgs args)
+	private void onRawKeyEvent(Object sender, KeyboardInputEventArgs args)
 	{
-		// if (KeyState == null)
-		// return;
-		//
-		// if ((int) args.Key == 0xff) {
-		// // dead key, e.g. a "shift" automatically happens when using Up/Down/Left/Right
-		// return;
-		// }
-		//
-		// XnaKey xnaKey;
-		//
-		// switch (args.MakeCode) {
-		// case 0x2a: // LShift
-		// xnaKey = XnaKey.LeftShift;
-		// break;
-		//
-		// case 0x36: // RShift
-		// xnaKey = XnaKey.RightShift;
-		// break;
-		//
-		// case 0x1d: // Ctrl
-		// xnaKey = (args.ScanCodeFlags & ScanCodeFlags.E0) != 0 ? XnaKey.RightControl :
-		// XnaKey.LeftControl;
-		// break;
-		//
-		// case 0x38: // Alt
-		// xnaKey = (args.ScanCodeFlags & ScanCodeFlags.E0) != 0 ? XnaKey.RightAlt : XnaKey.LeftAlt;
-		// break;
-		//
-		// default:
-		// xnaKey = (XnaKey) args.Key;
-		// break;
-		// }
-		//
-		// if ((args.State == SharpDX.RawInput.KeyState.KeyDown || args.State ==
-		// SharpDX.RawInput.KeyState.SystemKeyDown)
-		// && !KeyState.Contains(xnaKey))
-		// KeyState.Add(xnaKey);
-		// else if (args.State == SharpDX.RawInput.KeyState.KeyUp || args.State ==
-		// SharpDX.RawInput.KeyState.SystemKeyUp)
-		// KeyState.Remove(xnaKey);
+		if (keyState == null)
+			return;
+
+		// NOTE: This is from the original code but doesn't seem to be required in java
+		if (args.key == 0xff)
+		{
+			// dead key, e.g. a "shift" automatically happens when using Up/Down/Left/Right
+			return;
+		}
+
+		Keys key = Keys.None;
+
+		switch (args.keyLocation)
+		{
+			case KeyEvent.KEY_LOCATION_LEFT:
+				switch (args.key)
+				{
+					case KeyEvent.VK_SHIFT:
+						key = Keys.LeftShift;
+						break;
+					case KeyEvent.VK_CONTROL:
+						key = Keys.LeftControl;
+						break;
+					case KeyEvent.VK_ALT:
+						key = Keys.LeftAlt;
+						break;
+					case KeyEvent.VK_WINDOWS:
+						key = Keys.LeftWindows;
+						break;
+				}
+				break;
+
+			case KeyEvent.KEY_LOCATION_RIGHT:
+				switch (args.key)
+				{
+					case KeyEvent.VK_SHIFT:
+						key = Keys.RightShift;
+						break;
+					case KeyEvent.VK_CONTROL:
+						key = Keys.RightControl;
+						break;
+					case KeyEvent.VK_ALT:
+						key = Keys.RightAlt;
+						break;
+					case KeyEvent.VK_WINDOWS:
+						key = Keys.RightWindows;
+						break;
+				}
+				break;
+
+			default:
+				key = Keys.valueOf(args.key);
+				break;
+		}
+
+		if ((args.state == KeyState.Down) && !keyState.contains(key))
+		{
+			keyState.add(key);
+		}
+		else if (args.state == KeyState.Up)
+		{
+			keyState.remove(key);
+		}
 	}
 
 	// private void onKeyPress(Object sender, KeyPressEventArgs e) {
@@ -373,6 +443,7 @@ public class JavaGameWindow extends GameWindow
 	protected void runLoop()
 	{
 
+		// while (_form != null && _form.IsDisposed == false)
 		while (true)
 		{
 			updateWindows();
@@ -405,24 +476,20 @@ public class JavaGameWindow extends GameWindow
 		 */
 	}
 
-	/*
-	 * private void onIdle(Object sender, EventArgs eventArgs) {
-	 * // While there are no pending messages
-	 * // to be processed tick the game.
-	 * // NativeMessage msg;
-	 * // while (!PeekMessage(out msg, IntPtr.Zero, 0, 0, 0))
-	 * {
-	 * updateWindows();
-	 * game.tick();
-	 * }
-	 * }
-	 */
-
 	protected void updateWindows()
 	{
-		// Update the mouse state for each window.
-		for (JavaGameWindow window : _allWindows)
-			window.updateMouseState();
+		// _allWindowsReaderWriterLockSlim.EnterReadLock();
+
+		try
+		{
+			// Update the mouse state for each window.
+			for (JavaGameWindow window : _allWindows)
+				window.updateMouseState();
+		}
+		finally
+		{
+			// _allWindowsReaderWriterLockSlim.ExitReadLock();
+		}
 	}
 
 	// private final int WM_QUIT = 0x12;
@@ -447,25 +514,35 @@ public class JavaGameWindow extends GameWindow
 	// private static extern boolean PeekMessage(out NativeMessage msg, IntPtr hWnd, uint
 	// messageFilterMin, uint messageFilterMax, uint flags);
 
-	public void dispose()
+	public void close()
 	{
-		if (frame != null)
+		dispose(true);
+		// GC.SuppressFinalize(this);
+	}
+
+	void dispose(boolean disposing)
+	{
+		if (disposing)
 		{
-			_allWindows.remove(this);
-			// NOTE: This may cause the JVM to terminate
-			// see : https://docs.oracle.com/javase/8/docs/api/java/awt/Window.html#dispose--
-			frame.dispose();
-			frame = null;
+			if (frame != null)
+			{
+				unregisterFromAllWindows();
+				frame.dispose();
+				frame = null;
+			}
 		}
+		_platform = null;
+		this.game = null;
+		// Mouse.SetWindows(null);
+		// Device.KeyboardInput -= OnRawKeyEvent;
+		// Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.Remove);
 	}
 
 	@Override
-	public void beginScreenDeviceChange(boolean willBeFullScreen)
-	{}
+	public void beginScreenDeviceChange(boolean willBeFullScreen) {}
 
 	@Override
-	public void endScreenDeviceChange(String screenDeviceName, int clientWidth, int clientHeight)
-	{}
+	public void endScreenDeviceChange(String screenDeviceName, int clientWidth, int clientHeight) {}
 
 	public void mouseVisibleToggled()
 	{
@@ -477,7 +554,7 @@ public class JavaGameWindow extends GameWindow
 				_isMouseHidden = false;
 			}
 		}
-		else if (!_isMouseHidden && _isMouseInBounds)
+		else // if (!_isMouseHidden && _isMouseInBounds)
 		{
 			hideCursor();
 			_isMouseHidden = true;
