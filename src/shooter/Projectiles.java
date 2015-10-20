@@ -13,7 +13,7 @@ public class Projectiles
 	public Texture2D texture;
 
 	// Position of the Projectiles relative to the upper left side of the screen
-	public Vector2 position;
+	public Vector2 position = new Vector2();
 
 	// State of the Projectiles
 	public boolean isActive;

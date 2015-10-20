@@ -11,6 +11,9 @@ import gameCore.graphics.SpriteSortMode;
 import gameCore.graphics.SurfaceFormat;
 import gameCore.graphics.Texture2D;
 import gameCore.graphics.states.BlendState;
+import gameCore.input.Keyboard;
+import gameCore.input.KeyboardState;
+import gameCore.input.Keys;
 import gameCore.math.MathHelper;
 import gameCore.math.Vector2;
 import gameCore.time.GameTime;
@@ -40,8 +43,8 @@ public class ShooterGame extends Game
 	Player player;
 
 	// Keyboard states used to determine key presses
-	// KeyboardState currentKeyboardState;
-	// KeyboardState previousKeyboardState;
+	KeyboardState currentKeyboardState = new KeyboardState();
+	KeyboardState previousKeyboardState = new KeyboardState();
 
 	// Gamepad states used to determine button presses
 	// GamePadState currentGamePadState;
@@ -74,7 +77,7 @@ public class ShooterGame extends Game
 
 	// The rate of fire of the Player's Laser
 	TimeSpan fireTime;
-	TimeSpan previousFireTime;
+	TimeSpan previousFireTime = new TimeSpan();
 
 	// Explosion
 	Texture2D explosionTexture;
@@ -181,7 +184,7 @@ public class ShooterGame extends Game
 		boundingRectLaser = new ArrayList<Rectangle>();
 
 		// Initialize the current screen state to the screen we want to display first
-		currentScreen = ScreenState.MainGame;
+		currentScreen = ScreenState.MainMenu;
 
 		// Initialize the Font position to be in the center of the screen
 		fontPos = new Vector2(getGraphicsDevice().getViewport().getWidth() / 2,
@@ -296,13 +299,15 @@ public class ShooterGame extends Game
 		// Save the previous state of the Keyboard and GamePad so we can determine
 		// single key/button presses
 		// previousGamePadState = currentGamePadState;
-		// previousKeyboardState = currentKeyboardState;
+		// NOTE: keyboard.getState() returns a new KeyboardState each time
+		// so this should work.
+		previousKeyboardState = currentKeyboardState;
 
 		// Read the current state of the Keyboard and GamePad and store it
 		// currentGamePadState = GamePad.GetState(PlayerIndex.One);
-		// currentKeyboardState = Keyboard.GetState();
+		currentKeyboardState = Keyboard.getState();
 
-		// Update mehtod associated with the current screen
+		// Update method associated with the current screen
 		switch (currentScreen)
 		{
 			case MainMenu:
@@ -381,55 +386,49 @@ public class ShooterGame extends Game
 	{
 		// Allows the game to exit
 		// if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-		// previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.IsKeyDown(Keys.Escape))
-		// this.exit();
+		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Escape))
+			this.exit();
 
-		// if (previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.IsKeyDown(Keys.Down) & menuIndex != 1)
-		// {
-		// menuIndex = 1;
-		// elapsedTimeColor = 0;
-		// PlayColor = Color.White;
-		// QuitColor = Color.OrangeRed;
-		//
-		// // Play the LowBeep sound effect
-		// LowBeep.Play(0.7f, 0.0f, 0.0f);
-		// }
+		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Down) & menuIndex != 1)
+		{
+			menuIndex = 1;
+			elapsedTimeColor = 0;
+			playColor = Color.White;
+			quitColor = Color.OrangeRed;
+		
+			// Play the LowBeep sound effect
+			// lowBeep.Play(0.7f, 0.0f, 0.0f);
+		}
 
-		// if (previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.IsKeyDown(Keys.Up) & menuIndex != 0)
-		// {
-		// menuIndex = 0;
-		// elapsedTimeColor = 0;
-		// PlayColor = Color.OrangeRed;
-		// QuitColor = Color.White;
-		//
-		// // Play the LowBeep sound effect
-		// LowBeep.Play(0.7f, 0.0f, 0.0f);
-		// }
+		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Up) & menuIndex != 0)
+		{
+			menuIndex = 0;
+			elapsedTimeColor = 0;
+			playColor = Color.OrangeRed;
+			quitColor = Color.White;
+		
+			// Play the LowBeep sound effect
+			// lowBeep.Play(0.7f, 0.0f, 0.0f);
+		}
 
-		// if (previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.IsKeyDown(Keys.Enter) & menuIndex == 0)
-		// {
-		// CurrentScreen = ScreenState.MainGame;
-		// }
-		// else if (previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.IsKeyDown(Keys.Enter) & menuIndex == 1)
-		// {
-		// this.Exit();
-		// }
+		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 0)
+		{
+			currentScreen = ScreenState.MainGame;
+		}
+		else if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 1)
+		{
+			this.exit();
+		}
 	}
 
 	private void updateMainGame(GameTime gameTime)
 	{
 		// Allow the game to return to the main menu
-		// if (previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.IsKeyDown(Keys.Escape))
-		// {
-		// CurrentScreen = ScreenState.MainMenu;
-		// return;
-		// }
+		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Escape))
+		{
+			currentScreen = ScreenState.MainMenu;
+			return;
+		}
 
 		// Update the Player
 		updatePlayer(gameTime);
@@ -457,12 +456,11 @@ public class ShooterGame extends Game
 	{
 		// Test if any key is pressed. If a key is pressed .Length = 1 ; if two keys are pressed
 		// simultaneously .Length = 2, etc.
-		// if (previousKeyboardState != currentKeyboardState &
-		// currentKeyboardState.GetPressedKeys().Length > 0)
-		// {
-		// startNewGame();
-		// CurrentScreen = ScreenState.MainMenu;
-		// }
+		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.getPressedKeys().length > 0)
+		{
+			startNewGame();
+			currentScreen = ScreenState.MainMenu;
+		}
 	}
 
 	private void updatePlayer(GameTime gameTime)
@@ -474,26 +472,22 @@ public class ShooterGame extends Game
 		// player.Position.Y -= currentGamePadState.ThumbSticks.Left.Y * playerMoveSpeed;
 
 		// Use the Keyboard / Dpad
-		// if (currentKeyboardState.IsKeyDown(Keys.Left) || currentGamePadState.DPad.Left ==
-		// ButtonState.Pressed)
-		// {
-		// player.Position.X -= playerMoveSpeed;
-		// }
-		// if (currentKeyboardState.IsKeyDown(Keys.Right) || currentGamePadState.DPad.Right ==
-		// ButtonState.Pressed)
-		// {
-		// player.Position.X += playerMoveSpeed;
-		// }
-		// if (currentKeyboardState.IsKeyDown(Keys.Up) || currentGamePadState.DPad.Up ==
-		// ButtonState.Pressed)
-		// {
-		// player.Position.Y -= playerMoveSpeed;
-		// }
-		// if (currentKeyboardState.IsKeyDown(Keys.Down) || currentGamePadState.DPad.Down ==
-		// ButtonState.Pressed)
-		// {
-		// player.Position.Y += playerMoveSpeed;
-		// }
+		if (currentKeyboardState.isKeyDown(Keys.Left)) // || currentGamePadState.DPad.Left == ButtonState.Pressed)
+		{
+			player.position.x -= playerMoveSpeed;
+		}
+		if (currentKeyboardState.isKeyDown(Keys.Right)) // || currentGamePadState.DPad.Right == ButtonState.Pressed)
+		{
+			player.position.x += playerMoveSpeed;
+		}
+		if (currentKeyboardState.isKeyDown(Keys.Up)) // || currentGamePadState.DPad.Up == ButtonState.Pressed)
+		{
+			player.position.y -= playerMoveSpeed;
+		}
+		if (currentKeyboardState.isKeyDown(Keys.Down)) // || currentGamePadState.DPad.Down == ButtonState.Pressed)
+		{
+			player.position.y += playerMoveSpeed;
+		}
 
 		// Make sure the player does not go out of bounds. Because we've put the center of the image
 		// of our ship over the top left corner (0, 0) of the destinationRect, we have to set our
@@ -504,22 +498,21 @@ public class ShooterGame extends Game
 				getGraphicsDevice().getViewport().getHeight() - (player.playerAnimation.frameHeight / 2));
 
 		// Fire if we press spacebar and only every interval we set as the fireTime
-		// if (currentKeyboardState.IsKeyDown(Keys.Space))
-		// {
-		// if ((gameTime.TotalGameTime - previousFireTime > fireTime) & (player.Active))
-		// {
-		// // Reset our current time
-		// previousFireTime = gameTime.TotalGameTime;
+		if (currentKeyboardState.isKeyDown(Keys.Space))
+		{
+			if ((gameTime.getTotalGameTime().getTicks() - previousFireTime.getTicks() > fireTime.getTicks()) & (player.isActive))
+			{
+				// Reset our current time
+				previousFireTime.setTimeSpan(gameTime.getTotalGameTime());
 
-		// Add the projectile, but add it to the front and center of the player. Because
-		// playerPosition is in the
-		// center of our ship, we have to set our projectile position accordingly
-		// addProjectile(player.Position + new Vector2(player.PlayerAnimation.FrameWidth / 2, 0));
+				// Add the projectile, but add it to the front and center of the player. Because
+				// playerPosition is in the center of our ship, we have to set our projectile position accordingly
+				addProjectile(Vector2.add(player.position, new Vector2(player.playerAnimation.frameWidth / 2, 0)));
 
-		// Play the laser sound effect
-		// laserSound.Play();
-		// }
-		// }
+				// Play the laser sound effect
+				// laserSound.Play();
+			}
+		}
 
 		// Display the Game Over screen after 3 seconds if the player is dead
 		if ((!player.isActive) & (elapsedTimeDead == 0))
@@ -616,7 +609,7 @@ public class ShooterGame extends Game
 
 	private void updateProjectiles()
 	{
-		// Update the projetctiles
+		// Update the projectiles
 		for (int i = projectiles.size() - 1; i >= 0; --i)
 		{
 			projectiles.get(i).update();
@@ -892,6 +885,7 @@ public class ShooterGame extends Game
 	}
 
 	// Used to draw the Bounding Rectangles
+	@SuppressWarnings("unused")
 	private void drawBorder(Rectangle rectangleToDraw, int borderThickness, Color borderColor)
 	{
 		// Draw Top line
