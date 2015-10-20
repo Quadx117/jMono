@@ -1091,10 +1091,10 @@ public class Color
 	{
 		_packedValue = 0;
 
-		setRed((byte) MathHelper.clamp(color.x * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
-		setGreen((byte) MathHelper.clamp(color.y * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
-		setBlue((byte) MathHelper.clamp(color.z * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
-		setAlpha((byte) MathHelper.clamp(color.w * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
+		setRed((short) MathHelper.clamp(color.x * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setGreen((short) MathHelper.clamp(color.y * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setBlue((short) MathHelper.clamp(color.z * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setAlpha((short) MathHelper.clamp(color.w * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
 	}
 
 	// / <summary>
@@ -1109,10 +1109,10 @@ public class Color
 	{
 		_packedValue = 0;
 
-		setRed((byte) MathHelper.clamp(color.x * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
-		setGreen((byte) MathHelper.clamp(color.y * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
-		setBlue((byte) MathHelper.clamp(color.z * 255, Integer.MIN_VALUE, Byte.MAX_VALUE));
-		setAlpha((byte) 255);
+		setRed((short) MathHelper.clamp(color.x * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setGreen((short) MathHelper.clamp(color.y * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setBlue((short) MathHelper.clamp(color.z * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setAlpha((short) 255);
 	}
 
 	// / <summary>
@@ -1130,7 +1130,7 @@ public class Color
 		setRed(color.getRed());
 		setGreen(color.getGreen());
 		setBlue(color.getBlue());
-		setAlpha((byte) MathHelper.clamp(alpha, Byte.MIN_VALUE, Byte.MAX_VALUE));
+		setAlpha((short) MathHelper.clamp(alpha, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
 	}
 
 	// / <summary>
@@ -1148,7 +1148,7 @@ public class Color
 		setRed(color.getRed());
 		setGreen(color.getGreen());
 		setBlue(color.getBlue());
-		setAlpha((byte) MathHelper.clamp(alpha * 255, Byte.MIN_VALUE, Byte.MAX_VALUE));
+		setAlpha((short) MathHelper.clamp(alpha * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
 	}
 
 	/**
@@ -1197,10 +1197,10 @@ public class Color
 	{
 		_packedValue = 0;
 
-		setRed((byte) MathHelper.clamp(r * 255, Byte.MIN_VALUE, Byte.MAX_VALUE));
-		setGreen((byte) MathHelper.clamp(g * 255, Byte.MIN_VALUE, Byte.MAX_VALUE));
-		setBlue((byte) MathHelper.clamp(b * 255, Byte.MIN_VALUE, Byte.MAX_VALUE));
-		setAlpha((byte) MathHelper.clamp(a * 255, Byte.MIN_VALUE, Byte.MAX_VALUE));
+		setRed((short) MathHelper.clamp(r * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setGreen((short) MathHelper.clamp(g * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setBlue((short) MathHelper.clamp(b * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setAlpha((short) MathHelper.clamp(a * 255, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
 	}
 
 	/**
@@ -1246,10 +1246,10 @@ public class Color
 	{
 		_packedValue = 0;
 
-		setRed((byte) MathHelper.clamp(r, Byte.MIN_VALUE, Byte.MAX_VALUE));
-		setGreen((byte) MathHelper.clamp(g, Byte.MIN_VALUE, Byte.MAX_VALUE));
-		setBlue((byte) MathHelper.clamp(b, Byte.MIN_VALUE, Byte.MAX_VALUE));
-		setAlpha((byte) MathHelper.clamp(a, Byte.MIN_VALUE, Byte.MAX_VALUE));
+		setRed((short) MathHelper.clamp(r, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setGreen((short) MathHelper.clamp(g, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setBlue((short) MathHelper.clamp(b, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
+		setAlpha((short) MathHelper.clamp(a, uBYTE_MIN_VALUE, uBYTE_MAX_VALUE));
 	}
 
 	/**
@@ -1281,9 +1281,9 @@ public class Color
 	 * @return the blue component.
 	 * @see #getPackedValue()
 	 */
-	public byte getBlue()
+	public short getBlue()
 	{
-		return (byte) (this._packedValue);
+		return (short) (this._packedValue & 0xff);
 	}
 
 	/**
@@ -1292,7 +1292,7 @@ public class Color
 	 * @param value
 	 *        The new value for the blue channel
 	 */
-	public void setBlue(byte value)
+	public void setBlue(short value)
 	{
 		this._packedValue = (this._packedValue & 0xff00ffff) | ((int) value << 16);
 	}
@@ -1304,9 +1304,9 @@ public class Color
 	 * @return the green component.
 	 * @see #getPackedValue()
 	 */
-	public byte getGreen()
+	public short getGreen()
 	{
-		return (byte) (this._packedValue >> 8);
+		return (short) (this._packedValue >> 8 & 0xff);
 	}
 
 	/**
@@ -1315,7 +1315,7 @@ public class Color
 	 * @param value
 	 *        The new value for the green channel
 	 */
-	public void setGreen(byte value)
+	public void setGreen(short value)
 	{
 		this._packedValue = (this._packedValue & 0xffff00ff) | ((int) value << 8);
 	}
@@ -1327,9 +1327,9 @@ public class Color
 	 * @return the red component.
 	 * @see #getPackedValue()
 	 */
-	public byte getRed()
+	public short getRed()
 	{
-		return (byte) (this._packedValue >> 16);
+		return (short) (this._packedValue >> 16 & 0xff);
 	}
 
 	/**
@@ -1338,7 +1338,7 @@ public class Color
 	 * @param value
 	 *        The new value for the red channel
 	 */
-	public void setRed(byte value)
+	public void setRed(short value)
 	{
 		this._packedValue = (this._packedValue & 0xffffff00) | value;
 	}
@@ -1349,9 +1349,9 @@ public class Color
 	 * @return the alpha component.
 	 * @see #getPackedValue()
 	 */
-	public byte getAlpha()
+	public short getAlpha()
 	{
-		return (byte) (this._packedValue >> 24);
+		return (short) (this._packedValue >> 24 & 0xff);
 	}
 
 	/**
@@ -1360,7 +1360,7 @@ public class Color
 	 * @param value
 	 *        The new value for the alpha channel
 	 */
-	public void setAlpha(byte value)
+	public void setAlpha(short value)
 	{
 		this._packedValue = (this._packedValue & 0x00ffffff) | ((int) value << 24);
 	}
@@ -1600,4 +1600,8 @@ public class Color
 	{
 		return new Color((int) (r * a / 255), (int) (g * a / 255), (int) (b * a / 255), a);
 	}
+	
+	// NOTE: I added these constants since Java doesn't have unsigned values
+	private final short uBYTE_MIN_VALUE = 0;
+	private final short uBYTE_MAX_VALUE = 255;
 }

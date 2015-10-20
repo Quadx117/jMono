@@ -35,7 +35,7 @@ public abstract class GameWindow
 		_allowAltF4 = value;
 	}
 
-// #if WINDOWS && DIRECTX
+// #if (WINDOWS && !WINRT) || DESKTOPGL
 	/**
 	 * The location of this window on the desktop, eg: global coordinate space which stretches
 	 * across all screens.
@@ -77,7 +77,7 @@ public abstract class GameWindow
 		return false;
 	}
 
-	public boolean setIsBorderless(boolean value)
+	public boolean setBorderless(boolean value)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -95,7 +95,7 @@ public abstract class GameWindow
 	public EventHandler<EventArgs> orientationChanged;
 	public EventHandler<EventArgs> screenDeviceNameChanged;
 
-// #if WINDOWS || LINUX || ANGLE
+// #if WINDOWS || WINDOWS_UAP || DESKTOPGL|| ANGLE
 
 	/**
 	 * Use this event to retrieve text for objects like textbox's.
@@ -106,8 +106,7 @@ public abstract class GameWindow
 	 * This event is only supported on the Windows DirectX, Windows OpenGL and Linux platforms.
 	 */
 	public EventHandler<TextInputEventArgs> textInput;
-
-	// #endif
+// #endif
 
 	public abstract void beginScreenDeviceChange(boolean willBeFullScreen);
 
@@ -142,7 +141,7 @@ public abstract class GameWindow
 			screenDeviceNameChanged.accept(this, EventArgs.Empty);
 	}
 
-// #if WINDOWS || LINUX || ANGLE
+// #if WINDOWS || WINDOWS_UAP || DESKTOPGL || ANGLE
 	protected void onTextInput(Object sender, TextInputEventArgs e)
 	{
 		if (textInput != null)

@@ -340,7 +340,7 @@ public class GraphicsDevice implements AutoCloseable
 
 		// Set the default scissor rect.
 		_scissorRectangleDirty = true;
-		_scissorRectangle = new Rectangle(_viewport.getBounds());
+		_scissorRectangle = _viewport.getBounds();
 
 		// Set the default render target.
 		applyRenderTargets(null);
@@ -1191,8 +1191,7 @@ public class GraphicsDevice implements AutoCloseable
 				//		 of a texture (ex: if we have a texture strip for an animation)
 /*				if (srcWidth * srcHeight < texture.pixels.length)
 				{
-					// TODO: Can I avoid this copy (expansive)
-					// TODO: Look into drawQuad and see if I couldn't do something there instead.
+					// NOTE: Can I avoid this copy (expansive)
 					for (int y = 0; y < srcHeight; ++y)
 					{
 						for (int x = 0; x < srcWidth; ++x)
@@ -1268,11 +1267,6 @@ public class GraphicsDevice implements AutoCloseable
 	private void drawQuad(int destStartX, int destStartY, int destEndX, int destEndY,
 						  int srcStartX, int srcStartY, int srcWidth, int[] srcPixels, Color tint)
 	{
-		// TODO: find out alphaFactor (from CardGame SpriteBatch.draw)
-		// TODO: Looks like if the alphaFactor is less than 0, we keep the original alpha value of
-		// the pixel
-		int alphaFactor = -1;
-
 		int screenWidth = this._viewport.getWidth();
 		int screenHeight = this._viewport.getHeight();
 
@@ -1302,15 +1296,12 @@ public class GraphicsDevice implements AutoCloseable
 		}
 
 		// Extract our tint components
-		int rTint = tint.getRed();
-		int gTint = tint.getGreen();
-		int bTint = tint.getBlue();
+		short rTint = tint.getRed();
+		short gTint = tint.getGreen();
+		short bTint = tint.getBlue();
+		short aTint = tint.getAlpha();
 
-		// Calculate the new foreground color alpha component
-		int foregroundAlpha = (int) (alphaFactor * 255);
-
-		// Cycle through all the sprites pixels. and apply tint and
-		// alpha-blending
+		// Cycle through all the sprites pixels. and apply tint and alpha-blending
 		// Set our starting index position for the source Texture.
 		int sourceRow = sourceOffsetX + sourceOffsetY * srcWidth;
 		for (int y = destStartY; y < destEndY; ++y, sourceRow += srcWidth)
@@ -1320,36 +1311,35 @@ public class GraphicsDevice implements AutoCloseable
 			{
 				// The color of the pixel about to be drawn.
 				int foregroundCol = srcPixels[sourceIndex];
-				// The alpha value of the pixel about to be drawn.
-				if (alphaFactor < 0.0f)
-				{
-					foregroundAlpha = (foregroundCol >> 24) & 0xff;
-				}
 
 				// The color of the pixel already there.
 				int backgroundCol = pixels[x + y * screenWidth];
-				// The resulting color of the pixel to be drawn
-				int col;
 
 				// The components of the pixel about to be drawn.
 				int foregroundR = (foregroundCol >> 16) & 0xff;
 				int foregroundG = (foregroundCol >> 8) & 0xff;
 				int foregroundB = (foregroundCol) & 0xff;
-
+				int foregroundA = (foregroundCol >> 24) & 0xff;
+				
 				// Using Color.WHITE would have no effect so skip this
 				if (!tint.equals(Color.White))
 				{
 					// Typical tint formula -> original component * tint / 255
+					// also works with premultiplied alpha
 					foregroundR = foregroundR * rTint / 255;
 					foregroundG = foregroundG * gTint / 255;
 					foregroundB = foregroundB * bTint / 255;
+					foregroundA = foregroundA * aTint / 255;
 				}
 
+				// The resulting color of the pixel to be drawn
+				int col;
+				
 				// If alpha is 255 it completely overrides the existing color.
-				if (foregroundAlpha == 255 || _blendState == BlendState.Opaque)
+				if (foregroundA == 255 || _blendState == BlendState.Opaque)
 				{
-					col = (foregroundAlpha << 24 & 0xff000000) | (foregroundR << 16 & 0x00ff0000) |
-							(foregroundG << 8 & 0x0000ff00) | (foregroundB & 0x000000ff);
+					col = (foregroundA << 24 & 0xff000000) | (foregroundR << 16 & 0x00ff0000) |
+						  (foregroundG << 8 & 0x0000ff00) | (foregroundB & 0x000000ff);
 				}
 				else if (_blendState == BlendState.AlphaBlend)
 				{
@@ -1358,9 +1348,9 @@ public class GraphicsDevice implements AutoCloseable
 					int backgroundG = (backgroundCol >> 8) & 0xff;
 					int backgroundB = (backgroundCol) & 0xff;
 					// Typical over blend formula
-					int r = foregroundR + (backgroundR * (255 - foregroundAlpha) / 255);
-					int g = foregroundG + (backgroundG * (255 - foregroundAlpha) / 255);
-					int b = foregroundB + (backgroundB * (255 - foregroundAlpha) / 255);
+					int r = foregroundR + (backgroundR * (255 - foregroundA) / 255);
+					int g = foregroundG + (backgroundG * (255 - foregroundA) / 255);
+					int b = foregroundB + (backgroundB * (255 - foregroundA) / 255);
 					
 					// NOTE: for some reason, spritefonts could produce value greater
 					// than 255 for a single channel so we need to clamp to value.
@@ -1374,7 +1364,7 @@ public class GraphicsDevice implements AutoCloseable
 				{
 					// TODO: Should do the other BlendStates
 					// Defaults to BlendState.OPAQUE after tinting.
-					col = foregroundAlpha << 24 | foregroundR << 16 | foregroundG << 8 | foregroundB;
+					col = foregroundA << 24 | foregroundR << 16 | foregroundG << 8 | foregroundB;
 				}
 				pixels[x + y * screenWidth] = col;
 				++sourceIndex;

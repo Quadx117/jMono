@@ -66,8 +66,8 @@ public class DxtUtil
 		// byte r1 = 0, g1 = 0, b1 = 0;
 		convertRgb565ToRgb888(c0, color0);
 		convertRgb565ToRgb888(c1, color1);
-		byte r0 = color0.getRed(), g0 = color0.getGreen(), b0 = color0.getBlue();
-		byte r1 = color1.getRed(), g1 = color1.getGreen(), b1 = color1.getBlue();
+		byte r0 = (byte) color0.getRed(), g0 = (byte) color0.getGreen(), b0 = (byte) color0.getBlue();
+		byte r1 = (byte) color1.getRed(), g1 = (byte) color1.getGreen(), b1 = (byte) color1.getBlue();
 
 		int lookupTable = (int) imageReader.readUInt32();
 
@@ -524,8 +524,8 @@ public class DxtUtil
 		// byte r1 = 0, g1 = 0, b1 = 0;
 		convertRgb565ToRgb888(c0, color0);
 		convertRgb565ToRgb888(c1, color1);
-		byte r0 = color0.getRed(), g0 = color0.getGreen(), b0 = color0.getBlue();
-		byte r1 = color1.getRed(), g1 = color1.getGreen(), b1 = color1.getBlue();
+		byte r0 = (byte) color0.getRed(), g0 = (byte) color0.getGreen(), b0 = (byte) color0.getBlue();
+		byte r1 = (byte) color1.getRed(), g1 = (byte) color1.getGreen(), b1 = (byte) color1.getBlue();
 
 		int lookupTable = (int) imageReader.readUInt32();
 

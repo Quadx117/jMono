@@ -145,10 +145,10 @@ public class Texture2D extends Texture
 		byte[] byteArray = new byte[length];
 		for (int i = 0, j = 0; i < data.length; ++i, j += 4)
 		{
-			byteArray[j + 0] = data[i].getRed();
-			byteArray[j + 1] = data[i].getGreen();
-			byteArray[j + 2] = data[i].getBlue();
-			byteArray[j + 3] = data[i].getAlpha();
+			byteArray[j + 0] = (byte) data[i].getRed();
+			byteArray[j + 1] = (byte) data[i].getGreen();
+			byteArray[j + 2] = (byte) data[i].getBlue();
+			byteArray[j + 3] = (byte) data[i].getAlpha();
 		}
 		this.setData(0, null, byteArray, 0, byteArray.length);
 	}
