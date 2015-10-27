@@ -61,7 +61,7 @@ public enum ColorWriteChannels
 	{
 		for (ColorWriteChannels colorWriteChannels : ColorWriteChannels.values())
 		{
-			map.put(colorWriteChannels.ordinal(), colorWriteChannels);
+			map.put(colorWriteChannels.getValue(), colorWriteChannels);
 		}
 	}
 
