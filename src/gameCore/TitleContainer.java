@@ -150,6 +150,7 @@ public class TitleContainer
 	{
 		String applicationDir = TitleContainer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
+		// TODO: Can we make it work for .jar files with content packaged in it ?
 		if (applicationDir.endsWith(".exe"))
 		{
 			applicationDir = new File(applicationDir).getParent();
