@@ -128,8 +128,6 @@ public abstract class GamePlatform implements AutoCloseable
 		_window = value;
 	}
 
-	// #endif
-
 	// ++++++++++ Events ++++++++++
 
 	public EventHandler<EventArgs> asyncRunLoopEnded;

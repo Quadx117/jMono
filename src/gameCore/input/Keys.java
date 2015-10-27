@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: Do I want to refactor these to the same as KeyEvent.class
-// (see also switch statement in KeyboardInput.java
+// (see also switch statement in KeyboardInput.java)
 
 /**
  * Defines the keys on a keyboard.

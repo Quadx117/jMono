@@ -3,6 +3,7 @@ package gameCore.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Constructor and values
 /**
  * Defines types of surface formats.
  * 
