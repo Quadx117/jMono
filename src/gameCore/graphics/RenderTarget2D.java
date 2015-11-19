@@ -1,7 +1,7 @@
 package gameCore.graphics;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 import gameCore.graphics.states.DepthFormat;
 
 public class RenderTarget2D extends Texture2D implements IRenderTarget
@@ -32,7 +32,7 @@ public class RenderTarget2D extends Texture2D implements IRenderTarget
 		return false;
 	}
 
-	public EventHandler<EventArgs> contentLost;
+	public Event<EventArgs> contentLost = new Event<EventArgs>();
 
 	private boolean suppressEventHandlerWarningsUntilEventsAreProperlyImplemented()
 	{

@@ -18,8 +18,6 @@ public abstract class Texture extends GraphicsResource
 	protected SurfaceFormat _format;
 	protected int _levelCount;
 
-	// TODO: Need to be tested to see if works like in C#
-	// private int _sortingKey = Interlocked.Increment(_lastSortingKey);
 	private int _sortingKey = _lastSortingKey.incrementAndGet();
 	private static AtomicInteger _lastSortingKey = new AtomicInteger();
 
@@ -58,7 +56,7 @@ public abstract class Texture extends GraphicsResource
 		return calculateMipLevels(width, height, 0);
 	}
 
-	// TODO: Find a way to create overloeads if I ever need this one
+	// TODO: Find a way to create overloads if I ever need this one
 	// protected static int calculateMipLevels(int width, int depth) {
 	// return calculateMipLevels(width, 0, depth);
 	// }

@@ -4,8 +4,8 @@ import gameCore.Color;
 import gameCore.GraphicsDeviceInformation;
 import gameCore.Rectangle;
 import gameCore.dotNet.As;
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 import gameCore.graphics.effect.Effect;
 import gameCore.graphics.shader.ConstantBuffer;
 import gameCore.graphics.shader.ConstantBufferCollection;
@@ -164,12 +164,12 @@ public class GraphicsDevice implements AutoCloseable
 
 	// NOTE: Already like that in the original code. Guess I don't need to do these than
 	// TODO Graphics Device events need implementing
-	public EventHandler<EventArgs> deviceLost;
-	public EventHandler<EventArgs> deviceReset;
-	public EventHandler<EventArgs> deviceResetting;
-	public EventHandler<ResourceCreatedEventArgs> resourceCreated;
-	public EventHandler<ResourceDestroyedEventArgs> resourceDestroyed;
-	public EventHandler<EventArgs> disposing;
+	public Event<EventArgs> deviceLost = new Event<EventArgs>();
+	public Event<EventArgs> deviceReset = new Event<EventArgs>();
+	public Event<EventArgs> deviceResetting = new Event<EventArgs>();
+	public Event<ResourceCreatedEventArgs> resourceCreated = new Event<ResourceCreatedEventArgs>();
+	public Event<ResourceDestroyedEventArgs> resourceDestroyed = new Event<ResourceDestroyedEventArgs>();
+	public Event<EventArgs> disposing = new Event<EventArgs>();
 
 	private boolean suppressEventHandlerWarningsUntilEventsAreProperlyImplemented()
 	{
@@ -618,7 +618,7 @@ public class GraphicsDevice implements AutoCloseable
 	protected void onDeviceResetting()
 	{
 		if (deviceResetting != null)
-			deviceResetting.accept(this, EventArgs.Empty);
+			deviceResetting.handleEvent(this, EventArgs.Empty);
 
 		synchronized (_resourcesLock)
 		{
@@ -642,7 +642,7 @@ public class GraphicsDevice implements AutoCloseable
 	protected void onDeviceReset()
 	{
 		if (deviceReset != null)
-			deviceReset.accept(this, EventArgs.Empty);
+			deviceReset.handleEvent(this, EventArgs.Empty);
 	}
 
 	public DisplayMode getDisplayMode()
@@ -1144,7 +1144,7 @@ public class GraphicsDevice implements AutoCloseable
 			throw new UnsupportedOperationException("We currently only support PrimitiveType.TriangleList");
 		}
 
-		// TODO: add test code to make sure all 4 color information are the same.
+		// TODO: add test code to make sure all 4 color information are the same ?.
 		// TODO: check if not a quad ?
 		VertexPositionColorTexture[] data = As.as(vertexData, VertexPositionColorTexture[].class);
 
@@ -1175,6 +1175,7 @@ public class GraphicsDevice implements AutoCloseable
 			destHeight = (destEndY - destStartY);
 			srcWidth = (srcEndX - srcStartX);
 			srcHeight = (srcEndY - srcStartY);
+			int textureWidth = texture.width;
 			// Determine if we need to resize our sprite. If so, we set our local variables
 			// accordingly.
 			// Otherwise, we set our local variables to the original's sprite values.
@@ -1182,30 +1183,15 @@ public class GraphicsDevice implements AutoCloseable
 
 			if (destWidth != srcWidth || destHeight != srcHeight)
 			{
-				// TODO: Fix bug in resize
+				// TODO: Add other resizing methods (see SamplerState.java)
 				texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
+				textureWidth = destWidth;
 			}
 			else
 			{
-				// NOTE: We are copying the desired pixels when want to draw only a part
-				//		 of a texture (ex: if we have a texture strip for an animation)
-/*				if (srcWidth * srcHeight < texture.pixels.length)
-				{
-					// NOTE: Can I avoid this copy (expansive)
-					for (int y = 0; y < srcHeight; ++y)
-					{
-						for (int x = 0; x < srcWidth; ++x)
-						{
-							texturePixels[x + y * srcWidth] = texture.pixels[(x+srcStartX) + ((y+srcStartY)*texture.width)];
-						}
-					}
-				}
-				else
-				{*/
-					texturePixels = texture.pixels;
-				//}
+				texturePixels = texture.pixels;
 			}
-			drawQuad(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, texture.width, texturePixels, tint);
+			drawQuad(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, textureWidth, texturePixels, tint);
 			i += 4;
 		}
 
@@ -1373,127 +1359,6 @@ public class GraphicsDevice implements AutoCloseable
 		}
 	}
 	
-/*
-	private void drawQuad(int destStartX, int destStartY, int destEndX, int destEndY, int[] srcPixels, Color tint)
-	{
-		// TODO: find out alphaFactor (from CardGame SpriteBatch.draw)
-		// TODO: Looks like if the alphaFactor is less than 0, we keep the original alpha value of
-		// the pixel
-		int alphaFactor = -1;
-
-		int screenWidth = this._viewport.getWidth();
-		int screenHeight = this._viewport.getHeight();
-
-		int sourceWidth = destEndX - destStartX;
-
-		// check the bounds
-		int sourceOffsetX = 0;
-		if (destStartX < 0)
-		{
-			sourceOffsetX = -destStartX;
-			destStartX = 0;
-		}
-		
-		int sourceOffsetY = 0;
-		if (destStartY < 0)
-		{
-			sourceOffsetY = -destStartY;
-			destStartY = 0;
-		}
-		
-		if (destEndX > screenWidth)
-		{
-			destEndX = screenWidth;
-		}
-		
-		if (destEndY > screenHeight)
-		{
-			destEndY = screenHeight;
-		}
-
-		// Extract our tint components
-		int rTint = tint.getRed();
-		int gTint = tint.getGreen();
-		int bTint = tint.getBlue();
-
-		// Calculate the new foreground color alpha component
-		int foregroundAlpha = (int) (alphaFactor * 255);
-
-		// Cycle through all the sprites pixels. and apply tint and
-		// alpha-blending
-		// Set our starting index position for the source Texture.
-		int sourceRow = sourceOffsetX + sourceOffsetY * sourceWidth;
-		for (int y = destStartY; y < destEndY; ++y, sourceRow += sourceWidth)
-		{
-			int sourceIndex = sourceRow;
-			for (int x = destStartX; x < destEndX; ++x)
-			{
-				// The color of the pixel about to be drawn.
-				int foregroundCol = srcPixels[sourceIndex];
-				// The alpha value of the pixel about to be drawn.
-				if (alphaFactor < 0.0f)
-				{
-					foregroundAlpha = (foregroundCol >> 24) & 0xff;
-				}
-
-				// The color of the pixel already there.
-				int backgroundCol = pixels[x + y * screenWidth];
-				// The resulting color of the pixel to be drawn
-				int col;
-
-				// The components of the pixel about to be drawn.
-				int foregroundR = (foregroundCol >> 16) & 0xff;
-				int foregroundG = (foregroundCol >> 8) & 0xff;
-				int foregroundB = (foregroundCol) & 0xff;
-
-				// Using Color.WHITE would have no effect so skip this
-				if (!tint.equals(Color.White))
-				{
-					// Typical tint formula -> original component * tint / 255
-					foregroundR = foregroundR * rTint / 255;
-					foregroundG = foregroundG * gTint / 255;
-					foregroundB = foregroundB * bTint / 255;
-				}
-
-				// If alpha is 255 it completely overrides the existing color.
-				if (foregroundAlpha == 255 || _blendState == BlendState.Opaque)
-				{
-					col = (foregroundAlpha << 24 & 0xff000000) | (foregroundR << 16 & 0x00ff0000) |
-							(foregroundG << 8 & 0x0000ff00) | (foregroundB & 0x000000ff);
-				}
-				else if (_blendState == BlendState.AlphaBlend)
-				{
-					// Do the alpha-blending with the premultiplied alpha source.
-					int backgroundR = (backgroundCol >> 16) & 0xff;
-					int backgroundG = (backgroundCol >> 8) & 0xff;
-					int backgroundB = (backgroundCol) & 0xff;
-					// Typical over blend formula
-					int r = foregroundR + (backgroundR * (255 - foregroundAlpha) / 255);
-					int g = foregroundG + (backgroundG * (255 - foregroundAlpha) / 255);
-					int b = foregroundB + (backgroundB * (255 - foregroundAlpha) / 255);
-					
-					// NOTE: for some reason, spritefonts could produce value greater
-					// than 255 for a single channel so we need to clamp to value.
-					r = r > 255 ? 255 : r;
-					g = g > 255 ? 255 : g;
-					b = b > 255 ? 255 : b;
-					
-					col = r << 16 | g << 8 | b;
-				}
-				else
-				{
-					// TODO: Should do the other BlendStates
-					// Defaults to BlendState.OPAQUE after tinting.
-					col = foregroundAlpha << 24 | foregroundR << 16 | foregroundG << 8 | foregroundB;
-				}
-				pixels[x + y * screenWidth] = col;
-				++sourceIndex;
-			}
-			// sourceRow += sourceWidth;
-		}
-	}
-*/
-	
 	/**
 	 * Resizes a portion of an ARGB sprite using the nearest neighbor
 	 * interpolation algorithm. Useful for a animation strips. The new width or
@@ -1521,8 +1386,8 @@ public class GraphicsDevice implements AutoCloseable
 	 */
 	public int[] resizeNearestNeighbor(Texture2D tex, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
 	{
-		if (newWidth <= 0 || newHeight <= 0)
-			throw new IllegalArgumentException("new width or new height cannot be less than or equal to 0");
+		if (newWidth < 0 || newHeight < 0)
+			throw new IllegalArgumentException("new width or new height cannot be less than 0");
 		int[] temp = new int[newWidth * newHeight];
 		float xRatio = (float) newWidth / (float) oldWidth;
 		float yRatio = (float) newHeight / (float) oldHeight;

@@ -1,17 +1,15 @@
 package gameCore.components;
 
 import gameCore.Game;
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.time.GameTime;
 
 import java.awt.Graphics;
 
-// public class DrawableGameComponent extends GameComponent implements IDrawable {
-public class DrawableGameComponent extends IDrawable
+public class DrawableGameComponent extends GameComponent implements IDrawable
 {
-
 	private boolean isInitialized;
 	private int drawOrder;
 	private boolean isVisible = true;
@@ -34,7 +32,7 @@ public class DrawableGameComponent extends IDrawable
 
 			if (drawOrderChanged != null)
 			{
-				drawOrderChanged.accept(this, null);
+				drawOrderChanged.handleEvent(this, null);
 			}
 			onDrawOrderChanged(this, null);
 		}
@@ -53,15 +51,19 @@ public class DrawableGameComponent extends IDrawable
 
 			if (visibleChanged != null)
 			{
-				visibleChanged.accept(this, EventArgs.Empty);
+				visibleChanged.handleEvent(this, EventArgs.Empty);
 			}
 			onVisibleChanged(this, EventArgs.Empty);
 		}
 	}
 
-	// TODO: take care of event handling
-	public EventHandler<EventArgs> drawOrderChanged;
-	public EventHandler<EventArgs> visibleChanged;
+	public Event<EventArgs> drawOrderChanged = new Event<EventArgs>();
+	@Override
+	public Event<EventArgs> getDrawOrderChanged() { return drawOrderChanged; }
+
+	public Event<EventArgs> visibleChanged = new Event<EventArgs>();
+	@Override
+	public Event<EventArgs> getVisibleChanged() { return visibleChanged; }
 
 	public DrawableGameComponent(Game game)
 	{
@@ -112,19 +114,4 @@ public class DrawableGameComponent extends IDrawable
 	protected void onVisibleChanged(Object sender, EventArgs args) {}
 
 	protected void onDrawOrderChanged(Object sender, EventArgs args) {}
-
-	/*
-	 * @Override
-	 * public VisibleChangedEvent visibleChanged(Object source) {
-	 * // TODO: Need to revisit all the Event code to see if it works as expected
-	 * return null;
-	 * }
-	 * 
-	 * @Override
-	 * public DrawOrderChangedEvent drawOrderChanged(Object source, Object args) {
-	 * // TODO: Need to revisit all the Event code to see if it works as expected
-	 * return null;
-	 * }
-	 */
-
 }

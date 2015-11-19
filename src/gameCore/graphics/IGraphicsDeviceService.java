@@ -1,14 +1,14 @@
 package gameCore.graphics;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 
-public abstract class IGraphicsDeviceService {
+public interface IGraphicsDeviceService
+{
+	GraphicsDevice getGraphicsDevice();
 
-	public abstract GraphicsDevice getGraphicsDevice();
-
-	protected EventHandler<EventArgs> deviceCreated;
-	protected EventHandler<EventArgs> deviceDisposing;
-	protected EventHandler<EventArgs> deviceReset;
-	protected EventHandler<EventArgs> deviceResetting;
+	Event<EventArgs> getDeviceCreated();
+	Event<EventArgs> getDeviceDisposing();
+	Event<EventArgs> getDeviceReset();
+	Event<EventArgs> getDeviceResetting();
 }

@@ -1,64 +1,57 @@
 package gameCore.components;
 
 import gameCore.Game;
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 import gameCore.time.GameTime;
 
-// public class GameComponent implements IGameComponent, IUpdateable, Comparable<GameComponent>,
-// AutoCloseable {
-public class GameComponent extends IUpdateable implements IGameComponent, Comparable<GameComponent>, AutoCloseable
+public class GameComponent implements IGameComponent, IUpdateable, Comparable<GameComponent>, AutoCloseable
 {
+	private boolean isEnabled = true;
+	private int updateOrder;
 
 	/**
 	 * A reference to the main game object
 	 */
-	protected Game game;
-	private boolean isEnabled = true;
-	private int updateOrder;
-
 	public Game getGame() { return this.game; }
+	protected Game game;
 
 	public boolean isEnabled() { return isEnabled; }
 
-	// public EnabledChangedEvent setEnabled(boolean value) {
 	public void setEnabled(boolean value)
 	{
-		// EnabledChangedEvent e = null;
 		if (isEnabled != value)
 		{
 			isEnabled = value;
 
 			if (this.enabledChanged != null)
-				this.enabledChanged.accept(this, EventArgs.Empty);
-			// e = new EnabledChangedEvent(this, null);
+				this.enabledChanged.handleEvent(this, EventArgs.Empty);
 			onEnabledChanged(this, null);
 		}
-		// return e;
 	}
 
 	public int getUpdateOrder() { return updateOrder; }
 
-	// public UpdateOrderChangedEvent setUpdateOrder(int value) {
 	public void setUpdateOrder(int value)
 	{
-		// UpdateOrderChangedEvent e = null;
 		if (updateOrder != value)
 		{
 			updateOrder = value;
 
 			if (this.updateOrderChanged != null)
-				this.updateOrderChanged.accept(this, EventArgs.Empty);
-			// e = new UpdateOrderChangedEvent(this, null);
+				this.updateOrderChanged.handleEvent(this, EventArgs.Empty);
 			onUpdateOrderChanged(this, null);
 		}
-		// return e;
 	}
 
-	// TODO: take care of event handling
-	public EventHandler<EventArgs> enabledChanged;
-	public EventHandler<EventArgs> updateOrderChanged;
-
+	public Event<EventArgs> enabledChanged = new Event<EventArgs>();
+	@Override
+	public Event<EventArgs> getEnabledChanged() { return enabledChanged; }
+	
+	public Event<EventArgs> updateOrderChanged = new Event<EventArgs>();
+	@Override
+	public Event<EventArgs> getUpdateOrderChanged() { return updateOrderChanged; }
+	
 	public GameComponent(Game game)
 	{
 		this.game = game;
@@ -83,19 +76,10 @@ public class GameComponent extends IUpdateable implements IGameComponent, Compar
 	 */
 	public void update(GameTime gameTime) {}
 
-	// TODO: EVENTS
 	protected void onUpdateOrderChanged(Object sender, EventArgs args) {}
 
 	protected void onEnabledChanged(Object sender, EventArgs args) {}
 
-	// protected UpdateOrderChangedEvent onUpdateOrderChanged(Object sender, Object args) {
-	// return new UpdateOrderChangedEvent (sender, args);
-	// }
-
-	// protected EnabledChangedEvent onEnabledChanged(Object sender, Object args) {
-	// return new EnabledChangedEvent(sender, args);
-	// }
-	
 	/**
 	 * Shuts down the component.
 	 * 
@@ -117,18 +101,4 @@ public class GameComponent extends IUpdateable implements IGameComponent, Compar
 	{
 		return other.getUpdateOrder() - this.updateOrder;
 	}
-
-	/*
-	 * @Override
-	 * public EnabledChangedEvent enabledChanged(Object source) {
-	 * // TODO: Need to revisit all the Event code to see if it works as expected
-	 * return null;
-	 * }
-	 * 
-	 * @Override
-	 * public UpdateOrderChangedEvent updateOrderChanged(Object source, Object args) {
-	 * // TODO: Need to revisit all the Event code to see if it works as expected
-	 * return null;
-	 * }
-	 */
 }

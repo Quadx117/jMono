@@ -17,7 +17,6 @@ public class TextureCollection
 		// PlatformInit();
 	}
 
-	// TODO: Not sure about the names of these two
 	public Texture getTexture(int index)
 	{
 		return _textures[index];

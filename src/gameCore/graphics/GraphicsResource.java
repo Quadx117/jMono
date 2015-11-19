@@ -1,7 +1,7 @@
 package gameCore.graphics;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 import gameCore.utilities.StringHelpers;
 
 import java.lang.ref.WeakReference;
@@ -70,7 +70,7 @@ public abstract class GraphicsResource implements AutoCloseable
 
 			// Do not trigger the event if called from the finalizer
 			if (disposing && Disposing != null)
-				Disposing.accept(this, EventArgs.Empty);
+				Disposing.handleEvent(this, EventArgs.Empty);
 
 			// Remove from the global list of graphics resources
 			if (graphicsDevice != null)
@@ -82,7 +82,7 @@ public abstract class GraphicsResource implements AutoCloseable
 		}
 	}
 
-	public EventHandler<EventArgs> Disposing;
+	public Event<EventArgs> Disposing = new Event<EventArgs>();
 
 	public GraphicsDevice getGraphicsDevice()
 	{

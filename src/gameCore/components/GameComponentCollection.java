@@ -1,8 +1,9 @@
 package gameCore.components;
 
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class GameComponentCollection extends ArrayList<IGameComponent>
 {
@@ -16,13 +17,13 @@ public class GameComponentCollection extends ArrayList<IGameComponent>
 	 * Event that is triggered when a {@link GameComponent} is added to this
 	 * {@code GameComponentCollection}.
 	 */
-	public EventHandler<GameComponentCollectionEventArgs> componentAdded;
+	public Event<GameComponentCollectionEventArgs> componentAdded = new Event<GameComponentCollectionEventArgs>();
 
 	/**
 	 * Event that is triggered when a {@link GameComponent} is removed from this
 	 * {@code GameComponentCollection}.
 	 */
-	public EventHandler<GameComponentCollectionEventArgs> componentRemoved;
+	public Event<GameComponentCollectionEventArgs> componentRemoved = new Event<GameComponentCollectionEventArgs>();
 
 	/**
 	 * Removes every {@link GameComponent} from this {@code GameComponentCollection}.
@@ -75,7 +76,7 @@ public class GameComponentCollection extends ArrayList<IGameComponent>
 	{
 		if (this.componentAdded != null)
 		{
-			this.componentAdded.accept(this, eventArgs);
+			this.componentAdded.handleEvent(this, eventArgs);
 		}
 	}
 
@@ -83,7 +84,7 @@ public class GameComponentCollection extends ArrayList<IGameComponent>
 	{
 		if (this.componentRemoved != null)
 		{
-			this.componentRemoved.accept(this, eventArgs);
+			this.componentRemoved.handleEvent(this, eventArgs);
 		}
 	}
 
@@ -98,11 +99,57 @@ public class GameComponentCollection extends ArrayList<IGameComponent>
 		return gameComponent;
 	}
 
+	// TODO: This is not part of the original code , yet it worked and I don't know how.
+	@Override
+	public boolean remove(Object o)
+	{
+		boolean result = false;
+		IGameComponent gameComponent = this.remove(indexOf(o));
+		if (gameComponent != null)
+		{
+			result = true;
+		}
+		return result;
+	}
+
 	/**
 	 * This operation is not supported.
 	 */
 	@Override
 	public IGameComponent set(int index, IGameComponent item) throws UnsupportedOperationException
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * This operation is not supported.
+	 */
+	@Override
+	public boolean addAll(Collection<? extends IGameComponent> c)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean addAll(int index, Collection<? extends IGameComponent> c)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void removeRange(int fromIndex, int toIndex)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c)
 	{
 		throw new UnsupportedOperationException();
 	}

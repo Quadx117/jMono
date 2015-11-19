@@ -1,7 +1,7 @@
 package gameCore.components;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
 import gameCore.time.GameTime;
 
 /**
@@ -9,18 +9,15 @@ import gameCore.time.GameTime;
  * @author Eric Perron (inspired by XNA framework from Microsoft)
  * 
  */
-public abstract class IUpdateable
-{ // extends IEnabledChanged, IUpdateOrderChanged {
+public interface IUpdateable
+{
+	void update(GameTime gameTime);
 
-	public abstract void update(GameTime gameTime);
+	Event<EventArgs> getEnabledChanged();
+	Event<EventArgs> getUpdateOrderChanged();
 
-	// TODO: take care of the event handling
-	public EventHandler<EventArgs> enabledChanged;
-	public EventHandler<EventArgs> updateOrderChanged;
+	boolean isEnabled();
 
-	public abstract boolean isEnabled();
-
-	public abstract int getUpdateOrder();
-
+	int getUpdateOrder();
 
 }

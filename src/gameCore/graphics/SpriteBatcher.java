@@ -147,15 +147,6 @@ public class SpriteBatcher
 		return (a.texture == b.texture) ? 0 : 1;
 	}
 
-	// TODO: Delete after testing since not used
-	/*
-	 * static Comparator<SpriteBatchItem> textureComparator = new Comparator<SpriteBatchItem>() {
-	 * public int compare(SpriteBatchItem a, SpriteBatchItem b) {
-	 * return (a.texture == b.texture) ? 0 : 1;
-	 * }
-	 * };
-	 */
-
 	// / <summary>
 	// / Compares the Depth of a against b returning -1 if a is less than b,
 	// / 0 if equal, and 1 if a is greater than b. The test uses Float.compare(float, float)
@@ -168,15 +159,6 @@ public class SpriteBatcher
 		return Float.compare(a.depth, b.depth);
 	}
 
-	// TODO: Delete after testing since not used
-	/*
-	 * static Comparator<SpriteBatchItem> depthComparator = new Comparator<SpriteBatchItem>() {
-	 * public int compare(SpriteBatchItem a, SpriteBatchItem b) {
-	 * return Float.compare(a.depth, b.depth);
-	 * }
-	 * };
-	 */
-
 	// / <summary>
 	// / Implements the opposite of compareDepth, where b is compared against a.
 	// / </summary>
@@ -188,15 +170,6 @@ public class SpriteBatcher
 		return Float.compare(b.depth, a.depth);
 	}
 
-	// TODO: Delete after testing since not used
-	/*
-	 * static Comparator<SpriteBatchItem> reverseDepthComparator = new Comparator<SpriteBatchItem>()
-	 * {
-	 * public int compare(SpriteBatchItem a, SpriteBatchItem b) {
-	 * return Float.compare(b.depth, a.depth);
-	 * }
-	 * };
-	 */
 	// / <summary>
 	// / Sorts the batch items and then groups batch drawing into maximal allowed batch sets that do
 	// not

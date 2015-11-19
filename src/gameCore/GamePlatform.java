@@ -1,7 +1,9 @@
 package gameCore;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
+import gameCore.dotNet.events.EventHandler;
+import gameCore.input.Mouse;
 import gameCore.time.GameTime;
 import gameCore.time.TimeSpan;
 
@@ -120,8 +122,7 @@ public abstract class GamePlatform implements AutoCloseable
 	{
 		if (_window == null)
 		{
-			// TODO: Mouse stuff.
-			// Mouse.PrimaryWindow = value;
+			Mouse.PrimaryWindow = value;
 			// TouchPanel.PrimaryWindow = value;
 		}
 
@@ -130,9 +131,9 @@ public abstract class GamePlatform implements AutoCloseable
 
 	// ++++++++++ Events ++++++++++
 
-	public EventHandler<EventArgs> asyncRunLoopEnded;
-	public EventHandler<EventArgs> activated;
-	public EventHandler<EventArgs> deactivated;
+	public Event<EventArgs> asyncRunLoopEnded = new Event<EventArgs>();
+	public Event<EventArgs> activated = new Event<EventArgs>();
+	public Event<EventArgs> deactivated = new Event<EventArgs>();
 
 // #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 	// public event EventHandler<ViewStateChangedEventArgs> ViewStateChanged;
@@ -141,7 +142,7 @@ public abstract class GamePlatform implements AutoCloseable
 	private <TEventArgs extends EventArgs> void raise(EventHandler<TEventArgs> handler, TEventArgs e)
 	{
 		if (handler != null)
-			handler.accept(this, e);
+			handler.handleEvent(this, e);
 	}
 
 	/**
@@ -296,7 +297,7 @@ public abstract class GamePlatform implements AutoCloseable
 	{
 		if (!isDisposed)
 		{
-			// Mouse.PrimaryWindow = null;
+			Mouse.PrimaryWindow = null;
             // TouchPanel.PrimaryWindow = null;
             
 			isDisposed = true;

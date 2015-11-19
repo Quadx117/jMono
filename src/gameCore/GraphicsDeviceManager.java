@@ -1,7 +1,8 @@
 package gameCore;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
+import gameCore.dotNet.events.EventHandler;
 import gameCore.graphics.GraphicsAdapter;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.graphics.GraphicsProfile;
@@ -11,10 +12,7 @@ import gameCore.graphics.PresentationParameters;
 import gameCore.graphics.SurfaceFormat;
 import gameCore.graphics.states.DepthFormat;
 
-// TODO: Events in IGraphicsDeviceService
-// public class GraphicsDeviceManager implements IGraphicsDeviceService, IGraphicsDeviceManager,
-// AutoCloseable {
-public class GraphicsDeviceManager extends IGraphicsDeviceService implements IGraphicsDeviceManager, AutoCloseable
+public class GraphicsDeviceManager implements IGraphicsDeviceService, IGraphicsDeviceManager, AutoCloseable
 {
 	private Game _game;
 	private GraphicsDevice _graphicsDevice;
@@ -106,13 +104,24 @@ public class GraphicsDeviceManager extends IGraphicsDeviceService implements IGr
 		}
 	}
 
-	// TODO: For now we have an abstract class so these are in there.
-	// public EventHandler<EventArgs> deviceCreated;
-	// public EventHandler<EventArgs> deviceDisposing;
-	// public EventHandler<EventArgs> deviceReset;
-	// public EventHandler<EventArgs> deviceResetting;
-	public EventHandler<PreparingDeviceSettingsEventArgs> preparingDeviceSettings;
+	public Event<EventArgs> deviceCreated = new Event<EventArgs>();
+	public Event<EventArgs> deviceDisposing = new Event<EventArgs>();
+	public Event<EventArgs> deviceReset = new Event<EventArgs>();
+	public Event<EventArgs> deviceResetting = new Event<EventArgs>();
+	public Event<PreparingDeviceSettingsEventArgs> preparingDeviceSettings = new Event<PreparingDeviceSettingsEventArgs>();
 
+	@Override
+	public Event<EventArgs> getDeviceCreated() { return deviceCreated; }
+
+	@Override
+	public Event<EventArgs> getDeviceDisposing() { return deviceDisposing; }
+
+	@Override
+	public Event<EventArgs> getDeviceReset() { return deviceReset; }
+
+	@Override
+	public Event<EventArgs> getDeviceResetting() { return deviceResetting; }
+	
 	// FIXME: Why does the GraphicsDeviceManager not know enough about the
 	// GraphicsDevice to raise these events without help?
 	protected void onDeviceDisposing(EventArgs e)
@@ -144,7 +153,7 @@ public class GraphicsDeviceManager extends IGraphicsDeviceService implements IGr
 	private <TEventArgs extends EventArgs> void raise(EventHandler<TEventArgs> handler, TEventArgs e)
 	{
 		if (handler != null)
-			handler.accept(this, e);
+			handler.handleEvent(this, e);
 	}
 
 	@Override
@@ -233,15 +242,14 @@ public class GraphicsDeviceManager extends IGraphicsDeviceService implements IGr
 				: PresentInterval.Immediate;
 		_graphicsDevice.getPresentationParameters().setFullScreen(_wantFullScreen);
 
-		// // TODO: We probably should be resetting the whole
-		// // device if this changes as we are targeting a different
-		// // hardware feature level.
+		// TODO: We probably should be resetting the whole
+		// device if this changes as we are targeting a different
+		// hardware feature level.
 		_graphicsDevice.setGraphicsProfile(graphicsProfile);
 
-		// TODO: Do I need this ?
 		// _graphicsDevice.PresentationParameters.DeviceWindowHandle = _game.Window.Handle;
 
-		// // Update the back buffer.
+		// Update the back buffer.
 		// _graphicsDevice.CreateSizeDependentResources();  // NOTE: Thi is in GraphicsDevice.DirectX.cs
 		_graphicsDevice.applyRenderTargets(null);
 
@@ -367,7 +375,7 @@ public class GraphicsDeviceManager extends IGraphicsDeviceService implements IGr
 			gdi.adapter = GraphicsAdapter.getDefaultAdapter();
 			gdi.presentationParameters = presentationParameters;
 			PreparingDeviceSettingsEventArgs pe = new PreparingDeviceSettingsEventArgs(gdi);
-			preparingDeviceSettings.accept(this, pe);
+			preparingDeviceSettings.handleEvent(this, pe);
 			presentationParameters = pe.getGraphicsDeviceInformation().presentationParameters;
 			graphicsProfile = pe.getGraphicsDeviceInformation().graphicsProfile;
 		}
@@ -632,5 +640,4 @@ public class GraphicsDeviceManager extends IGraphicsDeviceService implements IGr
 		// newClientBounds.ToString());
 // #endif
 	}
-
 }

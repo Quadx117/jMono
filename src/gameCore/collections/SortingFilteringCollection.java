@@ -1,7 +1,7 @@
 package gameCore.collections;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.EventArgs;
+import gameCore.dotNet.events.EventHandler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,15 +34,6 @@ public class SortingFilteringCollection<T> implements Collection<T>
 	private Predicate<T> _filter;
 	private Comparator<T> _sort;
 
-	// TODO: Events
-	// private Action<T, EventHandler<EventArgs>> _filterChangedSubscriber;
-	// private Action<T, EventHandler<EventArgs>> _filterChangedUnsubscriber;
-	// private Action<T, EventHandler<EventArgs>> _sortChangedSubscriber;
-	// private Action<T, EventHandler<EventArgs>> _sortChangedUnsubscriber;
-	// private BiConsumer<T, BiConsumer<Object, Object>> _filterChangedSubscriber;
-	// private BiConsumer<T, BiConsumer<Object, Object>> _filterChangedUnsubscriber;
-	// private BiConsumer<T, BiConsumer<Object, Object>> _sortChangedSubscriber;
-	// private BiConsumer<T, BiConsumer<Object, Object>> _sortChangedUnsubscriber;
 	private BiConsumer<T, EventHandler<EventArgs>> _filterChangedSubscriber;
 	private BiConsumer<T, EventHandler<EventArgs>> _filterChangedUnsubscriber;
 	private BiConsumer<T, EventHandler<EventArgs>> _sortChangedSubscriber;
@@ -157,7 +148,6 @@ public class SortingFilteringCollection<T> implements Collection<T>
 	{
 		for (int i = 0; i < _items.size(); ++i)
 		{
-			// TODO: Events
 			_filterChangedUnsubscriber.accept(_items.get(i), this::item_FilterPropertyChanged);
 			_sortChangedUnsubscriber.accept(_items.get(i), this::item_SortPropertyChanged);
 		}
@@ -222,7 +212,7 @@ public class SortingFilteringCollection<T> implements Collection<T>
 		Collections.sort(_removeJournal, removeJournalSortComparison);
 		for (int i = 0; i < _removeJournal.size(); ++i)
 		{
-			_items.remove(_removeJournal.get(i));
+			_items.remove(_removeJournal.get(i).intValue());
 		}
 		_removeJournal.clear();
 	}
@@ -245,7 +235,6 @@ public class SortingFilteringCollection<T> implements Collection<T>
 			// If addJournalItem is less than (belongs before) _items[iItems], insert it.
 			if (_sort.compare(addJournalItem, (T) _items.get(iItems)) < 0)
 			{
-				// TODO : Events
 				subscribeToItemEvents(addJournalItem);
 				_items.add(iItems, (T) addJournalItem);
 				++iAddJournal;
@@ -260,7 +249,6 @@ public class SortingFilteringCollection<T> implements Collection<T>
 		for (; iAddJournal < _addJournal.size(); ++iAddJournal)
 		{
 			T addJournalItem = _addJournal.get(iAddJournal).item;
-			// TODO : Events
 			subscribeToItemEvents(addJournalItem);
 			_items.add((T) addJournalItem);
 		}
@@ -274,7 +262,6 @@ public class SortingFilteringCollection<T> implements Collection<T>
 		_sortChangedSubscriber.accept(item, this::item_SortPropertyChanged);
 	}
 
-	// TODO: Events
 	private void unsubscribeFromItemEvents(T item)
 	{
 		_filterChangedUnsubscriber.accept(item, this::item_FilterPropertyChanged);

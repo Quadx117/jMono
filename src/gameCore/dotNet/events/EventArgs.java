@@ -1,4 +1,4 @@
-package gameCore.events;
+package gameCore.dotNet.events;
 
 /**
  * The base class for all event classes.
