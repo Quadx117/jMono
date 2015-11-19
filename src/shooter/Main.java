@@ -15,7 +15,6 @@ public class Main
 	}
 }
 
-// TODO: Mouse Inputs
 // TODO: Sound
 // TODO: Finish validating Java keycode vs .NET (Keys.java)
 // TODO: add Font anti-aliasing to software renderer ?

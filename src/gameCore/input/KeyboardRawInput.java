@@ -1,6 +1,6 @@
 package gameCore.input;
 
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -13,7 +13,7 @@ import java.awt.event.KeyListener;
  */
 public class KeyboardRawInput implements KeyListener
 {
-	public static EventHandler<KeyboardInputEventArgs> onRawKeyEvent;
+	public static Event<KeyboardInputEventArgs> keyboardInput = new Event<KeyboardInputEventArgs>();
 
 	@Override
 	public void keyPressed(KeyEvent e)
@@ -27,7 +27,7 @@ public class KeyboardRawInput implements KeyListener
 		int key = getKeyValue(e);
 		int keyLocation = getKeyLocation(e);
 		KeyState state = KeyState.Down;
-		onRawKeyEvent.accept(null, new KeyboardInputEventArgs(key, keyLocation, state));
+		keyboardInput.handleEvent(null, new KeyboardInputEventArgs(key, keyLocation, state));
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class KeyboardRawInput implements KeyListener
 		int key = getKeyValue(e);
 		int keyLocation = getKeyLocation(e);
 		KeyState state = KeyState.Up;
-		onRawKeyEvent.accept(null, new KeyboardInputEventArgs(key, keyLocation, state));
+		keyboardInput.handleEvent(null, new KeyboardInputEventArgs(key, keyLocation, state));
 	}
 
 	@Override

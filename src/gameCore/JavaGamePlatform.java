@@ -3,6 +3,7 @@ package gameCore;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.input.Keyboard;
 import gameCore.input.Keys;
+import gameCore.input.Mouse;
 import gameCore.time.GameTime;
 
 import java.awt.Dimension;
@@ -29,7 +30,7 @@ public class JavaGamePlatform extends GamePlatform
 		_window = new JavaGameWindow(this);
 		_window.keyState = _keyState;
 
-		// Mouse.SetWindows(_window._form);
+		Mouse.setWindows(_window._frame);
 		
 		// TODO: Added this, see where it is done in MonoGame
 		_window.mouseVisibleToggled();
@@ -124,12 +125,12 @@ public class JavaGamePlatform extends GamePlatform
 			getGame().getGraphicsDevice().getPresentationParameters().setFullScreen(true);
 			// getGame().getGraphicsDevice().createSizeDependentResources(true);
 			getGame().getGraphicsDevice().applyRenderTargets(null);
-			_window.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			_window._frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		}
 		else
 		{
 			_window.setBorderless(true);
-			_window.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			_window._frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		}
 
 		_alreadyInWindowedMode = false;
@@ -148,14 +149,14 @@ public class JavaGamePlatform extends GamePlatform
 
 		if (getGame().getGraphicsDeviceManager().getHardwareModeSwitch())
 		{
-			_window.frame.setExtendedState(JFrame.NORMAL);
+			_window._frame.setExtendedState(JFrame.NORMAL);
 			getGame().getGraphicsDevice().getPresentationParameters().setFullScreen(false);
 			// getGame().getGraphicsDevice().createSizeDependentResources(true);
 			getGame().getGraphicsDevice().applyRenderTargets(null);
 		}
 		else
 		{
-			_window.frame.setExtendedState(JFrame.NORMAL);
+			_window._frame.setExtendedState(JFrame.NORMAL);
 			_window.setBorderless(false);
 		}
 		resetWindowBounds();

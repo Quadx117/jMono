@@ -1,10 +1,15 @@
 package gameCore;
 
-import gameCore.events.EventArgs;
+import gameCore.dotNet.events.EventArgs;
+import gameCore.input.ButtonState;
 import gameCore.input.KeyState;
-import gameCore.input.KeyboardRawInput;
 import gameCore.input.KeyboardInputEventArgs;
+import gameCore.input.KeyboardRawInput;
 import gameCore.input.Keys;
+import gameCore.input.Mouse;
+import gameCore.input.MouseButtons;
+import gameCore.input.MouseEventArgs;
+import gameCore.input.MouseRawInput;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -19,10 +24,7 @@ import javax.swing.UIManager;
 
 public class JavaGameWindow extends GameWindow implements AutoCloseable
 {
-
-	// protected WinFormsGameForm _form;
-	// TODO: Need to create subclass of JFrame so I can add the events
-	protected JFrame frame;
+	protected JFrameGameFrame _frame;
 
 	// static private ReaderWriterLockSlim _allWindowsReaderWriterLockSlim = new
 	// ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
@@ -38,7 +40,6 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 
 	private boolean _isMouseInBounds;
 
-	// protected Game Game { get; private set; }
 	private Game game;
 
 	public Game getGame()
@@ -55,7 +56,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 
 	public Rectangle getClientBounds()
 	{
-		java.awt.Rectangle clientRect = frame.getContentPane().getBounds();
+		java.awt.Rectangle clientRect = _frame.getContentPane().getBounds();
 		return new Rectangle(clientRect.x, clientRect.y, clientRect.width, clientRect.height);
 	}
 
@@ -69,7 +70,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		if (_isResizable != value)
 		{
 			_isResizable = value;
-			frame.setResizable(_isResizable);
+			_frame.setResizable(_isResizable);
 		}
 		else
 			return;
@@ -102,13 +103,13 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 
 	public Point getPosition()
 	{
-		return frame.getLocationOnScreen();
+		return _frame.getLocationOnScreen();
 	}
 
 	public void setPosition(Point value)
 	{
 		// _form.DesktopLocation = new Point(value.X, value.Y);
-		frame.setLocation(value);
+		_frame.setLocation(value);
 	}
 
 	@Override
@@ -128,11 +129,11 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 			return;
 		if (_isBorderless)
 			// _form.FormBorderStyle = FormBorderStyle.None;
-			frame.setUndecorated(true);
+			_frame.setUndecorated(true);
 		else
 			// _form.FormBorderStyle = _isResizable ? FormBorderStyle.Sizable :
 			// FormBorderStyle.FixedSingle;
-			frame.setUndecorated(false);
+			_frame.setUndecorated(false);
 	}
 
 	protected List<Keys> keyState;
@@ -152,7 +153,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		}
 
 		// _form = new WinFormsGameForm(this);
-		frame = new JFrame();
+		_frame = new JFrameGameFrame();
 
 		// When running unit tests this can return null.
 		// var assembly = Assembly.GetEntryAssembly();
@@ -165,29 +166,27 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 
 		// _form.MaximizeBox = false;
 		// _form.FormBorderStyle = FormBorderStyle.FixedSingle;
-		frame.setResizable(false);
+		_frame.setResizable(false);
 		// _form.StartPosition = FormStartPosition.CenterScreen;
 
-		frame.add(game);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		_frame.add(game);
+		_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		// TODO: Need to create subclass of JFrame so I can add the events
-		// TODO: Mouse events
 		// Capture mouse events.
-		// _frame.MouseWheel += OnMouseScroll;
-		// frame.MouseEnter += OnMouseEnter;
-		// frame.MouseLeave += OnMouseLeave;
+		_frame.mouseWheel.add(this::onMouseScroll);
+		_frame.mouseEnter.add(this::onMouseEnter);
+		_frame.mouseLeave.add(this::onMouseLeave);
 
 		// Use RawInput to capture key events.
 		// Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.None);
 		// Device.KeyboardInput += OnRawKeyEvent;
-		KeyboardRawInput.onRawKeyEvent = this::onRawKeyEvent;
+		KeyboardRawInput.keyboardInput.add(this::onRawKeyEvent);
 
-		// frame.Activated += OnActivated;
-		// frame.Deactivate += OnDeactivate;
-		// frame.clientSizeChanged += OnClientSizeChanged;
+		_frame.activated.add(this::onActivated);
+		_frame.deactivate.add(this::onDeactivate);
+		_frame.clientSizeChanged.add(this::onClientSizeChanged);
 
-		// _form.KeyPress += OnKeyPress;
+		_frame.keyPress.add(this::onKeyPress);
 
 		registerToAllWindows();
 	}
@@ -253,12 +252,10 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 			keyState.clear();
 	}
 
-	// TODO: How can I port this
-	// private void onMouseScroll(Object sender, MouseEventArgs mouseEventArgs) {
-	private void onMouseScroll(Object sender, EventArgs mouseEventArgs)
+	private void onMouseScroll(Object sender, MouseEventArgs mouseEventArgs)
 	{
-		// TODO: Mouse input
-		// MouseState.ScrollWheelValue += mouseEventArgs.Delta;
+		// TODO: Need to validate that.
+		mouseState._scrollWheelValue += mouseEventArgs.getDelta();
 	}
 
 	private void updateMouseState()
@@ -266,28 +263,29 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		// If we call the form client functions before the form has
 		// been made visible it will cause the wrong window size to
 		// be applied at startup.
-		if (!frame.isVisible())
+		if (!_frame.isVisible())
 			return;
 
-		// Point clientPos = _form.PointToClient(Control.MousePosition);
-		// boolean withinClient = _form.ClientRectangle.Contains(clientPos);
-		// var buttons = Control.MouseButtons;
+		Point clientPos = _frame.getMousePosition();
+		// TODO: Could probably skip the last part and just put true instead
+		boolean withinClient = (clientPos == null) ? false : _frame.getBounds().contains(clientPos);
+		int buttons = MouseRawInput.getButton().getValue();
 
-		// var previousState = MouseState.LeftButton;
+		ButtonState previousState = mouseState.getLeftButton();
 
-		// MouseState.X = clientPos.X;
-		// MouseState.Y = clientPos.Y;
-		// MouseState.LeftButton = (buttons & MouseButtons.Left) == MouseButtons.Left ?
-		// ButtonState.Pressed : ButtonState.Released;
-		// MouseState.MiddleButton = (buttons & MouseButtons.Middle) == MouseButtons.Middle ?
-		// ButtonState.Pressed : ButtonState.Released;
-		// MouseState.RightButton = (buttons & MouseButtons.Right) == MouseButtons.Right ?
-		// ButtonState.Pressed : ButtonState.Released;
-
+		if (clientPos != null)
+		{
+			mouseState.setX(clientPos.x);
+			mouseState.setY(clientPos.y);
+			mouseState.setLeftButton((buttons & MouseButtons.Left.getValue()) == MouseButtons.Left.getValue() ? ButtonState.Pressed : ButtonState.Released);
+			mouseState.setMiddleButton((buttons & MouseButtons.Middle.getValue()) == MouseButtons.Middle.getValue() ? ButtonState.Pressed : ButtonState.Released);
+			mouseState.setRightButton((buttons & MouseButtons.Right.getValue()) == MouseButtons.Right.getValue() ? ButtonState.Pressed : ButtonState.Released);
+		}
+		
 		// Don't process touch state if we're not active
 		// and the mouse is within the client area.
-		// if (!_platform.isActive() || !withinClient)
-		// return;
+		if (!_platform.isActive() || !withinClient)
+			return;
 
 		// TouchLocationState? touchState = null;
 		// if (MouseState.LeftButton == ButtonState.Pressed)
@@ -401,13 +399,13 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 	protected void initialize(int width, int height)
 	{
 		// _form.ClientSize = new Size(width, height);
-		frame.getContentPane().setPreferredSize(new Dimension(width, height));
+		_frame.getContentPane().setPreferredSize(new Dimension(width, height));
 		// TODO: Do I need this line of code ?
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		_frame.pack();
+		_frame.setLocationRelativeTo(null);
+		_frame.setVisible(true);
 		// TODO: Do I need this line of code ?
-		frame.requestFocus();
+		_frame.requestFocus();
 	}
 
 	private void onClientSizeChanged(Object sender, EventArgs eventArgs)
@@ -419,10 +417,13 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 			// Set the default new back buffer size and viewport, but this
 			// can be overloaded by the two events below.
 
-			int newWidth = frame.getContentPane().getBounds().width;	// _form.ClientRectangle.Width;
-			int newHeight = frame.getContentPane().getBounds().height;	// _form.ClientRectangle.Height;
+			int newWidth = _frame.getContentPane().getBounds().width;	// _form.ClientRectangle.Width;
+			int newHeight = _frame.getContentPane().getBounds().height;	// _form.ClientRectangle.Height;
+
+// #if !(WINDOWS && DIRECTX)
 			manager.setPreferredBackBufferWidth(newWidth);
 			manager.setPreferredBackBufferHeight(newHeight);
+// #endif
 
 			if (manager.getGraphicsDevice() == null)
 				return;
@@ -437,13 +438,13 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 	@Override
 	protected void SetTitle(String title)
 	{
-		frame.setTitle(title);
+		_frame.setTitle(title);
 	}
 
 	protected void runLoop()
 	{
 
-		// while (_form != null && _form.IsDisposed == false)
+		// while (_frame != null && _frame.isDisposed() == false)
 		while (true)
 		{
 			updateWindows();
@@ -451,11 +452,6 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		}
 
 		/*
-		 * Application.Idle += onIdle;
-		 * Application.Run(_form);
-		 * Application.Idle -= onIdle;
-		 * 
-		 * 
 		 * // We need to remove the WM_QUIT message in the message
 		 * // pump as it will keep us from restarting on this
 		 * // same thread.
@@ -508,7 +504,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 	protected void changeClientSize(Dimension clientBounds)
 	{
 		// this._form.ClientSize = clientBounds;
-		frame.getContentPane().setPreferredSize(clientBounds);
+		_frame.getContentPane().setPreferredSize(clientBounds);
 	}
 
 	// private static extern boolean PeekMessage(out NativeMessage msg, IntPtr hWnd, uint
@@ -524,17 +520,17 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 	{
 		if (disposing)
 		{
-			if (frame != null)
+			if (_frame != null)
 			{
 				unregisterFromAllWindows();
-				frame.dispose();
-				frame = null;
+				_frame.dispose();
+				_frame = null;
 			}
 		}
 		_platform = null;
 		this.game = null;
-		// Mouse.SetWindows(null);
-		// Device.KeyboardInput -= OnRawKeyEvent;
+		Mouse.setWindows(null);
+		KeyboardRawInput.keyboardInput.remove(this::onRawKeyEvent);
 		// Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.Remove);
 	}
 
@@ -564,12 +560,12 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 	// Helper method that I added
 	private void hideCursor()
 	{
-		frame.setCursor(frame.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB),
+		_frame.setCursor(_frame.getToolkit().createCustomCursor(new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB),
 				new Point(0, 0), null));
 	}
 
 	private void showCursor()
 	{
-		frame.setCursor(Cursor.getDefaultCursor());
+		_frame.setCursor(Cursor.getDefaultCursor());
 	}
 }

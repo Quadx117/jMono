@@ -8,13 +8,14 @@ import gameCore.components.IGameComponent;
 import gameCore.components.IUpdateable;
 import gameCore.content.ContentManager;
 import gameCore.content.ContentTypeReaderManager;
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
+import gameCore.dotNet.events.EventHandler;
 import gameCore.graphics.GraphicsDevice;
 import gameCore.graphics.IGraphicsDeviceService;
 import gameCore.graphics.Viewport;
 import gameCore.input.KeyboardRawInput;
-import gameCore.input.Mouse;
+import gameCore.input.MouseRawInput;
 import gameCore.time.GameTime;
 import gameCore.time.Stopwatch;
 import gameCore.time.TimeSpan;
@@ -49,16 +50,11 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	private ContentManager _content;
 	protected GamePlatform platform; // not useful since java is crossplatform ?
 
-	// TODO: Validate arguments (Events)
-	// TODO: Should I go back to the other way I was doing ?
-	// I had to change IDrawable to an abstract class.
 	private SortingFilteringCollection<IDrawable> _drawables =
 			new SortingFilteringCollection<IDrawable>(
 					d -> d.isVisible(),
-					// (d, handler) -> d.visibleChanged(handler),
-					// (d, handler) -> d.visibleChanged(handler),
-					(d, handler) -> d.visibleChanged = handler,
-					(d, handler) -> d.visibleChanged = handler,
+					(d, handler) -> d.getVisibleChanged().add(handler),
+					(d, handler) -> d.getVisibleChanged().remove(handler),
 					new Comparator<IDrawable>() {
 
 						@Override
@@ -67,29 +63,14 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 							return d1.getDrawOrder() - d2.getDrawOrder();
 						}
 					},
-					// (d, handler) -> d.drawOrderChanged(handler),
-					// (d, handler) -> d.drawOrderChanged(handler),
-					(d, handler) -> d.drawOrderChanged = handler,
-					(d, handler) -> d.drawOrderChanged = handler);
-	/*
-	 * private SortingFilteringCollection<IDrawable> _drawables =
-	 * new SortingFilteringCollection<IDrawable>(
-	 * d => d.Visible,
-	 * (d, handler) => d.VisibleChanged += handler,
-	 * (d, handler) => d.VisibleChanged -= handler,
-	 * (d1 ,d2) => Comparer<int>.Default.Compare(d1.DrawOrder, d2.DrawOrder),
-	 * (d, handler) => d.DrawOrderChanged += handler,
-	 * (d, handler) => d.DrawOrderChanged -= handler);
-	 */
+					(d, handler) -> d.getDrawOrderChanged().add(handler),
+					(d, handler) -> d.getDrawOrderChanged().remove(handler));
 
-	// TODO: Validate arguments (Events)
 	private SortingFilteringCollection<IUpdateable> _updateables =
 			new SortingFilteringCollection<IUpdateable>(
 					u -> u.isEnabled(),
-					// (u, handler) -> u.enabledChanged(handler),
-					// (u, handler) -> u.enabledChanged(handler),
-					(u, handler) -> u.enabledChanged = handler,
-					(u, handler) -> u.enabledChanged = handler,
+					(u, handler) -> u.getEnabledChanged().add(handler),
+					(u, handler) -> u.getEnabledChanged().remove(handler),
 					new Comparator<IUpdateable>() {
 
 						@Override
@@ -98,21 +79,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 							return u1.getUpdateOrder() - u2.getUpdateOrder();
 						}
 					},
-					// (u, handler) -> u.updateOrderChanged(handler, null),
-					// (u, handler) -> u.updateOrderChanged(handler, null)
-					(u, handler) -> u.updateOrderChanged = handler,
-					(u, handler) -> u.updateOrderChanged = handler);
-
-	/*
-	 * private SortingFilteringCollection<IUpdateable> _updateables =
-	 * new SortingFilteringCollection<IUpdateable>(
-	 * u => u.Enabled,
-	 * (u, handler) => u.EnabledChanged += handler,
-	 * (u, handler) => u.EnabledChanged -= handler,
-	 * (u1, u2) => Comparer<int>.Default.Compare(u1.UpdateOrder, u2.UpdateOrder),
-	 * (u, handler) => u.UpdateOrderChanged += handler,
-	 * (u, handler) => u.UpdateOrderChanged -= handler);
-	 */
+					(u, handler) -> u.getUpdateOrderChanged().add(handler),
+					(u, handler) -> u.getUpdateOrderChanged().remove(handler));
 
 	private IGraphicsDeviceManager _graphicsDeviceManager;
 	private IGraphicsDeviceService _graphicsDeviceService;
@@ -217,10 +185,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		_content = new ContentManager(_services);
 
 		platform = GamePlatform.create(this);
-		// Platform.Activated += OnActivated;
-		// Platform.Deactivated += OnDeactivated;
-		platform.activated = this::onActivated;
-		platform.deactivated = this::onDeactivated;
+		platform.activated.add(this::onActivated);
+		platform.deactivated.add(this::onDeactivated);
 		_services.addService(GamePlatform.class, platform);
 
 // #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
@@ -234,8 +200,16 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 				GraphicsDeviceManager.DefaultBackBufferHeight, BufferedImage.TYPE_INT_RGB);
 
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+		// TODO: Check if I want to keep all of this here.
+		// Should probably go in JavaGameWindow
 		KeyboardRawInput keyboard = new KeyboardRawInput();
 		addKeyListener(keyboard);
+		
+		MouseRawInput mouse = new MouseRawInput();
+		addMouseListener(mouse);
+		addMouseMotionListener(mouse);
+		addMouseWheelListener(mouse);
 	}
 
 	@Override
@@ -296,8 +270,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 				if (platform != null)
 				{
-					// Platform.Activated -= OnActivated;
-					// Platform.Deactivated -= OnDeactivated;
+					platform.activated.remove(this::onActivated);
+					platform.deactivated.remove(this::onDeactivated);
 					_services.removeService(GamePlatform.class);
 // #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 					// Platform.ViewStateChanged -= Platform_ApplicationViewChanged;
@@ -495,10 +469,10 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		return _initialized;
 	}
 
-	public EventHandler<EventArgs> activated;
-	public EventHandler<EventArgs> deactivated;
-	public EventHandler<EventArgs> disposed;
-	public EventHandler<EventArgs> exiting;
+	public Event<EventArgs> activated = new Event<EventArgs>();
+	public Event<EventArgs> deactivated = new Event<EventArgs>();
+	public Event<EventArgs> disposed = new Event<EventArgs>();
+	public Event<EventArgs> exiting = new Event<EventArgs>();
 
 // #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
 	// public event EventHandler<ViewStateChangedEventArgs> ApplicationViewChanged;
@@ -596,8 +570,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		switch (runBehavior)
 		{
 			case Asynchronous:
-				// platform.asyncRunLoopEnded += Platform_AsyncRunLoopEnded;
-				platform.asyncRunLoopEnded = this::platform_AsyncRunLoopEnded;
+				platform.asyncRunLoopEnded.add(this::platform_AsyncRunLoopEnded);
 				platform.startRunLoop();
 				break;
 			case Synchronous:
@@ -661,9 +634,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			{
 				try
 				{
-					// TODO: Delete if working
-					// delta.setTimeSpan((TimeSpan.subtract(_targetElapsedTime,
-					// _accumulatedElapsedTime)).getTicks());
 					delta = TimeSpan.subtract(_targetElapsedTime, _accumulatedElapsedTime);
 				}
 				catch (Exception e1)
@@ -802,12 +772,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 	protected void initialize()
 	{
-		// TODO: Check if I want to keep all of this here.
-		// Should probably go in JavaGameWindow
-		Mouse mouse = new Mouse();
-		addMouseListener(mouse);
-		addMouseMotionListener(mouse);
-
+		// TODO: This should probably go into JavaGameWindow
 		// Initialize the buffer strategy
 		createBufferStrategy(3);
 		buffStrat = getBufferStrategy();
@@ -834,8 +799,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		}
 	}
 
-	// private static Action<IDrawable, GameTime> DrawAction = (drawable, gameTime) =>
-	// drawable.Draw(gameTime);
 	private static BiConsumer<IDrawable, GameTime> drawAction = (drawable, gameTime) -> drawable.draw(gameTime);
 
 	/**
@@ -855,10 +818,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		_drawables.forEachFilteredItem(drawAction, gameTime);
 	}
 
-	// private static Action<IUpdateable, GameTime> UpdateAction = (updateable, gameTime) =>
-	// updateable.Update(gameTime);
-	private static BiConsumer<IUpdateable, GameTime> updateAction = (updateable, gameTime) -> updateable
-			.update(gameTime);
+	private static BiConsumer<IUpdateable, GameTime> updateAction = (updateable, gameTime) -> updateable.update(gameTime);
 
 	/**
 	 * Called when the game has determined that game logic needs to be
@@ -909,13 +869,12 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		decategorizeComponent(e.getGameComponent());
 	}
 
-	// TODO: Proper handling of events
 	private void platform_AsyncRunLoopEnded(Object sender, EventArgs e)
 	{
 		assertNotDisposed();
 
-		// GamePlatform platform = (GamePlatform) sender;
-		// platform.asyncRunLoopEnded -= Platform_AsyncRunLoopEnded;
+		GamePlatform platform = (GamePlatform) sender;
+		platform.asyncRunLoopEnded.remove(this::platform_AsyncRunLoopEnded);
 		endRun();
 		doExiting();
 	}
@@ -989,11 +948,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		// lists synced and to Initialize future components as they are
 		// added.
 		categorizeComponents();
-		// TODO: Proper event handling
-		// _components.ComponentAdded += Components_ComponentAdded;
-		// _components.ComponentRemoved += Components_ComponentRemoved;
-		_components.componentAdded = this::components_ComponentAdded;
-		_components.componentRemoved = this::components_ComponentRemoved;
+		_components.componentAdded.add(this::components_ComponentAdded);
+		_components.componentRemoved.add(this::components_ComponentRemoved);
 	}
 
 	protected void doExiting()
@@ -1068,18 +1024,17 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	private <TEventArgs extends EventArgs> void raise(EventHandler<TEventArgs> handler, TEventArgs e)
 	{
 		if (handler != null)
-			handler.accept(this, e);
+			handler.handleEvent(this, e);
 	}
 
-	// Stuff that I added
-	// TODO: Delete these at some point
+	// TODO: Stuff that I added. Delete these at some point
 
 	// TODO: Should I use this in JavaGameWindow in the while loop ?
 	/** True if the game is running */
 	// private boolean isRunning;
 
 	// TODO: All this should probably be added to the JavaGameWindow or some sort of
-	// SoftRenderedPlatform
+	// SoftwareRenderedPlatform
 	/** The object used to draw the image in the frame */
 	private BufferedImage image;
 	/** The BufferStrategy used in this game */
@@ -1122,6 +1077,5 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 // and make the members public instead. This will make the code easier
 // to use. Will have to refactor a lot of code.
 
-// TODO: Handle isMouseVisible
 // TODO: Finish comments (getters and setters, etc)
 // TODO: Create ArgumentOutOfRangeException ? (See RangeExcpetion and OutOfRangeException)

@@ -1,7 +1,8 @@
 package gameCore;
 
-import gameCore.events.EventArgs;
-import gameCore.events.EventHandler;
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
+import gameCore.input.MouseState;
 
 public abstract class GameWindow
 {
@@ -49,7 +50,7 @@ public abstract class GameWindow
 
 	public DisplayOrientation currentOrientation;
 
-	// TODO: Don't need that ?
+	// NOTE: Don't need that
 	// public IntPtr handle;
 
 	public String screenDeviceName;
@@ -82,18 +83,19 @@ public abstract class GameWindow
 		throw new UnsupportedOperationException();
 	}
 
-	// TODO: MouseState
-	// protected MouseState MouseState;
+	public MouseState mouseState;
 	// protected TouchPanelState TouchPanelState;
 
 	protected GameWindow()
 	{
+		// NOTE: Neede to add this because somehow it is initialized automatically in C#
+		mouseState = new MouseState();
 		// TouchPanelState = new TouchPanelState(this);
 	}
 
-	public EventHandler<EventArgs> clientSizeChanged;
-	public EventHandler<EventArgs> orientationChanged;
-	public EventHandler<EventArgs> screenDeviceNameChanged;
+	public Event<EventArgs> clientSizeChanged = new Event<EventArgs>();
+	public Event<EventArgs> orientationChanged = new Event<EventArgs>();
+	public Event<EventArgs> screenDeviceNameChanged = new Event<EventArgs>();
 
 // #if WINDOWS || WINDOWS_UAP || DESKTOPGL|| ANGLE
 
@@ -105,7 +107,7 @@ public abstract class GameWindow
 	 * http://msdn.microsoft.com/en-AU/library/system.windows.forms.control.keypress.aspx
 	 * This event is only supported on the Windows DirectX, Windows OpenGL and Linux platforms.
 	 */
-	public EventHandler<TextInputEventArgs> textInput;
+	public Event<TextInputEventArgs> textInput = new Event<TextInputEventArgs>();
 // #endif
 
 	public abstract void beginScreenDeviceChange(boolean willBeFullScreen);
@@ -122,7 +124,7 @@ public abstract class GameWindow
 	protected void onClientSizeChanged()
 	{
 		if (clientSizeChanged != null)
-			clientSizeChanged.accept(this, EventArgs.Empty);
+			clientSizeChanged.handleEvent(this, EventArgs.Empty);
 	}
 
 	protected void onDeactivated() {}
@@ -130,7 +132,7 @@ public abstract class GameWindow
 	protected void onOrientationChanged()
 	{
 		if (orientationChanged != null)
-			orientationChanged.accept(this, EventArgs.Empty);
+			orientationChanged.handleEvent(this, EventArgs.Empty);
 	}
 
 	protected void onPaint() {}
@@ -138,14 +140,14 @@ public abstract class GameWindow
 	protected void onScreenDeviceNameChanged()
 	{
 		if (screenDeviceNameChanged != null)
-			screenDeviceNameChanged.accept(this, EventArgs.Empty);
+			screenDeviceNameChanged.handleEvent(this, EventArgs.Empty);
 	}
 
 // #if WINDOWS || WINDOWS_UAP || DESKTOPGL || ANGLE
 	protected void onTextInput(Object sender, TextInputEventArgs e)
 	{
 		if (textInput != null)
-			textInput.accept(sender, e);
+			textInput.handleEvent(sender, e);
 	}
 
 // #endif
