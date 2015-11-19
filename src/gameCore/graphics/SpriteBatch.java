@@ -61,7 +61,6 @@ public class SpriteBatch extends GraphicsResource
 		_beginCalled = false;
 	}
 
-	// TODO: Probably need to do more overrides to compensate for C# default parameters
 	public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState,
 			DepthStencilState depthStencilState, RasterizerState rasterizerState, Effect effect, Matrix transformMatrix)
 	{
@@ -87,23 +86,43 @@ public class SpriteBatch extends GraphicsResource
 	}
 
 	// NOTE: Need to keep these overrides to compensate for C# default parameters
-	public void begin(SpriteSortMode sortMode, BlendState blendState)
-	{
-		begin(sortMode, blendState, SamplerState.LinearClamp, DepthStencilState.None,
-				RasterizerState.CullCounterClockwise, null, Matrix.identity());
-	}
+		public void begin()
+		{
+			begin(SpriteSortMode.Deferred, null, null, null, null, null, null);
+		}
+		
+		public void begin(SpriteSortMode sortMode)
+		{
+			begin (sortMode, null, null, null, null, null, null);
+		}
+		
+		public void begin(SpriteSortMode sortMode, BlendState blendState)
+		{
+			begin(sortMode, blendState, null, null, null, null, null);
+		}
+		
+		public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState)
+		{
+			begin(sortMode, blendState, samplerState, null, null, null, null);
+		}
+		
+		public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState,
+						  DepthStencilState depthStencilState)
+		{
+			begin(sortMode, blendState, samplerState, depthStencilState, null, null, null);
+		}
+		
+		public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState,
+				  		  DepthStencilState depthStencilState, RasterizerState rasterizerState)
+		{
+			begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, null, null);
+		}
 
-	public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState,
-			DepthStencilState depthStencilState, RasterizerState rasterizerState)
-	{
-		begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, null, Matrix.identity());
-	}
-
-	public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState,
-			DepthStencilState depthStencilState, RasterizerState rasterizerState, Effect effect)
-	{
-		begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, Matrix.identity());
-	}
+		public void begin(SpriteSortMode sortMode, BlendState blendState, SamplerState samplerState,
+						  DepthStencilState depthStencilState, RasterizerState rasterizerState, Effect effect)
+		{
+			begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, null);
+		}
 
 	public void end()
 	{

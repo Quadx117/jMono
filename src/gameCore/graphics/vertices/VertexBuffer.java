@@ -98,14 +98,14 @@ public class VertexBuffer extends GraphicsResource {
 
 	public <T> void getData(T[] data, int startIndex, int elementCount) // where T : struct
 	{
-		// TODO: elementSizeIntByte
+		// TODO: elementSizeInByte
 		// int elementSizeInByte = Marshal.SizeOf(typeof(T));
 		this.getData(0, data, startIndex, elementCount, 1);
 	}
 
 	public <T> void getData(T[] data) // where T : struct
 	{
-		// TODO: elementSizeIntByte
+		// TODO: elementSizeInByte
 		// byte elementSizeInByte = Marshal.SizeOf(typeof(T));
 		this.getData(0, data, 0, data.length, 1);
 	}
@@ -140,7 +140,7 @@ public class VertexBuffer extends GraphicsResource {
 			throw new IllegalArgumentException(
 					"One of the following conditions is true:\nThe vertex stride is larger than the vertex buffer.\nThe vertex stride is too small for the type of data requested.");
 
-		// TODO: elementSizeIntByte
+		// TODO: elementSizeInByte
 		// int elementSizeInBytes = Marshal.SizeOf(typeof(T));
 		platformSetDataInternal(offsetInBytes, data, startIndex, elementCount, vertexStride, options, bufferSize, 1);
 	}
