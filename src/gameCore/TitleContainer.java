@@ -127,7 +127,7 @@ public class TitleContainer
 	}
 
 	// TODO: This is just path normalization. Remove this
-	// and replace it with a proper utility function. I'm sure
+	// and replace it with a proper utility function. I suspect
 	// this same logic is duplicated all over the code base.
 	public static String getFilename(String name)
 	{

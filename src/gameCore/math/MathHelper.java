@@ -291,7 +291,7 @@ public final class MathHelper
 	}
 
 	// TODO : Lots of these methods already exists in the Math library.
-	// TODO : Should adjust some of the variable names to same as Math library.
+	// TODO : Should I adjust some of the variable names to same as Math library ?
 	/**
 	 * Converts radians to degrees.
 	 * 

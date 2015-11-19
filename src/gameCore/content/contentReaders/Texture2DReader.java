@@ -8,7 +8,6 @@ import gameCore.graphics.SurfaceFormat;
 import gameCore.graphics.Texture2D;
 import gameCore.math.MathHelper;
 
-// TODO: See if I need to create ContentTypeReader<T>
 public class Texture2DReader extends ContentTypeReader<Texture2D>
 {
 	public Texture2DReader()

@@ -1,6 +1,6 @@
 package gameCore.input;
 
-import gameCore.events.EventArgs;
+import gameCore.dotNet.events.EventArgs;
 
 public class KeyboardInputEventArgs extends EventArgs
 {

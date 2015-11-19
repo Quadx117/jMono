@@ -1,6 +1,6 @@
 package gameCore.components;
 
-import gameCore.events.EventArgs;
+import gameCore.dotNet.events.EventArgs;
 
 public class GameComponentCollectionEventArgs extends EventArgs
 {

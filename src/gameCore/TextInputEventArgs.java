@@ -1,6 +1,6 @@
 package gameCore;
 
-import gameCore.events.EventArgs;
+import gameCore.dotNet.events.EventArgs;
 
 /**
  * This class is used for the game window's TextInput event as EventArgs.

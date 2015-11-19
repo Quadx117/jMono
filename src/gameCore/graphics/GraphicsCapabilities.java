@@ -37,14 +37,14 @@ public class GraphicsCapabilities
 	protected boolean supportsDepthNonLinear;
 	public boolean supportsDepthNonLinear() { return supportsDepthNonLinear; }
 
-	// TODO: For now, the software rendere doesn't support texture compression
+	// TODO: For now, the software renderer doesn't support texture compression
 	/**
 	 * Whether the device supports DXT1
 	 */
 	protected boolean supportsDxt1;
 	public boolean supportsDxt1() { return supportsDxt1; }
 
-	// TODO: For now, the software rendere doesn't support texture compression
+	// TODO: For now, the software renderer doesn't support texture compression
 	/**
 	 * Whether the device supports S3TC (DXT1, DXT3, DXT5)
 	 */

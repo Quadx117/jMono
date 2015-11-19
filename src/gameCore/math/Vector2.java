@@ -799,7 +799,7 @@ public class Vector2 // implements IEquatable<Vector2>
 		{
 			Vector2 position = sourceArray[sourceIndex + x];
 			Vector2 destination = destinationArray[destinationIndex + x];
-//TODO: Test if it works
+
 			Vector2 v = null;
 			transform(position, rotation, v);
 

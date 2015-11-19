@@ -128,7 +128,6 @@ public class ShaderProgramCache {
             _programCache.put(vertexShader.HashKey | pixelShader.HashKey, shaderProgram);
         }
 
-	// TODO: equivalent is finalize(). Do I need this ?
 	// public void Dispose() {
 	// Dispose(true);
 	// GC.SuppressFinalize(this);

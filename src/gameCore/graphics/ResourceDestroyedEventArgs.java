@@ -1,6 +1,6 @@
 package gameCore.graphics;
 
-import gameCore.events.EventArgs;
+import gameCore.dotNet.events.EventArgs;
 
 public class ResourceDestroyedEventArgs extends EventArgs {
 

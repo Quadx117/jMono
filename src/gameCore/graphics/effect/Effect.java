@@ -54,27 +54,15 @@ public class Effect extends GraphicsResource
 	}
 
 	protected EffectParameterCollection parameters;
-
-	public EffectParameterCollection getParameters()
-	{
-		return parameters;
-	}
+	public EffectParameterCollection getParameters() { return parameters; }
 
 	private EffectTechniqueCollection techniques;
-
-	public EffectTechniqueCollection getTechniques()
-	{
-		return techniques;
-	}
+	public EffectTechniqueCollection getTechniques() { return techniques; }
 
 	public EffectTechnique currentTechnique;
 
 	protected ConstantBuffer[] constantBuffers;
-
-	protected ConstantBuffer[] getConstantBuffers()
-	{
-		return constantBuffers;
-	}
+	protected ConstantBuffer[] getConstantBuffers() { return constantBuffers; }
 
 	private Shader[] _shaders;
 
@@ -157,7 +145,7 @@ public class Effect extends GraphicsResource
 	{
 		MGFXHeader header = new MGFXHeader();
 		int i = 0;
-		// TODO: Should I create my own BitConverter class ?
+		// TODO: Should I use my own BitConverter class ?
 		// see https://github.com/peace-maker/lysis-java/blob/master/src/lysis/BitConverter.java
 		// see
 		// http://stackoverflow.com/questions/10070398/difference-in-outputs-between-c-sharp-and-java
@@ -178,45 +166,17 @@ public class Effect extends GraphicsResource
 		header.headerSize = i;
 
 		if (header.signature != header.MGFXSignature)
-			try
-			{
-				throw new Exception("This does not appear to be a MonoGame MGFX file!");
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+				throw new RuntimeException("This does not appear to be a MonoGame MGFX file!");
 		if (header.version < MGFXHeader.MGFXVersion)
-			try
-			{
-				throw new Exception("This MGFX effect is for an older release of MonoGame and needs to be rebuilt.");
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+				throw new RuntimeException("This MGFX effect is for an older release of MonoGame and needs to be rebuilt.");
 		if (header.version > MGFXHeader.MGFXVersion)
-			try
-			{
-				throw new Exception("This MGFX effect seems to be for a newer release of MonoGame.");
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+				throw new RuntimeException("This MGFX effect seems to be for a newer release of MonoGame.");
 
-		// #if DIRECTX
+// #if DIRECTX
 		if (header.profile != 1)
-			// #else
-			// if (header.profile != 0)
-			try
-			{
-				throw new Exception("This MGFX effect was built for a different platform!");
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+// #else
+		// if (header.profile != 0)
+				throw new RuntimeException("This MGFX effect was built for a different platform!");
 		return header;
 	}
 
@@ -311,8 +271,12 @@ public class Effect extends GraphicsResource
 
 	protected static byte[] loadEffectResource(String name)
 	{
+//#if WINRT
+		// var assembly = typeof(Effect).GetTypeInfo().Assembly;
+//#else
 		// var assembly = typeof(Effect).Assembly;
 		ClassLoader assembly = Effect.class.getClassLoader();
+//#endif
 
 		// var stream = assembly.GetManifestResourceStream(name);
 		InputStream stream = assembly.getResourceAsStream(name);
@@ -342,11 +306,11 @@ public class Effect extends GraphicsResource
 		for (int c = 0; c < buffers; ++c)
 		{
 
-			// #if OPENGL
+// #if OPENGL
 			// string name = reader.ReadString();
-			// #else
+// #else
 			String name = null;
-			// #endif
+// #endif
 
 			// Create the backing system memory buffer.
 			int sizeInBytes = (int) reader.readInt16();
@@ -447,16 +411,7 @@ public class Effect extends GraphicsResource
 				blend.setColorBlendFunction(BlendFunction.valueOf(reader.readByte()));
 				blend.setColorDestinationBlend(Blend.valueOf(reader.readByte()));
 				blend.setColorSourceBlend(Blend.valueOf(reader.readByte()));
-				blend.setColorWriteChannels(ColorWriteChannels.valueOf(reader.readByte())); // TODO:
-																							// This
-																							// needs
-																							// to be
-																							// tested
-																							// to
-																							// make
-																							// sure
-																							// it
-																							// works
+				blend.setColorWriteChannels(ColorWriteChannels.valueOf(reader.readByte()));
 				blend.setColorWriteChannels1(ColorWriteChannels.valueOf(reader.readByte()));
 				blend.setColorWriteChannels2(ColorWriteChannels.valueOf(reader.readByte()));
 				blend.setColorWriteChannels3(ColorWriteChannels.valueOf(reader.readByte()));
@@ -526,11 +481,11 @@ public class Effect extends GraphicsResource
 				{
 					case Boolean:
 					case Integer:
-					// #if DIRECTX
+// #if DIRECTX
 					// Under DirectX we properly store integers and booleans
 					// in an integer type.
 					//
-					// MojoShader on the otherhand stores everything in float
+					// MojoShader on the other hand stores everything in float
 					// types which is why this code is disabled under OpenGL.
 					{
 						int[] buffer = new int[rowCount * columnCount];
@@ -539,7 +494,7 @@ public class Effect extends GraphicsResource
 						data = buffer;
 						break;
 					}
-					// #endif
+// #endif
 
 					case Single:
 					{
@@ -570,22 +525,4 @@ public class Effect extends GraphicsResource
 
 		return new EffectParameterCollection(parameters);
 	}
-
-	// TODO: Delete these
-	/*
-	 * /// <summary>
-	 * /// The cache of effects from unique byte streams.
-	 * /// </summary>
-	 * private static HashMap<Integer, Effect> effectCache = new HashMap<Integer, Effect>();
-	 * 
-	 * public static void flushCache()
-	 * {
-	 * // Dispose all the cached effects.
-	 * for (Map.Entry<Integer, Effect> effect : effectCache.entrySet())
-	 * effect.getValue().finalize();
-	 * 
-	 * // Clear the cache.
-	 * effectCache.clear();
-	 * }
-	 */
 }

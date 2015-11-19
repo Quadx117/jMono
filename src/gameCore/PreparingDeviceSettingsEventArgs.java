@@ -1,6 +1,6 @@
 package gameCore;
 
-import gameCore.events.EventArgs;
+import gameCore.dotNet.events.EventArgs;
 
 /**
  * The arguments to the {@link GraphicsDeviceManager.PreparingDeviceSettings} event.

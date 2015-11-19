@@ -213,9 +213,7 @@ public class ContentManager implements AutoCloseable
 			throw new RuntimeException("ContentManager is disposed");
 		}
 
-		// TODO: Should I do = null or create my own default method
-		// T result = default(T);
-		T result;
+		T result = null;
 
 		// On some platforms, name and slash direction matter.
 		// We store the asset by a /-seperating key rather than how the
@@ -225,7 +223,6 @@ public class ContentManager implements AutoCloseable
 		// The dictionary will ignore case differences
 		String key = assetName.replace('\\', '/');
 
-		// TODO: T problem and type erasure
 		// Check for a previously loaded asset first
 		Object asset = loadedAssets.get(key);
 		if (asset != null)

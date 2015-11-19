@@ -14,7 +14,7 @@ public class SpriteEffect extends Effect {
 
     EffectParameter matrixParam;
 
-    // TODO: Find a way to switch on platform tpye ?
+    // TODO: Find a way to switch on platform type ?
     // TODO: If so, need to do it also in Shader and other classes
     public static byte[] bytecode = loadEffectResource(
 //#if DIRECTX

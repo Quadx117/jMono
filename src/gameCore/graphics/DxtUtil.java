@@ -174,7 +174,7 @@ public class DxtUtil
 			{
 				for (int x = 0; x < blockCountX; ++x)
 				{
-					// TODO: Copied the whole code sinc Java doesn't have out parameters
+					// TODO: Copied the whole code since Java doesn't have out parameters
 					// TODO: Do I want to create a wrapper class around byte[] ?
 					// decompressDxt3Block(imageReader, x, y, blockCountX, width, height, imageData);
 					
