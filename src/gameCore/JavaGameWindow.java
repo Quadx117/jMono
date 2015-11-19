@@ -266,7 +266,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		if (!_frame.isVisible())
 			return;
 
-		Point clientPos = _frame.getMousePosition();
+		Point clientPos = _frame.getContentPane().getMousePosition();
 		// TODO: Could probably skip the last part and just put true instead
 		boolean withinClient = (clientPos == null) ? false : _frame.getBounds().contains(clientPos);
 		int buttons = MouseRawInput.getButton().getValue();
