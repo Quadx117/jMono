@@ -1183,9 +1183,22 @@ public class GraphicsDevice implements AutoCloseable
 
 			if (destWidth != srcWidth || destHeight != srcHeight)
 			{
-				// TODO: Add other resizing methods (see SamplerState.java)
-				texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
-				textureWidth = destWidth;
+				// TODO: Add other resizing methods (see TextureFilter.java)
+				switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
+				{
+					case Linear:
+						texturePixels = resizeBilinear(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
+						textureWidth = destWidth;
+						break;
+					case Point:
+						texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
+						textureWidth = destWidth;
+						break;
+					default:
+						texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
+						textureWidth = destWidth;
+						break;
+				}
 			}
 			else
 			{
@@ -1359,12 +1372,65 @@ public class GraphicsDevice implements AutoCloseable
 		}
 	}
 	
+	// TODO: This is probably SamplerState.LinearClamp
+	public int[] resizeBilinear(Texture2D tex, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
+			throws IllegalArgumentException {
+		if (newWidth < 0 || newHeight < 0)
+			throw new IllegalArgumentException("new width or new height cannot be less than 0");
+		int[] temp = new int[newWidth * newHeight];
+
+		int a, b, c, d, x, y, srcIndex;
+		float x_ratio = ((float) (oldWidth - 1)) / newWidth;
+		float y_ratio = ((float) (oldHeight - 1)) / newHeight;
+		float x_diff, y_diff, blue, red, green, alpha;
+		int destIndex = 0;
+
+		for (int i = startY; i < newHeight; ++i) {
+			for (int j = startX; j < newWidth; ++j) {
+				x = (int) (x_ratio * j);
+				y = (int) (y_ratio * i);
+				x_diff = (x_ratio * j) - x;
+				y_diff = (y_ratio * i) - y;
+				srcIndex = (x + y * oldWidth);
+				a = tex.pixels[srcIndex];
+				b = tex.pixels[srcIndex + 1];
+				c = tex.pixels[srcIndex + oldWidth];
+				d = tex.pixels[srcIndex + oldWidth + 1];
+
+				// blue element
+				// Yb = Ab(1-w)(1-h) + Bb(w)(1-h) + Cb(h)(1-w) + Db(wh)
+				blue = (a & 0xff) * (1 - x_diff) * (1 - y_diff) + (b & 0xff) * (x_diff) * (1 - y_diff) + (c & 0xff)
+						* (y_diff) * (1 - x_diff) + (d & 0xff) * (x_diff * y_diff);
+
+				// green element
+				// Yg = Ag(1-w)(1-h) + Bg(w)(1-h) + Cg(h)(1-w) + Dg(wh)
+				green = ((a >> 8) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 8) & 0xff) * (x_diff) * (1 - y_diff)
+						+ ((c >> 8) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 8) & 0xff) * (x_diff * y_diff);
+
+				// red element
+				// Yr = Ar(1-w)(1-h) + Br(w)(1-h) + Cr(h)(1-w) + Dr(wh)
+				red = ((a >> 16) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 16) & 0xff) * (x_diff) * (1 - y_diff)
+						+ ((c >> 16) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 16) & 0xff) * (x_diff * y_diff);
+
+				// alpha element
+				// Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
+				alpha = ((a >> 24) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 24) & 0xff) * (x_diff) * (1 - y_diff)
+						+ ((c >> 24) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 24) & 0xff) * (x_diff * y_diff);
+
+				temp[destIndex++] = ((((int) alpha) << 24) & 0xff000000) | ((((int) red) << 16) & 0xff0000)
+						| ((((int) green) << 8) & 0xff00) | ((int) blue);
+			}
+		}
+		return temp;
+	}
+	
+	// TODO: This is probably SamplerState.PointClamp
 	/**
 	 * Resizes a portion of an ARGB sprite using the nearest neighbor
 	 * interpolation algorithm. Useful for a animation strips. The new width or
 	 * the new height cannot be less than or equal to 0.
 	 * 
-	 * @param tex
+	 * @param texture
 	 *        The original texture to be resized.
 	 * @param startX
 	 *        The starting location on the x axis.
@@ -1384,7 +1450,7 @@ public class GraphicsDevice implements AutoCloseable
 	 *         If the new width or the new height is less than or equal to
 	 *         0.
 	 */
-	public int[] resizeNearestNeighbor(Texture2D tex, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
+	public int[] resizeNearestNeighbor(Texture2D texture, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
 	{
 		if (newWidth < 0 || newHeight < 0)
 			throw new IllegalArgumentException("new width or new height cannot be less than 0");
@@ -1397,7 +1463,7 @@ public class GraphicsDevice implements AutoCloseable
 			for (int x = startX; x < newWidth; ++x)
 			{
 				// TODO: This needs to be fixed
-				temp[x + y * newWidth] = tex.pixels[(int) (x / xRatio) + (int) (y / yRatio) * oldWidth];
+				temp[x + y * newWidth] = texture.pixels[(int) (x / xRatio) + (int) (y / yRatio) * oldWidth];
 			}
 		}
 		return temp;
