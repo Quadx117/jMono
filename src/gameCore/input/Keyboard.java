@@ -12,17 +12,18 @@ public class Keyboard
 {
 	static List<Keys> _keys;
 
-    /// <summary>
-    /// Returns the current keyboard state.
-    /// </summary>
-    /// <returns>Current keyboard state.</returns>
+	/**
+	 * Returns the current keyboard state.
+	 * 
+	 * @return Current keyboard state.
+	 */
 	public static KeyboardState getState()
 	{
-        return new KeyboardState(_keys);
+		return new KeyboardState(_keys);
 	}
-	
-    public static void setKeys(List<Keys> keys)
-    {
-        _keys = keys;
-    }
+
+	public static void setKeys(List<Keys> keys)
+	{
+		_keys = keys;
+	}
 }

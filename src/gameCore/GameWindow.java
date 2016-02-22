@@ -88,7 +88,7 @@ public abstract class GameWindow
 
 	protected GameWindow()
 	{
-		// NOTE: Neede to add this because somehow it is initialized automatically in C#
+		// NOTE: Needed to add this because somehow it is initialized automatically in C#
 		mouseState = new MouseState();
 		// TouchPanelState = new TouchPanelState(this);
 	}

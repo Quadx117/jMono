@@ -13,10 +13,12 @@ import gameCore.input.MouseRawInput;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -173,9 +175,9 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Capture mouse events.
-		_frame.mouseWheel.add(this::onMouseScroll);
-		_frame.mouseEnter.add(this::onMouseEnter);
-		_frame.mouseLeave.add(this::onMouseLeave);
+		MouseRawInput.mouseWheel.add(this::onMouseScroll);
+		MouseRawInput.mouseEnter.add(this::onMouseEnter);
+		MouseRawInput.mouseLeave.add(this::onMouseLeave);
 
 		// Use RawInput to capture key events.
 		// Device.RegisterDevice(UsagePage.Generic, UsageId.GenericKeyboard, DeviceFlags.None);
@@ -281,7 +283,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 			mouseState.setMiddleButton((buttons & MouseButtons.Middle.getValue()) == MouseButtons.Middle.getValue() ? ButtonState.Pressed : ButtonState.Released);
 			mouseState.setRightButton((buttons & MouseButtons.Right.getValue()) == MouseButtons.Right.getValue() ? ButtonState.Pressed : ButtonState.Released);
 		}
-		
+
 		// Don't process touch state if we're not active
 		// and the mouse is within the client area.
 		if (!_platform.isActive() || !withinClient)
@@ -406,6 +408,16 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		_frame.setVisible(true);
 		// TODO: Do I need this line of code ?
 		_frame.requestFocus();
+
+		// Enables us to receive key events for focus traversal keys (i.e. tab key)
+		// so we can treat it ourselves
+		//_frame.getContentPane().setFocusTraversalKeysEnabled(false);
+		// _frame.setFocusTraversalKeysEnabled(false);
+		for (int id : new int[] { KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
+								  KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS,
+								  KeyboardFocusManager.UP_CYCLE_TRAVERSAL_KEYS,
+								  KeyboardFocusManager.DOWN_CYCLE_TRAVERSAL_KEYS})
+			_frame.setFocusTraversalKeys(id, Collections.emptySet());
 	}
 
 	private void onClientSizeChanged(Object sender, EventArgs eventArgs)
@@ -550,7 +562,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 				_isMouseHidden = false;
 			}
 		}
-		else // if (!_isMouseHidden && _isMouseInBounds)
+		else if (!_isMouseHidden && _isMouseInBounds)
 		{
 			hideCursor();
 			_isMouseHidden = true;

@@ -25,7 +25,7 @@ public enum Keys
 	/**
 	 * TAB key.
 	 */
-	Tab(9),					// Doesn't seem to be processed in Java 
+	Tab(9),
 	/**
 	 * ENTER key.
 	 */
@@ -405,7 +405,7 @@ public enum Keys
 	/**
 	 * F20 key.
 	 */
-	F20(131),				// Don't have it on my keyboard// Not tested in Java
+	F20(131),				// Don't have it on my keyboard
 	/**
 	 * F21 key.
 	 */
@@ -453,7 +453,7 @@ public enum Keys
 	/**
 	 * Right ALT key.
 	 */
-	RightAlt(165),			// Java 17 +18 ?
+	RightAlt(165),			// Java 17 + 18
 	/**
 	 * Browser Back key.
 	 */

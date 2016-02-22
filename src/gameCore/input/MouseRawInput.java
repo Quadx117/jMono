@@ -1,5 +1,8 @@
 package gameCore.input;
 
+import gameCore.dotNet.events.Event;
+import gameCore.dotNet.events.EventArgs;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -8,6 +11,11 @@ import java.awt.event.MouseWheelListener;
 
 public class MouseRawInput implements MouseListener, MouseMotionListener, MouseWheelListener
 {
+	// Mouse events
+	public static Event<MouseEventArgs> mouseWheel = new Event<MouseEventArgs>();
+	public static Event<EventArgs> mouseEnter = new Event<EventArgs>();
+	public static Event<EventArgs> mouseLeave = new Event<EventArgs>();
+		
 	private static int mouseX = -1;
 	private static int mouseY = -1;
 	private static int delta = -1;
@@ -57,10 +65,16 @@ public class MouseRawInput implements MouseListener, MouseMotionListener, MouseW
 	public void mouseClicked(MouseEvent e) {}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e)
+	{
+		mouseEnter.handleEvent(null, null);
+	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {}
+	public void mouseExited(MouseEvent e)
+	{
+		mouseLeave.handleEvent(null, null);
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e)
@@ -96,5 +110,6 @@ public class MouseRawInput implements MouseListener, MouseMotionListener, MouseW
 	{
 		// TODO: Should I add to delta and reset delta only when I pool the mouse ?
 		delta = e.getWheelRotation();
+		mouseWheel.handleEvent(null, new MouseEventArgs(mouseButton, clicks, mouseX, mouseY, delta));
 	}
 }

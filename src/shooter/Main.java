@@ -15,6 +15,8 @@ public class Main
 	}
 }
 
+// TODO: Finish event handling for JFrameGameFrame
+// (keyPress, activated, deactivate, clientSizeChanged, see mouseEntered, mouseExited and keyboardInput for examples)
 // TODO: Sound
 // TODO: Finish validating Java keycode vs .NET (Keys.java)
 // TODO: add Font anti-aliasing to software renderer ?

@@ -18,11 +18,11 @@ public class KeyboardRawInput implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		// System.out.println("------------START-------------");
-		// System.out.println("getKeyChar():         " + e.getKeyChar());
-		// System.out.println("getModifiers():       " + e.getModifiers());
-		// System.out.println("getExtendedKeyCode(): " + e.getExtendedKeyCode());
-		// System.out.println("getKeyLocation():     " + e.getKeyLocation());
+//		 System.out.println("------------START-------------");
+//		 System.out.println("getKeyChar():         " + e.getKeyChar());
+//		 System.out.println("getModifiers():       " + e.getModifiers());
+//		 System.out.println("getExtendedKeyCode(): " + e.getExtendedKeyCode());
+//		 System.out.println("getKeyLocation():     " + e.getKeyLocation());
 
 		int key = getKeyValue(e);
 		int keyLocation = getKeyLocation(e);
