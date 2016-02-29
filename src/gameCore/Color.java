@@ -1440,7 +1440,6 @@ public class Color
 	 * @param obj
 	 *        the object to test for equality with this <code>Color</code>
 	 * @return <code>true</code> if the objects are the same; <code>false</code> otherwise.
-	 * @since JDK1.0
 	 */
 	@Override
 	public boolean equals(Object obj)
@@ -1469,7 +1468,7 @@ public class Color
 	 * 		  the reference object with which to compare.
 	 * @return {@code false} if this object is the same as the obj argument;
      *         {@code true} otherwise.
-     * @see java.lang.Object#equals(Object)
+     * @see #equals(Object)
 	 */
 	public boolean notEquals(Object obj)
 	{

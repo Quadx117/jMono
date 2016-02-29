@@ -320,7 +320,6 @@ public class Vector3
 	 * 		  the reference object with which to compare.
 	 * @return {@code true} if this object is the same as the obj argument;
      *         {@code false} otherwise.
-     * @see java.lang.Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(Object obj)
@@ -349,7 +348,7 @@ public class Vector3
 	 * 		  the reference object with which to compare.
 	 * @return {@code false} if this object is the same as the obj argument;
      *         {@code true} otherwise.
-     * @see java.lang.Object#equals(Object)
+     * @see #equals(Object)
 	 */
 	public boolean notEquals(Object obj)
 	{
