@@ -386,10 +386,10 @@ public class ShooterGame extends Game
 	{
 		// Allows the game to exit
 		// if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Escape))
+		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Escape))
 			this.exit();
 
-		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Down) & menuIndex != 1)
+		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Down) & menuIndex != 1)
 		{
 			menuIndex = 1;
 			elapsedTimeColor = 0;
@@ -400,7 +400,7 @@ public class ShooterGame extends Game
 			// lowBeep.Play(0.7f, 0.0f, 0.0f);
 		}
 
-		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Up) & menuIndex != 0)
+		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Up) & menuIndex != 0)
 		{
 			menuIndex = 0;
 			elapsedTimeColor = 0;
@@ -411,11 +411,11 @@ public class ShooterGame extends Game
 			// lowBeep.Play(0.7f, 0.0f, 0.0f);
 		}
 
-		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 0)
+		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 0)
 		{
 			currentScreen = ScreenState.MainGame;
 		}
-		else if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 1)
+		else if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 1)
 		{
 			this.exit();
 		}
@@ -424,7 +424,7 @@ public class ShooterGame extends Game
 	private void updateMainGame(GameTime gameTime)
 	{
 		// Allow the game to return to the main menu
-		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.isKeyDown(Keys.Escape))
+		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Escape))
 		{
 			currentScreen = ScreenState.MainMenu;
 			return;
@@ -456,7 +456,7 @@ public class ShooterGame extends Game
 	{
 		// Test if any key is pressed. If a key is pressed .Length = 1 ; if two keys are pressed
 		// simultaneously .Length = 2, etc.
-		if (previousKeyboardState != currentKeyboardState & currentKeyboardState.getPressedKeys().length > 0)
+		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.getPressedKeys().length > 0)
 		{
 			startNewGame();
 			currentScreen = ScreenState.MainMenu;
