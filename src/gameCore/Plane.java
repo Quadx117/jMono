@@ -204,22 +204,49 @@ public class Plane // IEquatable<Plane>
 		result.D = value.D * factor;
 	}
 
-	public static boolean notEquals(Plane plane1, Plane plane2)
-	{
-		return !plane1.equals(plane2);
-	}
-
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
-	public boolean equals(Object other)
+	public boolean equals(Object obj)
 	{
-		return (other instanceof Plane) ? this.equals((Plane) other) : false;
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Plane) obj);
 	}
 
-	public boolean equals(Plane other)
+	// Helper method
+	private boolean equals(Plane other)
 	{
 		return ((normal.equals(other.normal)) && (D == other.D));
 	}
 
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
 	@Override
 	public int hashCode()
 	{

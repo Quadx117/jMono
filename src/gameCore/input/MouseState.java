@@ -70,51 +70,51 @@ public class MouseState
 	}
 
 	/**
-	 * Compares whether two MouseState instances are equal.
-	 * 
-	 * @param left
-	 *        MouseState instance on the left of the equal sign.
-	 * @param right
-	 *        MouseState instance on the right of the equal sign.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
-	 */
-	public static boolean equals(MouseState left, MouseState right)
-	{
-		return left._x == right._x &&
-			   left._y == right._y &&
-			   left._leftButton == right._leftButton &&
-			   left._middleButton == right._middleButton &&
-			   left._rightButton == right._rightButton &&
-			   left._scrollWheelValue == right._scrollWheelValue;
-	}
-
-	/**
-	 * Compares whether two MouseState instances are not equal.
-	 * 
-	 * @param left
-	 *        MouseState instance on the left of the equal sign.
-	 * @param right
-	 *        MouseState instance on the right of the equal sign.
-	 * @return {@code true} if the objects are not equal; {@code false} otherwise.
-	 */
-	public static boolean notEquals(MouseState left, MouseState right)
-	{
-		return !(MouseState.equals(left, right));
-	}
-
-	/**
-	 * Compares whether the current instance is equal to the specified object.
+	 * Indicates whether some other object is "equal to" this one.
 	 * 
 	 * @param obj
-	 *        The MouseState to compare.
-	 * @return {@code true} if the objects are equal; {@code false} otherwise.
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof MouseState)
-			return this.equals((MouseState) obj);
-		return false;
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((MouseState) obj);
+	}
+	
+	// Helper method
+	private boolean equals(MouseState other)
+	{
+		return this._x == other._x && //
+			   this._y == other._y && //
+			   this._leftButton == other._leftButton && //
+			   this._middleButton == other._middleButton && //
+			   this._rightButton == other._rightButton && //
+			   this._scrollWheelValue == other._scrollWheelValue;
+	}
+
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
 	}
 
 	/**

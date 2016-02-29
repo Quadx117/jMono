@@ -427,9 +427,17 @@ public class SpriteFont
 		public float widthIncludingBearings;
 
 		@Override
-		public boolean equals(Object other)
+		public boolean equals(Object obj)
 		{
-			return (other instanceof Glyph) && (this.character == ((Glyph)other).character);
+			if (obj == null)
+			{
+				return false;
+			}
+			if (obj.getClass() != this.getClass())
+			{
+				return false;
+			}
+			return (this.character == ((Glyph) obj).character);
 		}
 
 		@Override

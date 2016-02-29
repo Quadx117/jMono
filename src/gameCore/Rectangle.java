@@ -182,29 +182,6 @@ public class Rectangle
 	}
 
 	// / <summary>
-	// / Compares whether two <see cref="Rectangle"/> instances are equal.
-	// / </summary>
-	// / <param name="a"><see cref="Rectangle"/> instance on the left of the equal sign.</param>
-	// / <param name="b"><see cref="Rectangle"/> instance on the right of the equal sign.</param>
-	// / <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-	public static boolean equals(Rectangle a, Rectangle b)
-	{
-		return ((a.x == b.x) && (a.y == b.y) && (a.width == b.width) && (a.height == b.height));
-	}
-
-	// / <summary>
-	// / Compares whether two <see cref="Rectangle"/> instances are not equal.
-	// / </summary>
-	// / <param name="a"><see cref="Rectangle"/> instance on the left of the not equal sign.</param>
-	// / <param name="b"><see cref="Rectangle"/> instance on the right of the not equal
-	// sign.</param>
-	// / <returns><c>true</c> if the instances are not equal; <c>false</c> otherwise.</returns>
-	public static boolean notEquals(Rectangle a, Rectangle b)
-	{
-		return !(a.equals(b));
-	}
-
-	// / <summary>
 	// / Gets whether or not the provided coordinates lie within the bounds of this <see
 	// cref="Rectangle"/>.
 	// / </summary>
@@ -310,27 +287,49 @@ public class Rectangle
 		result = ((((this.x <= value.x) && ((value.x + value.width) <= (this.x + this.width))) && (this.y <= value.y)) && ((value.y + value.height) <= (this.y + this.height)));
 	}
 
-	// / <summary>
-	// / Compares whether current instance is equal to specified <see cref="Object"/>.
-	// / </summary>
-	// / <param name="obj">The <see cref="Object"/> to compare.</param>
-	// / <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof Rectangle) && this.equals((Rectangle) obj);
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Rectangle) obj);
 	}
 
-	// / <summary>
-	// / Compares whether current instance is equal to specified <see cref="Rectangle"/>.
-	// / </summary>
-	// / <param name="other">The <see cref="Rectangle"/> to compare.</param>
-	// / <returns><c>true</c> if the instances are equal; <c>false</c> otherwise.</returns>
-	public boolean equals(Rectangle other)
+	// Helper method
+	private boolean equals(Rectangle other)
 	{
-		return Rectangle.equals(this, other);
+		return ((this.x == other.x) && (this.y == other.y) && (this.width == other.width) && (this.height == other.height));
 	}
-
+	
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+		
 	// / <summary>
 	// / Gets the hash code of this <see cref="Rectangle"/>.
 	// / </summary>

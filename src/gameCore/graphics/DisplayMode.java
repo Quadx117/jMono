@@ -48,39 +48,50 @@ public class DisplayMode
 		this.format = format;
 	}
 
-	public static boolean notEquals(DisplayMode left, DisplayMode right)
-	{
-		return !(equals(left, right));
-	}
-
-	public static boolean equals(DisplayMode left, DisplayMode right)
-	{
-		if (left == right)	// Same object or both are null
-			return true;
-
-		if (left == null || right == null)
-			return false;
-
-		return (left.format == right.format) &&	//
-			   (left.height == right.height) &&	//
-			   (left.refreshRate == right.refreshRate) &&	//
-			   (left.width == right.width);
-	}
-
+	/**
+	 * Compares whether two {@link DisplayMode} instances are equal.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
-	public boolean equals(Object other)
+	public boolean equals(Object obj)
 	{
-		if (!(other instanceof DisplayMode))
+		if (obj == null)
+		{
 			return false;
-
-		DisplayMode right = (DisplayMode) other;
-
-		return equals(this, right);
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((DisplayMode) obj);
+	}
+	
+	// Helper method
+	private boolean equals(DisplayMode other)
+	{
+		return (this.format == other.format) &&	//
+			   (this.height == other.height) &&	//
+			   (this.refreshRate == other.refreshRate) &&	//
+			   (this.width == other.width);
 	}
 
-	public boolean notEquals(Object other)
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
 	{
-		return !(this.equals(other));
+		return !this.equals(obj);
 	}
 
 	@Override

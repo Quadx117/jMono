@@ -2,8 +2,8 @@ package gameCore;
 
 import gameCore.math.Vector2;
 
-// TODO: Look at java.awt.Point and it's parent classes and see if there are methods that I should
-// implement.
+// TODO: Look at java.awt.Point and it's parent classes and C# Point struct
+// and see if there are methods that I should implement.
 // C# struct
 /**
  * Describes a 2D-point.
@@ -131,56 +131,46 @@ public class Point
 	}
 
 	/**
-	 * Compares whether two {@link Point} instances are equal.
-	 * 
-	 * @param a
-	 *        {@link Point} instance on the left of the equal sign.
-	 * @param b
-	 *        {@link Point} instance on the right of the equal sign.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
-	 */
-	public static boolean equals(Point a, Point b)
-	{
-		return a.equals(b);
-	}
-
-	/**
-	 * Compares whether two {@link Point} instances are not equal.
-	 * 
-	 * @param a
-	 *        {@link Point} instance on the left of the not equal sign.
-	 * @param b
-	 *        {@link Point} instance on the right of the not equal sign.
-	 * @return {@code true} if the instances are not equal; {@code false} otherwise.
-	 */
-	public static boolean notEquals(Point a, Point b)
-	{
-		return !a.equals(b);
-	}
-
-	/**
-	 * Compares whether current instance is equal to specified {@link Object}.
+	 * Indicates whether some other object is "equal to" this one.
 	 * 
 	 * @param obj
-	 *        The {@link Object} to compare.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof Point) && equals((Point) obj);
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Point) obj);
+	}
+
+	// Helper method
+	private boolean equals(Point other)
+	{
+		return ((x == other.x) && (y == other.y));
 	}
 
 	/**
-	 * Compares whether current instance is equal to specified {@link Point}.
+	 * Indicates whether some other object is "not equal to" this one.
 	 * 
-	 * @param other
-	 *        The {@link Point} to compare.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
 	 */
-	public boolean equals(Point other)
+	public boolean notEquals(Object obj)
 	{
-		return ((x == other.x) && (y == other.y));
+		return !this.equals(obj);
 	}
 
 	/**

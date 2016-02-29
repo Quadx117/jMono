@@ -313,45 +313,50 @@ public class Vector2 // implements IEquatable<Vector2>
 		return new Vector2((float) (x * cos - y * sin), (float) (x * sin + y * cos));
 	}
 
-	// ++++++++++ Static methods ++++++++++ //
-
 	/**
-	 * Compares whether two {@link Vector2} instances are equal.
+	 * Indicates whether some other object is "equal to" this one.
 	 * 
-	 * @param value1
-	 *        {@link Vector2} instance on the left of the equal sign.
-	 * @param value2
-	 *        {@link Vector2} instance on the right of the equal sign.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
 	 */
-	public static boolean equals(Vector2 value1, Vector2 value2)
+	@Override
+	public boolean equals(Object obj)
 	{
-		return value1.x == value2.x && value1.y == value2.y;
-	}
-
-	/**
-	 * Compares whether two {@link Vector2} instances are not equal.
-	 * 
-	 * @param value1
-	 *        {@link Vector2} instance on the left of the equal sign.
-	 * @param value2
-	 *        {@link Vector2} instance on the right of the equal sign.
-	 * @return {@code true} if the instances are not equal; {@code false} otherwise.
-	 */
-	public static boolean notEquals(Vector2 value1, Vector2 value2)
-	{
-		return value1.x != value2.x || value1.y != value2.y;
-	}
-
-	public boolean equals(Object object)
-	{
-		if (!(object instanceof Vector2))
+		if (obj == null)
+		{
 			return false;
-		Vector2 vec = (Vector2) object;
-		if (vec.getX() == this.getX() && vec.getY() == this.getY())
-			return true;
-		return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Vector2) obj);
 	}
+	
+	// Helper method
+	private boolean equals(Vector2 other)
+	{
+		return this.x == other.x && this.y == other.y;
+	}
+
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
+	// ++++++++++ Static methods ++++++++++ //
 
 	/**
 	 * Inverts values in the specified {@link Vector2}.

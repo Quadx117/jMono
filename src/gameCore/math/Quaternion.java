@@ -9,7 +9,6 @@ package gameCore.math;
  */
 public class Quaternion // implements IEquatable<Quaternion>
 {
-
 	static final Quaternion identity = new Quaternion(0, 0, 0, 1);
 
 	public float x;
@@ -376,26 +375,52 @@ public class Quaternion // implements IEquatable<Quaternion>
 				+ (quaternion1.w * quaternion2.w);
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		boolean flag = false;
-		if (obj instanceof Quaternion)
+		if (obj == null)
 		{
-			flag = this.equals((Quaternion) obj);
+			return false;
 		}
-		return flag;
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Quaternion) obj);
 	}
 
-	public boolean equals(Quaternion other)
+	// Helper method
+	private boolean equals(Quaternion other)
 	{
-		return (((	//
-				(this.x == other.x) &&	//
-				(this.y == other.y)) &&	//
-				(this.z == other.z)) &&	//
-				(this.w == other.w));
+		return this.x == other.x &&	//
+			   this.y == other.y &&	//
+			   this.z == other.z &&	//
+			   this.w == other.w;
 	}
-
+	
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
 	@Override
 	public int hashCode()
 	{

@@ -1,5 +1,6 @@
 package gameCore.graphics.vertices;
 
+
 // C# struct
 public class VertexElement
 {
@@ -71,6 +72,15 @@ public class VertexElement
 				+ this.getVertexElementUsage() + " UsageIndex: " + this.getUsageIndex() + "}}";
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
@@ -82,17 +92,27 @@ public class VertexElement
 		{
 			return false;
 		}
-		return (staticEquals(this, (VertexElement) obj));
+		return this.equals((VertexElement) obj);
 	}
 
-	public static boolean staticEquals(VertexElement left, VertexElement right)
+	// Helper method
+	private boolean equals(VertexElement other)
 	{
-		return ((((left._offset == right._offset) && (left._usageIndex == right._usageIndex)) && (left._usage == right._usage)) && (left._format == right._format));
+		return ((((this._offset == other._offset) && (this._usageIndex == other._usageIndex)) && (this._usage == other._usage)) && (this._format == other._format));
 	}
 
-	public static boolean notEquals(VertexElement left, VertexElement right)
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
 	{
-		return (!staticEquals(left, right));
+		return !this.equals(obj);
 	}
 
 	// TODO: DIRECTX

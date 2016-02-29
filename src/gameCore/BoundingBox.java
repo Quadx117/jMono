@@ -283,20 +283,47 @@ public class BoundingBox
 		result.max.z = Math.max(original.max.z, additional.max.z);
 	}
 
-	public boolean equals(BoundingBox other)
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((BoundingBox) obj);
+	}
+	
+	// Helper method
+	private boolean equals(BoundingBox other)
 	{
 		return (this.min.equals(other.min)) && (this.max.equals(other.max));
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
 	{
-		return (obj instanceof BoundingBox) ? this.equals((BoundingBox) obj) : false;
-	}
-
-	public boolean notEquals(BoundingBox b)
-	{
-		return !(this.equals(b));
+		return !this.equals(obj);
 	}
 
 	public Vector3[] getCorners()

@@ -257,24 +257,47 @@ public class BoundingFrustum
 		result = ContainmentType.Contains;
 	}
 
-	public boolean equals(BoundingFrustum other)
-	{
-		if (other == null)
-			return (this == null);
-
-		return this.matrix.equals(other.matrix);
-	}
-
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		BoundingFrustum f = (BoundingFrustum) obj;
-		return (f == null) ? false : (this.equals(f));
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((BoundingFrustum) obj);
+	}
+	
+	// Helper method
+	private boolean equals(BoundingFrustum other)
+	{
+		return this.matrix.equals(other.matrix);
 	}
 
-	public boolean notEquals(BoundingFrustum b)
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
 	{
-		return !(this.equals(b));
+		return !this.equals(obj);
 	}
 
 	public Vector3[] getCorners()

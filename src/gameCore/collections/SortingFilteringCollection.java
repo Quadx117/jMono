@@ -379,9 +379,14 @@ public class SortingFilteringCollection<T> implements Collection<T>
 		@Override
 		public boolean equals(Object obj)
 		{
-			if (!(obj instanceof AddJournalEntry))
+			if (obj == null)
+			{
 				return false;
-
+			}
+			if (obj.getClass() != this.getClass())
+			{
+				return false;
+			}
 			return this.item.equals(((AddJournalEntry<E>) obj).item);
 		}
 	}

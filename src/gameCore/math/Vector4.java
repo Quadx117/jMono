@@ -9,7 +9,6 @@ package gameCore.math;
  */
 public class Vector4
 {
-
 	private static Vector4 zero = new Vector4(0f, 0f, 0f, 0f);
 	private static Vector4 one = new Vector4(1f, 1f, 1f, 1f);
 	private static Vector4 unitX = new Vector4(1f, 0f, 0f, 0f);
@@ -271,17 +270,49 @@ public class Vector4
 		result = vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z + vector1.w * vector2.w;
 	}
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof Vector4) ? this.equals((Vector4) obj) : false;
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Vector4) obj);
 	}
 
-	public boolean equals(Vector4 other)
+	// Helper method
+	private boolean equals(Vector4 other)
 	{
 		return this.w == other.w && this.x == other.x && this.y == other.y && this.z == other.z;
 	}
 
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
 	@Override
 	public int hashCode()
 	{
@@ -623,5 +654,4 @@ public class Vector4
 	// value1.Z *= factor;
 	// return value1;
 	// }
-
 }

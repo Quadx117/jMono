@@ -44,23 +44,49 @@ public class VertexPositionColorTexture implements IVertexType
 				+ "}}";
 	}
 
+	/**
+	 * Compares whether two {@link VertexPositionColorTexture} instances are equal.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
 		if (obj == null)
+		{
 			return false;
-
+		}
 		if (obj.getClass() != this.getClass())
+		{
 			return false;
-
-		VertexPositionColorTexture other = (VertexPositionColorTexture) obj;
-		return ((((this.position.equals(other.position)) && (this.color.equals(other.color))) && (this.textureCoordinate
-				.equals(other.textureCoordinate))));
+		}
+		return this.equals((VertexPositionColorTexture) obj);
+	}
+	
+	// Helper method
+	private boolean equals(VertexPositionColorTexture other)
+	{
+		return ((((this.position.equals(other.position)) && //
+				  (this.color.equals(other.color))) && //
+				  (this.textureCoordinate.equals(other.textureCoordinate))));
 	}
 
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	public boolean notEquals(Object obj)
 	{
-		return !equals(obj);
+		return !this.equals(obj);
 	}
 
 	static

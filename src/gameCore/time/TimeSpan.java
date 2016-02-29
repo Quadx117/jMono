@@ -513,21 +513,6 @@ public class TimeSpan implements Comparable<Object>
 		return 0;
 	}
 
-	/**
-	 * Returns a boolean value that indicates whether two specified instances of
-	 * TimeSpan are equal.
-	 * 
-	 * @param t1
-	 *        The first time interval to compare.
-	 * @param t2
-	 *        The second time interval to compare.
-	 * @return {@code true} if the values of t1 and t2 are equal; otherwise, {@code false}.
-	 */
-	public static boolean equals(TimeSpan t1, TimeSpan t2)
-	{
-		return t1.ticks == t2.ticks;
-	}
-
 	// ++++++++++ NON-STATIC METHODS ++++++++++ //
 
 	/*
@@ -699,28 +684,48 @@ public class TimeSpan implements Comparable<Object>
 	}
 
 	/**
-	 * Returns a boolean value indicating whether this instance is equal to a
-	 * specified object.
+	 * Indicates whether some other object is "equal to" this one.
 	 * 
-	 * @param other
+	 * @param obj
 	 *        The other object to compare with this instance.
 	 * @return {@code true} if value is a TimeSpan object that represents the
-	 *         same time interval as the current TimeSpan structure; otherwise, {@code false}.
+	 *         same time interval as the current TimeSpan; {@code false} otherwise.
+	 * @see java.lang.Object#equals(Object)
 	 */
 	@Override
-	public boolean equals(Object other)
+	public boolean equals(Object obj)
 	{
-		if (other == null)
-			return false;
-		if (other == this)
-			return true;
-		if (other instanceof TimeSpan)
+		if (obj == null)
 		{
-			return ticks == ((TimeSpan) other).ticks;
+			return false;
 		}
-		return false;
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((TimeSpan) obj);
 	}
 
+	// Helper method
+	private boolean equals(TimeSpan other)
+	{
+		return this.ticks == other.ticks;
+	}
+
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
 	/**
 	 * Compares this instance to a specified object and returns an integer that
 	 * indicates whether this instance is shorter than, equal to, or longer than
@@ -815,11 +820,6 @@ public class TimeSpan implements Comparable<Object>
 	public boolean greaterThanOrEqual(TimeSpan other)
 	{
 		return this.ticks >= other.ticks;
-	}
-
-	public boolean notEquals(TimeSpan other)
-	{
-		return !equals(other);
 	}
 
 	public boolean lessThan(TimeSpan other)

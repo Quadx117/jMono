@@ -13,7 +13,6 @@ import gameCore.Rectangle;
  */
 public class Matrix // implements IEquatable<Matrix>
 {
-
 	// TODO: Should probably refactor these with lower case.
 	public float M11, M12, M13, M14;
 	public float M21, M22, M23, M24;
@@ -1230,33 +1229,50 @@ public class Matrix // implements IEquatable<Matrix>
 		result.M44 = matrix1.M44 * num;
 	}
 
-	public static boolean equals(Matrix matrix1, Matrix matrix2)
-	{
-		return (matrix1.M11 == matrix2.M11 && matrix1.M12 == matrix2.M12 && matrix1.M13 == matrix2.M13 && matrix1.M14 == matrix2.M14 &&	//
-				matrix1.M21 == matrix2.M21 && matrix1.M22 == matrix2.M22 && matrix1.M23 == matrix2.M23 && matrix1.M24 == matrix2.M24 &&	// 
-				matrix1.M31 == matrix2.M31 && matrix1.M32 == matrix2.M32 && matrix1.M33 == matrix2.M33 && matrix1.M34 == matrix2.M34 &&	//
-				matrix1.M41 == matrix2.M41 && matrix1.M42 == matrix2.M42 && matrix1.M43 == matrix2.M43 && matrix1.M44 == matrix2.M44);
-	}
-
-	public boolean equals(Matrix other)
-	{
-		return ((((((this.M11 == other.M11) && (this.M22 == other.M22)) && ((this.M33 == other.M33) && (this.M44 == other.M44))) && (((this.M12 == other.M12) && (this.M13 == other.M13)) && ((this.M14 == other.M14) && (this.M21 == other.M21)))) && ((((this.M23 == other.M23) && (this.M24 == other.M24)) && ((this.M31 == other.M31) && (this.M32 == other.M32))) && (((this.M34 == other.M34) && (this.M41 == other.M41)) && (this.M42 == other.M42)))) && (this.M43 == other.M43));
-	}
-
-	public static boolean notEquals(Matrix matrix1, Matrix matrix2)
-	{
-		return (!equals(matrix1, matrix2));
-	}
-
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		boolean flag = false;
-		if (obj instanceof Matrix)
+		if (obj == null)
 		{
-			flag = this.equals((Matrix) obj);
+			return false;
 		}
-		return flag;
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Matrix) obj);
+	}
+
+	// Helper method
+	private boolean equals(Matrix other)
+	{
+		return (this.M11 == other.M11 && this.M12 == other.M12 && this.M13 == other.M13 && this.M14 == other.M14 &&	//
+				this.M21 == other.M21 && this.M22 == other.M22 && this.M23 == other.M23 && this.M24 == other.M24 &&	// 
+				this.M31 == other.M31 && this.M32 == other.M32 && this.M33 == other.M33 && this.M34 == other.M34 &&	//
+				this.M41 == other.M41 && this.M42 == other.M42 && this.M43 == other.M43 && this.M44 == other.M44);
+	}
+
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
 	}
 
 	@Override

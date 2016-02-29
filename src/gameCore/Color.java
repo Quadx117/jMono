@@ -1431,7 +1431,7 @@ public class Color
 	}
 
 	/**
-	 * Determines whether another object is equal to this <code>Color</code>.
+	 * Indicates whether some other object is "equal to" this one.
 	 * <p>
 	 * The result is <code>true</code> if and only if the argument is not <code>null</code> and is a
 	 * <code>Color</code> object that has the same red, green, blue, and alpha values as this
@@ -1445,37 +1445,37 @@ public class Color
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Color && ((Color) obj).getPackedValue() == this.getPackedValue();
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Color) obj);
+	}
+	
+	// Helper method
+	private boolean equals(Color other)
+	{
+		return this.getPackedValue() == other.getPackedValue();
 	}
 
 	/**
-	 * Compares whether two {@code Color} instances are equal.
+	 * Indicates whether some other object is "not equal to" this one.
 	 * 
-	 * @param a
-	 *        {@code Color} instance on the left of the equal sign.
-	 * @param b
-	 *        {@code Color} instance on the right of the equal sign.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
 	 */
-	public static boolean equals(Color a, Color b)
+	public boolean notEquals(Object obj)
 	{
-		return a.getPackedValue() == b.getPackedValue();
+		return !this.equals(obj);
 	}
-
-	/**
-	 * Compares whether two {@code Color} instances are not equal.
-	 * 
-	 * @param a
-	 *        {@code Color} instance on the left of the equal sign.
-	 * @param b
-	 *        {@code Color} instance on the right of the equal sign.
-	 * @return {@code true} if the instances are equal; {@code false} otherwise.
-	 */
-	public static boolean notEquals(Color a, Color b)
-	{
-		return !equals(a, b);
-	}
-
+	
 	/**
 	 * Computes the hash code for this <{@code Color}.
 	 * 

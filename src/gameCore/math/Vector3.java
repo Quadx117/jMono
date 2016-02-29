@@ -313,21 +313,49 @@ public class Vector3
 	// result = vector1.x * vector2.x + vector1.y * vector2.y + vector1.z * vector2.z;
 	// }
 
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (!(obj instanceof Vector3))
+		if (obj == null)
+		{
 			return false;
-
-		Vector3 other = (Vector3) obj;
-		return this.x == other.x && this.y == other.y && this.z == other.z;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Vector3) obj);
 	}
 
-	public boolean equals(Vector3 other)
+	// Helper method
+	private boolean equals(Vector3 other)
 	{
 		return this.x == other.x && this.y == other.y && this.z == other.z;
 	}
 
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
 	@Override
 	public int hashCode()
 	{

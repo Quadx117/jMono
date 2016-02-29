@@ -335,23 +335,47 @@ public class BoundingSphere
 		result.radius = (leftRadius + rightRadius) / 2;
 	}
 
-	public boolean equals(BoundingSphere other)
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((BoundingSphere) obj);
+	}
+
+	// Helper method
+	private boolean equals(BoundingSphere other)
 	{
 		return this.center == other.center && this.radius == other.radius;
 	}
 
-	@Override
-	public boolean equals(Object obj)
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
 	{
-		if (obj instanceof BoundingSphere)
-			return this.equals((BoundingSphere) obj);
-
-		return false;
-	}
-
-	public boolean notEquals(BoundingSphere b)
-	{
-		return !(this.equals(b));
+		return !this.equals(obj);
 	}
 
 	@Override

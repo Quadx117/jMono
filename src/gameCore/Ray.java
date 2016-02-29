@@ -5,7 +5,6 @@ import gameCore.math.Vector3;
 // C# struct
 public class Ray // implements IEquatable<Ray>
 {
-
 	public Vector3 direction;
 
 	public Vector3 position;
@@ -22,26 +21,48 @@ public class Ray // implements IEquatable<Ray>
 		this.position = position;
 		this.direction = direction;
 	}
-	
+
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof Ray) ? this.equals((Ray) obj) : false;
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((Ray) obj);
 	}
 
-	public boolean equals(Ray other)
+	// Helper method
+	private boolean equals(Ray other)
 	{
 		return this.position.equals(other.position) && this.direction.equals(other.direction);
 	}
 	
-	public static boolean equals(Ray a, Ray b)
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
 	{
-		return a.equals(b);
-	}
-
-	public static boolean notEquals(Ray a, Ray b)
-	{
-		return !a.equals(b);
+		return !this.equals(obj);
 	}
 	
 	@Override

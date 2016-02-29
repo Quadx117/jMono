@@ -133,10 +133,12 @@ public class KeyboardState
 		keys7 = 0;
 	}
 
-	// / <summary>
-	// / Initializes a new instance of the <see cref="KeyboardState"/> class.
-	// / </summary>
-	// / <param name="keys">List of keys to be flagged as pressed on initialization.</param>
+	/**
+	 * Initializes a new instance of the {@link KeyboardState} class.
+	 * 
+	 * @param keys
+	 *        List of keys to be flagged as pressed on initialization.
+	 */
 	protected KeyboardState(List<Keys> keys)
 	{
 		keys0 = 0;
@@ -264,48 +266,54 @@ public class KeyboardState
 		return (int) (keys0 ^ keys1 ^ keys2 ^ keys3 ^ keys4 ^ keys5 ^ keys6 ^ keys7);
 	}
 
-	// / <summary>
-	// / Compares whether two <see cref="KeyboardState"/> instances are equal.
-	// / </summary>
-	// / <param name="a"><see cref="KeyboardState"/> instance to the left of the equality
-	// operator.</param>
-	// / <param name="b"><see cref="KeyboardState"/> instance to the right of the equality
-	// operator.</param>
-	// / <returns>true if the instances are equal; false otherwise.</returns>
-	public static boolean equals(KeyboardState a, KeyboardState b)
-	{
-		return a.keys0 == b.keys0
-				&& a.keys1 == b.keys1
-				&& a.keys2 == b.keys2
-				&& a.keys3 == b.keys3
-				&& a.keys4 == b.keys4
-				&& a.keys5 == b.keys5
-				&& a.keys6 == b.keys6
-				&& a.keys7 == b.keys7;
-	}
-
-	// / <summary>
-	// / Compares whether two <see cref="KeyboardState"/> instances are not equal.
-	// / </summary>
-	// / <param name="a"><see cref="KeyboardState"/> instance to the left of the inequality
-	// operator.</param>
-	// / <param name="b"><see cref="KeyboardState"/> instance to the right of the inequality
-	// operator.</param>
-	// / <returns>true if the instances are different; false otherwise.</returns>
-	public static boolean notEquals(KeyboardState a, KeyboardState b)
-	{
-		return !(a.equals(b));
-	}
-
-	// / <summary>
-	// / Compares whether current instance is equal to specified object.
-	// / </summary>
-	// / <param name="obj">The <see cref="KeyboardState"/> to compare.</param>
-	// / <returns>true if the provided <see cref="KeyboardState"/> instance is same with current;
-	// false otherwise.</returns>
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument;
+     *         {@code false} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof KeyboardState && this.equals((KeyboardState) obj);
+		if (obj == null)
+		{
+			return false;
+		}
+		if (obj.getClass() != this.getClass())
+		{
+			return false;
+		}
+		return this.equals((KeyboardState) obj);
 	}
+	
+	// Helper method
+	private boolean equals(KeyboardState other)
+	{
+		return this.keys0 == other.keys0 && //
+			   this.keys1 == other.keys1 && //
+			   this.keys2 == other.keys2 && //
+			   this.keys3 == other.keys3 && //
+			   this.keys4 == other.keys4 && //
+			   this.keys5 == other.keys5 && //
+			   this.keys6 == other.keys6 && ///
+			   this.keys7 == other.keys7;
+	}
+
+	/**
+	 * Indicates whether some other object is "not equal to" this one.
+	 * 
+	 * @param obj
+	 * 		  the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument;
+     *         {@code true} otherwise.
+     * @see java.lang.Object#equals(Object)
+	 */
+	public boolean notEquals(Object obj)
+	{
+		return !this.equals(obj);
+	}
+	
 }
