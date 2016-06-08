@@ -211,6 +211,31 @@ public final class MathHelper
 	{
 		return value1 + (value2 - value1) * amount;
 	}
+	
+	/**
+	 * Linearly interpolates between two values.
+	 * 
+	 * <p>
+	 * This method performs the linear interpolation based on the following formula :
+	 * {@code (1 - amount) * value1 + amount * value2} Passing amount a value of 0 will cause value1 to
+	 * be returned, a value of 1 will cause value2 to be returned.
+	 * 
+	 * <p>
+	 * This version is more precise with floating point numbers but may take longer to execute
+	 * @see https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
+	 * 
+	 * @param value1
+	 *        Source value.
+	 * @param value2
+	 *        Source value.
+	 * @param amount
+	 *        Value between 0 and 1 indicating the weight of value2.
+	 * @return Interpolated value.
+	 */
+	public static float lerpPrecise(float value1, float value2, float amount)
+	{	// TODO: check this for performance on large data sets.
+		return (1 - amount) * value1 + amount * value2;
+	}
 
 	/**
 	 * Returns the greater of two values.
