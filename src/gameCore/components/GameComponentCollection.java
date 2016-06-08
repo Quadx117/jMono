@@ -104,10 +104,14 @@ public class GameComponentCollection extends ArrayList<IGameComponent>
 	public boolean remove(Object o)
 	{
 		boolean result = false;
-		IGameComponent gameComponent = this.remove(indexOf(o));
-		if (gameComponent != null)
+		int index = indexOf(o);
+		if (index >= 0)
 		{
-			result = true;
+			IGameComponent gameComponent = this.remove(index);
+			if (gameComponent != null)
+			{
+				result = true;
+			}
 		}
 		return result;
 	}
