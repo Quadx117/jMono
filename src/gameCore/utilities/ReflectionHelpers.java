@@ -10,7 +10,7 @@ public class ReflectionHelpers
 		{
 			throw new NullPointerException("Must supply the targetType parameter");
 		}
-		// NOTE: Added this since struct are considere value types (primitives) in C#
+		// NOTE: Added this since struct are considered value types (primitives) in C#
 		//       and since we are using wrapper Classes for our primitives
 //		System.out.println(targetType.getSimpleName());
 		switch (targetType.getSimpleName())

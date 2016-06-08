@@ -206,7 +206,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	// / Returns the squared length of this <see cref="Vector2"/>.
 	// / </summary>
 	// / <returns>The squared length of this <see cref="Vector2"/>.</returns>
-	public float LengthSquared()
+	public float lengthSquared()
 	{
 		return (x * x) + (y * y);
 	}

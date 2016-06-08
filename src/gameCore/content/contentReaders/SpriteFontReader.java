@@ -55,11 +55,11 @@ public class SpriteFontReader extends ContentTypeReader<SpriteFont>
 		}
 		else
 		{
-			// Create a fresh SpriteFont instance
 			// Texture2D texture = input.readObject<Texture2D>();
 			// List<Rectangle> glyphs = input.readObject<List<Rectangle>>();
 			// List<Rectangle> cropping = input.readObject<List<Rectangle>>();
 			// List<Character> charMap = input.ReadObject<List<char>>();
+			// Create a fresh SpriteFont instance
 			Texture2D texture = input.readObject();
 			List<Rectangle> glyphs = input.readObject();
 			List<Rectangle> cropping = input.readObject();

@@ -611,9 +611,7 @@ public class Vector3
 
 	public static void transform(Vector3[] sourceArray, final Matrix matrix, Vector3[] destinationArray)
 	{
-		// TODO: Assert
-		// Debug.Assert(destinationArray.Length >= sourceArray.length,
-		// "The destination array is smaller than the source array.");
+		assert(destinationArray.length >= sourceArray.length) : "The destination array is smaller than the source array.";
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
@@ -630,11 +628,8 @@ public class Vector3
 	public static void transform(Vector3[] sourceArray, int sourceIndex, final Matrix matrix,
 			Vector3[] destinationArray, int destinationIndex, int length)
 	{
-		// TODO: Assert
-		// Debug.Assert(sourceArray.length - sourceIndex >= length,
-		// "The source array is too small for the given sourceIndex and length.");
-		// Debug.Assert(destinationArray.length - destinationIndex >= length,
-		// "The destination array is too small for the given destinationIndex and length.");
+		assert(sourceArray.length - sourceIndex >= length) : "The source array is too small for the given sourceIndex and length.";
+		assert(destinationArray.length - destinationIndex >= length) : "The destination array is too small for the given destinationIndex and length.";
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
@@ -706,9 +701,7 @@ public class Vector3
 	// / <param name="destinationArray">The result of the operation.</param>
 	public static void Transform(Vector3[] sourceArray, final Quaternion rotation, Vector3[] destinationArray)
 	{
-		// TODO: Assert
-		// Debug.Assert(destinationArray.length >= sourceArray.Length,
-		// "The destination array is smaller than the source array.");
+		assert(destinationArray.length >= sourceArray.length) : "The destination array is smaller than the source array.";
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
@@ -738,11 +731,8 @@ public class Vector3
 	public static void transform(Vector3[] sourceArray, int sourceIndex, final Quaternion rotation,
 			Vector3[] destinationArray, int destinationIndex, int length)
 	{
-		// TODO: Assert
-		// Debug.Assert(sourceArray.length - sourceIndex >= length,
-		// "The source array is too small for the given sourceIndex and length.");
-		// Debug.Assert(destinationArray.length - destinationIndex >= length,
-		// "The destination array is too small for the given destinationIndex and length.");
+		assert(sourceArray.length - sourceIndex >= length) :"The source array is too small for the given sourceIndex and length.";
+		assert(destinationArray.length - destinationIndex >= length) : "The destination array is too small for the given destinationIndex and length.";
 
 		// TODO: Are there options on some platforms to implement a vectorized version of this?
 
@@ -779,9 +769,7 @@ public class Vector3
 
 	public static void transformNormal(Vector3[] sourceArray, final Matrix matrix, Vector3[] destinationArray)
 	{
-		// TODO: Assert
-		// Debug.Assert(destinationArray.length >= sourceArray.length,
-		// "The destination array is smaller than the source array.");
+		assert(destinationArray.length >= sourceArray.length) : "The destination array is smaller than the source array.";
 
 		for (int i = 0; i < sourceArray.length; ++i)
 		{

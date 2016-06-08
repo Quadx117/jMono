@@ -352,9 +352,9 @@ public class SpriteBatch extends GraphicsResource
 		drawInternal(										//
 				texture,									//
 				new Vector4(destinationRectangle.x,			//
-						destinationRectangle.y,			//
-						destinationRectangle.width,		//
-						destinationRectangle.height),	//
+							destinationRectangle.y,			//
+							destinationRectangle.width,		//
+							destinationRectangle.height),	//
 				sourceRectangle,							//
 				color,										//
 				rotation,									//
@@ -445,9 +445,9 @@ public class SpriteBatch extends GraphicsResource
 		draw(texture, position, null, color);
 	}
 
-	public void draw(Texture2D texture, Rectangle rectangle, Color color)
+	public void draw(Texture2D texture, Rectangle destinationRectangle, Color color)
 	{
-		draw(texture, rectangle, null, color);
+		draw(texture, destinationRectangle, null, color);
 	}
 
 	public void drawString(SpriteFont spriteFont, String text, Vector2 position, Color color)

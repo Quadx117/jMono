@@ -137,7 +137,6 @@ public class ContentReader extends BinaryReader
         
     private <T> void recordDisposable(T result)
     {
-    	// TODO: Should I us As.as here ?
     	AutoCloseable disposable = As.as(result, AutoCloseable.class);
         if (disposable == null)
             return;

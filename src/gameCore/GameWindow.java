@@ -41,7 +41,7 @@ public abstract class GameWindow
 	 * The location of this window on the desktop, eg: global coordinate space which stretches
 	 * across all screens.
 	 */
-	public Point position;
+	public Point position = new Point();
 // #endif
 
 // #if DESKTOPGL
