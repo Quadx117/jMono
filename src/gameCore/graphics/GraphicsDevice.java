@@ -22,6 +22,8 @@ import gameCore.graphics.vertices.VertexBuffer;
 import gameCore.graphics.vertices.VertexDeclaration;
 import gameCore.graphics.vertices.VertexDeclarationCache;
 import gameCore.graphics.vertices.VertexPositionColorTexture;
+import gameCore.math.MathHelper;
+import gameCore.math.Vector2;
 import gameCore.math.Vector4;
 
 import java.lang.ref.WeakReference;
@@ -30,6 +32,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import debug.TimedBlock;
 
 public class GraphicsDevice implements AutoCloseable
 {
@@ -209,10 +213,11 @@ public class GraphicsDevice implements AutoCloseable
 
 	protected GraphicsMetrics _graphicsMetrics = new GraphicsMetrics();
 
-	// / <summary>
-	// / The rendering information for debugging and profiling.
-	// / The metrics are reset every frame after draw within <see cref="GraphicsDevice.Present"/>.
-	// / </summary>
+	/**
+	 * The rendering information for debugging and profiling.
+	 * The metrics are reset every frame after draw within {@link GraphicsDevice#present()}.
+	 * @return	The rendering information for debugging and profiling.
+	 */
 	public GraphicsMetrics getMetrics() { return _graphicsMetrics; }
 	public void setGraphicsMetrics(GraphicsMetrics value) { _graphicsMetrics = value; }
 
@@ -1133,7 +1138,10 @@ public class GraphicsDevice implements AutoCloseable
 		return GraphicsProfile.Reach;
 	}
 
-	// TODO: I added this to draw with the software renderer.
+//	###################################################################################################################
+// 	#                                             SOFTWARE RENDERER                                                   #
+//	###################################################################################################################
+
 	// where T : struct
 	private <T> void platformDrawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset,
 			int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
@@ -1150,20 +1158,21 @@ public class GraphicsDevice implements AutoCloseable
 
 		int destStartX, destStartY, destEndX, destEndY;
 		int srcStartX, srcStartY, srcEndX, srcEndY;
-		int destWidth, destHeight, srcWidth, srcHeight;
 		Texture2D texture = (Texture2D) getTextures().getTexture(0);
 		Color tint;
 		int i = 0;
-
+TimedBlock.beginTimedBlock("Draw");
 		while (i < numVertices)
 		{
+			// TODO: rotation is stored in the position so need to use floats here.
+			// TODO: Investigate how to use the positions to treat rotation.
 			destStartX = (int) (data[i + 0].position.x);
 			destStartY = (int) (data[i + 0].position.y);
 			destEndX = (int) (data[i + 1].position.x);
 			destEndY = (int) (data[i + 2].position.y);
 			
-			// NOTE: Add 0.5f so that the cast always return the right value
-			//		 (rounding error).
+			// TODO: Check if using floats is faster here.
+			// NOTE: Add 0.5f so that the cast always return the right value (rounding error).
 			srcStartX = (int) (data[i + 0].textureCoordinate.x * texture.width + 0.5f);
 			srcStartY = (int) (data[i + 0].textureCoordinate.y * texture.height + 0.5f);
 			srcEndX = (int) (data[i + 1].textureCoordinate.x * texture.width + 0.5f);
@@ -1171,126 +1180,300 @@ public class GraphicsDevice implements AutoCloseable
 			
 			tint = data[i + 0].color;
 
-			destWidth = (destEndX - destStartX);
-			destHeight = (destEndY - destStartY);
-			srcWidth = (srcEndX - srcStartX);
-			srcHeight = (srcEndY - srcStartY);
-			int textureWidth = texture.width;
-			// Determine if we need to resize our sprite. If so, we set our local variables
-			// accordingly.
-			// Otherwise, we set our local variables to the original's sprite values.
-			int[] texturePixels = new int[destWidth * destHeight];
-
-			if (destWidth != srcWidth || destHeight != srcHeight)
-			{
-				// TODO: Add other resizing methods (see TextureFilter.java)
-				switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
-				{
-					case Linear:
-						texturePixels = resizeBilinear(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
-						textureWidth = destWidth;
-						break;
-					case Point:
-						texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
-						textureWidth = destWidth;
-						break;
-					default:
-						texturePixels = resizeNearestNeighbor(texture, srcStartX, srcStartY, srcWidth, srcHeight, destWidth, destHeight);
-						textureWidth = destWidth;
-						break;
-				}
-			}
-			else
-			{
-				texturePixels = texture.pixels;
-			}
-			drawQuad(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, textureWidth, texturePixels, tint);
+			Vector2 origin = new Vector2(data[i + 0].position.x, data[i + 0].position.y);
+			Vector2 xAxis = new Vector2(data[i + 1].position.x - data[i + 0].position.x,
+										data[i + 1].position.y - data[i + 0].position.y);
+			Vector2 yAxis = new Vector2(data[i + 2].position.x - data[i + 0].position.x,
+										data[i + 2].position.y - data[i + 0].position.y);
+			
+//			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.pixels, tint);
+			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.pixels, tint);
 			i += 4;
 		}
-
-		// int indexCount = getElementCountArray(primitiveType, primitiveCount);
-		// int startVertex = setUserVertexBuffer(vertexData, vertexOffset, numVertices,
-		// vertexDeclaration);
-		// var startIndex = setUserIndexBuffer(indexData, indexOffset, indexCount);
-
-		// lock (_d3dContext)
-		// {
-		// ApplyState(true);
-
-		// _d3dContext.InputAssembler.PrimitiveTopology = ToPrimitiveTopology(primitiveType);
-		// _d3dContext.DrawIndexed(indexCount, startIndex, startVertex);
-		// }
+TimedBlock.endTimedBlock("Draw");
 	}
 
-	// where T : struct
-	// private <T> int setUserVertexBuffer(T[] vertexData, int vertexOffset, int vertexCount,
-	// VertexDeclaration vertexDecl)
-	// {
-	// DynamicVertexBuffer buffer;
-	//
-	// if (!_userVertexBuffers.TryGetValue(vertexDecl.HashKey, out buffer) || buffer.VertexCount <
-	// vertexCount)
-	// {
-	// // Dispose the previous buffer if we have one.
-	// if (buffer != null)
-	// buffer.Dispose();
-	//
-	// buffer = new DynamicVertexBuffer(this, vertexDecl, Math.Max(vertexCount, 2000),
-	// BufferUsage.WriteOnly);
-	// _userVertexBuffers[vertexDecl.HashKey] = buffer;
-	// }
-	//
-	// int startVertex = buffer.UserOffset;
-	//
-	//
-	// if ((vertexCount + buffer.UserOffset) < buffer.VertexCount)
-	// {
-	// buffer.UserOffset += vertexCount;
-	// buffer.SetData(startVertex * vertexDecl.VertexStride, vertexData, vertexOffset, vertexCount,
-	// vertexDecl.VertexStride, SetDataOptions.NoOverwrite);
-	// }
-	// else
-	// {
-	// buffer.UserOffset = vertexCount;
-	// buffer.SetData(vertexData, vertexOffset, vertexCount, SetDataOptions.Discard);
-	// startVertex = 0;
-	// }
-	//
-	// SetVertexBuffer(buffer);
-	//
-	// return startVertex;
-	// }
-
 	// NOTE: XNA uses premultiplied alpha by default and the color values in
-	//		 the xnb files are premultiplied.
-	private void drawQuad(int destStartX, int destStartY, int destEndX, int destEndY,
-						  int srcStartX, int srcStartY, int srcWidth, int[] srcPixels, Color tint)
+	//		 the xnb files are premultiplied by the alpha channel.
+	private void drawQuad(Vector2 origin, Vector2 xAxis, Vector2 yAxis,
+						  int srcStartX, int srcStartY, int srcEndX, int srcEndY,
+						  int srcWidth, int srcHeight, int[] srcPixels, Color tint)
+	{
+		// Note: Premultiply tint up front
+		//Vector4 tintVec4 = Color.fromNonPremultiplied(tint.getRed(), tint.getGreen(), tint.getBlue(), tint.getAlpha()).toVector4();
+		Vector4 tintVec4 = tint.toVector4();
+
+		int oldWidth  = srcEndX - srcStartX;
+		int oldHeight = srcEndY - srcStartY;
+
+		// NOTE: Can't use the inv because of numerical imprecision which makes us fetch the wrong pixel
+		//       sometimes for some ratio
+//		float invXAxislengthSq = 1.0f / xAxis.lengthSquared();
+//		float invYAxislengthSq = 1.0f / yAxis.lengthSquared();
+		float xAxislengthSq = xAxis.lengthSquared();
+		float yAxislengthSq = yAxis.lengthSquared();
+
+		int screenWidth = this._viewport.getWidth();
+		int screenHeight = this._viewport.getHeight();
+		
+		// check the bounds
+		int minX = screenWidth;
+		int maxX = 0;
+		int minY = screenHeight;
+		int maxY = 0;
+		
+		Vector2[] pos = new Vector2[]{ origin,
+								   	   Vector2.add(origin, xAxis),
+								   	   Vector2.add(origin, xAxis).add(yAxis),
+								   	   Vector2.add(origin, yAxis) };
+		for (int pIndex = 0; pIndex < pos.length; ++pIndex)
+		{
+			Vector2 testPos = pos[pIndex];
+			int floorX = (int) Math.floor(testPos.x);
+			int ceilX = (int) Math.ceil(testPos.x);
+			int floorY = (int) Math.floor(testPos.y);
+			int ceilY = (int) Math.ceil(testPos.y);
+		
+			if (minX > floorX) { minX = floorX; }
+			if (minY > floorY) { minY = floorY; }
+			if (maxX < ceilX)  { maxX = ceilX; }
+			if (maxY < ceilY)  { maxY = ceilY; }
+		}
+		
+		if (minX < 0) { minX = 0;}
+		if (minY < 0) { minY = 0;}
+		if (maxX > screenWidth)  { maxX = screenWidth; }
+		if (maxY > screenHeight) { maxY = screenHeight; }
+TimedBlock.beginTimedBlock("ProcessPixel");
+		// Cycle through all the sprites pixels. and apply tint and alpha-blending
+		// Set our starting index position for the source Texture.
+		int destRow = minX + minY * screenWidth;
+		for (int y = minY; y < maxY; ++y)
+		{
+			int destIndex = destRow;
+			for (int x = minX; x < maxX; ++x)
+			{
+				Vector2 pixelPos = new Vector2(x + 0.5f, y + 0.5f);
+				Vector2 d = Vector2.subtract(pixelPos, origin);
+				
+				float edge0 = d.dotProduct(Vector2.negate(perp(xAxis)));
+				float edge1 = Vector2.subtract(d, xAxis).dotProduct(Vector2.negate(perp(yAxis)));
+				float edge2 = Vector2.subtract(d, xAxis).subtract(yAxis).dotProduct(perp(xAxis));
+				float edge3 = Vector2.subtract(d, yAxis).dotProduct(perp(yAxis));
+
+				if ((edge0 <= 0) &&
+					(edge1 <= 0) &&
+					(edge2 <= 0) &&
+					(edge3 <= 0))
+				{
+					Vector4 foregroundColor;
+					if (oldWidth != xAxis.x || oldHeight != yAxis.y)
+					{
+						// NOTE: Can't use the inv because of numerical imprecision which makes us fetch the wrong pixel
+						//       sometimes for some ratio
+//						float u = invXAxislengthSq * d.dotProduct(xAxis);
+//						float v = invYAxislengthSq * d.dotProduct(yAxis);
+						// NOTE: u and v ranges from 0 to 1 into the source texture
+						float u = d.dotProduct(xAxis) / xAxislengthSq;
+						float v = d.dotProduct(yAxis) / yAxislengthSq;
+						
+						float tX, tY;
+						int fetchX, fetchY;
+						// TODO: Add other resizing methods (see TextureFilter.java)
+						switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
+						{
+							case Point:
+								// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
+								tX = u * (float) (oldWidth);
+								tY = v * (float) (oldHeight);
+	
+								fetchX = (int) tX + srcStartX;
+								fetchY = (int) tY + srcStartY;
+					
+								int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
+								foregroundColor = new Vector4((float) ((texelPtr >> 16) & 0xFF),
+				 					 	 					  (float) ((texelPtr >>  8) & 0xFF),
+				 					 	 					  (float) ((texelPtr >>  0) & 0xFF),
+				 					 	 					  (float) ((texelPtr >> 24) & 0xFF));
+								foregroundColor = Vector4.divide(foregroundColor, 255);
+								break;
+								
+							case Linear:
+							default:
+								// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
+								tX = u * (float) (oldWidth) - 0.5f;
+								tY = v * (float) (oldHeight) - 0.5f;
+	
+								fetchX = (int) tX;
+								fetchY = (int) tY;
+					
+								float xDiff = tX - (float) fetchX;
+								float yDiff = tY - (float) fetchY;
+					
+								// NOTE: Need to adjust the u and v here for when we use spriteSheets or spriteStrips
+								fetchX += srcStartX;
+								fetchY += srcStartY;
+								
+								int texelPtrA, texelPtrB, texelPtrC, texelPtrD;
+								
+								// TODO: Validate if it is possible to have different values for u, v and w
+								//       and treat them separately if so.
+								switch (this.samplerStates.getSamplerStateCollection(0).getAddressU())
+								{
+									case Wrap:
+										int nextU = 1;
+										if (xDiff < 0)
+										{
+											nextU = -1;
+											xDiff = -xDiff;
+										}
+										int nextV = 1;
+										if (yDiff < 0)
+										{
+											nextV = -1;
+											yDiff = -yDiff;
+										}
+										texelPtrA = srcPixels[fetchX + fetchY * srcWidth];
+										texelPtrB = srcPixels[((fetchX + nextU + srcWidth) % srcWidth) + (fetchY * srcWidth)];
+										texelPtrC = srcPixels[fetchX + (((fetchY + nextV + srcHeight) % srcHeight) * srcWidth)];
+										texelPtrD = srcPixels[((fetchX + nextU + srcWidth) % srcWidth) + (((fetchY + nextV + srcHeight) % srcHeight) * srcWidth)];
+										break;
+									// NOTE: When using spriteSheets, MonoGame allows blending of the last row or column of pixel in the current sprite
+									//		 with the first row or column of the next sprite in the sheet.  This doesn't seem to be a good idea if the
+									//		 sprites are tightly packed (i.e.: no fully translucent pixels on the boundary) so we don't allow it in our
+									//		 software renderer.
+									// TODO: Validate the note compared to OpenGL when we implement it. We probably want this to be the same on both renderer.
+									case Clamp:
+									default:
+										if (xDiff < 0) xDiff = 0;
+										if (yDiff < 0) yDiff = 0;
+										int srcIndex = (fetchX + fetchY * srcWidth);
+										texelPtrA = srcPixels[srcIndex];
+										// NOTE: Need to MOD u by oldWidth and v by oldHeight to adjust the the boundary for when we use spriteSheets or spriteStrips
+										texelPtrB = srcPixels[srcIndex + (((fetchX % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
+										texelPtrC = srcPixels[srcIndex + (((fetchY % oldHeight) == (oldHeight -1)) ? 0 : srcWidth)];
+										texelPtrD = srcPixels[srcIndex + (((fetchY % oldHeight) == (oldHeight -1)) ? 0 : srcWidth) + (((fetchX % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
+										break;
+								}
+								
+								Vector4 texelA = new Vector4((float) ((texelPtrA >> 16) & 0xFF),
+									 					 	 (float) ((texelPtrA >>  8) & 0xFF),
+									 					 	 (float) ((texelPtrA >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrA >> 24) & 0xFF));
+								Vector4 texelB = new Vector4((float) ((texelPtrB >> 16) & 0xFF),
+									 					 	 (float) ((texelPtrB >>  8) & 0xFF),
+									 					 	 (float) ((texelPtrB >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrB >> 24) & 0xFF));
+								Vector4 texelC = new Vector4((float) ((texelPtrC >> 16) & 0xFF),
+									 					 	 (float) ((texelPtrC >>  8) & 0xFF),
+									 					 	 (float) ((texelPtrC >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrC >> 24) & 0xFF));
+								Vector4 texelD = new Vector4((float) ((texelPtrD >> 16) & 0xFF),
+									 					 	 (float) ((texelPtrD >>  8) & 0xFF),
+									 					 	 (float) ((texelPtrD >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrD >> 24) & 0xFF));
+					
+								// NOTE: Go from sRGB to "linear light" space
+//								texelA = sRGB255ToLinear1(texelA);
+//								texelB = sRGB255ToLinear1(texelB);
+//								texelC = sRGB255ToLinear1(texelC);
+//								texelD = sRGB255ToLinear1(texelD);
+								texelA = Vector4.divide(texelA, 255);
+								texelB = Vector4.divide(texelB, 255);
+								texelC = Vector4.divide(texelC, 255);
+								texelD = Vector4.divide(texelD, 255);
+					
+								foregroundColor = Vector4.lerp(Vector4.lerp(texelA, texelB, xDiff),
+															   Vector4.lerp(texelC, texelD, xDiff),
+															   yDiff);
+						}
+					}
+					else
+					{
+						// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
+						//       and add the offset for when we use spriteSheets or spriteStrips.
+						int fetchX = x - (int) origin.x + srcStartX;
+						int fetchY = y - (int) origin.y + srcStartY;
+			
+						int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
+						foregroundColor = new Vector4((float) ((texelPtr >> 16) & 0xFF),
+		 	 					  					  (float) ((texelPtr >>  8) & 0xFF),
+		 	 					  					  (float) ((texelPtr >>  0) & 0xFF),
+		 	 					  					  (float) ((texelPtr >> 24) & 0xFF));
+						foregroundColor = Vector4.divide(foregroundColor, 255);
+					}
+					
+					// tint
+					foregroundColor = Vector4.multiply(foregroundColor, tintVec4);
+		
+					Vector4 dest = new Vector4((float) ((pixels[x + y * screenWidth] >> 16) & 0xFF),
+										   	   (float) ((pixels[x + y * screenWidth] >>  8) & 0xFF),
+										   	   (float) ((pixels[x + y * screenWidth] >>  0) & 0xFF),
+										   	   (float) ((pixels[x + y * screenWidth] >> 24) & 0xFF));
+		
+					// NOTE: Go from sRGB to "linear" brightness space
+//					dest = sRGB255ToLinear1(dest);
+					dest = Vector4.divide(dest, 255);
+		
+					Vector4 blended = Vector4.add(Vector4.multiply(dest, (1.0f - foregroundColor.w)), foregroundColor);
+					blended = Vector4.clamp(blended, Vector4.zero(), Vector4.one());
+
+					// NOTE: Go from "linear light" to sRGB space
+//					Vector4 blended255 = linear1ToSRGB255(blended);
+					Vector4 blended255 = Vector4.multiply(blended, 255);
+		
+					pixels[destIndex] = ((((int) blended255.w) << 24) & 0xff000000) |
+									  	  ((((int) blended255.x) << 16) & 0xff0000)	|
+									  	  ((((int) blended255.y) << 8) & 0xff00) |
+									  	  ((int) blended255.z);
+				}
+				++destIndex;
+			}
+			destRow += screenWidth;
+		}
+TimedBlock.endTimedBlock_Counted("ProcessPixel", (maxX - minX + 1) * (maxY - minY + 1));;
+	}
+
+	// TODO: This method is faster but I need to add rotation handling to it
+	private void drawQuad2(int destStartX, int destStartY, int destEndX, int destEndY,
+			  			   int srcStartX, int srcStartY, int srcEndX, int srcEndY,
+			  			   int srcWidth, int srcHeight, int[] srcPixels, Color tint)
 	{
 		int screenWidth = this._viewport.getWidth();
 		int screenHeight = this._viewport.getHeight();
 
+		int oldWidth  = srcEndX - srcStartX;
+		int oldHeight = srcEndY - srcStartY;
+		int newWidth  = destEndX - destStartX;
+		int newHeight = destEndY - destStartY;
+		
+		float xRatio = (float) oldWidth / (float) newWidth;
+		float yRatio = (float) oldHeight / (float) newHeight;
+
+		int minX = srcStartX;
+		int minY = srcStartY;
+		int maxX = minX + newWidth;
+		int maxY = minY + newHeight;
+
 		// check the bounds
-		int sourceOffsetX = srcStartX;
 		if (destStartX < 0)
 		{
-			sourceOffsetX += -destStartX;
+			minX += -destStartX;
 			destStartX = 0;
 		}
-		
-		int sourceOffsetY = srcStartY;
-		if (destStartY < 0)
-		{
-			sourceOffsetY += -destStartY;
-			destStartY = 0;
-		}
-		
 		if (destEndX > screenWidth)
 		{
+			maxX -= destEndX - screenWidth;
 			destEndX = screenWidth;
 		}
-		
+		if (destStartY < 0)
+		{
+			minY += -destStartY;
+			destStartY = 0;
+		}
 		if (destEndY > screenHeight)
 		{
+			maxY -= destEndY - screenHeight;
 			destEndY = screenHeight;
 		}
 
@@ -1299,173 +1482,412 @@ public class GraphicsDevice implements AutoCloseable
 		short gTint = tint.getGreen();
 		short bTint = tint.getBlue();
 		short aTint = tint.getAlpha();
-
+TimedBlock.beginTimedBlock("ProcessPixel");
 		// Cycle through all the sprites pixels. and apply tint and alpha-blending
 		// Set our starting index position for the source Texture.
-		int sourceRow = sourceOffsetX + sourceOffsetY * srcWidth;
-		for (int y = destStartY; y < destEndY; ++y, sourceRow += srcWidth)
+		int destRow = destStartX + destStartY * screenWidth;
+		for (int y = minY; y < maxY; ++y, destRow += screenWidth)
 		{
-			int sourceIndex = sourceRow;
-			for (int x = destStartX; x < destEndX; ++x)
+			int destIndex = destRow;
+			for (int x = minX; x < maxX; ++x)
 			{
 				// The color of the pixel about to be drawn.
-				int foregroundCol = srcPixels[sourceIndex];
+				int srcColor;
+				
+				// The components of the pixel about to be drawn.
+				int srcR, srcG, srcB, srcA;
 
-				// The color of the pixel already there.
-				int backgroundCol = pixels[x + y * screenWidth];
+				if (oldWidth != newWidth || oldHeight != newHeight)
+				{
+					int u, v;
+					// TODO: Add other resizing methods (see TextureFilter.java)
+					switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
+					{
+						case Point:
+							if (newWidth < 0 || newHeight < 0)
+								throw new IllegalArgumentException("new width or new height cannot be less than 0");
+
+							u = (int) (xRatio * ((x - srcStartX) + 0.5f)) + srcStartX;
+							v = (int) (yRatio * ((y - srcStartY) + 0.5f)) + srcStartY;
+							srcColor = srcPixels[u + v * srcWidth];
+//							foregroundCol = srcPixels[(int) (((xRatio * ((x - srcStartX) + 0.5f))) + srcStartX) + (int) (((yRatio * ((y - srcStartY) + 0.5f))) + srcStartY) * srcWidth];
+							srcR = (srcColor >> 16) & 0xff;
+							srcG = (srcColor >> 8) & 0xff;
+							srcB = (srcColor) & 0xff;
+							srcA = (srcColor >> 24) & 0xff;
+							break;
+
+						case Linear:
+						default:
+							if (newWidth < 0 || newHeight < 0)
+								throw new IllegalArgumentException("new width or new height cannot be less than 0");
+							if (srcStartX < 0 || srcStartY < 0)
+								throw new IllegalArgumentException("startX or startY cannot be less than 0");
+
+							int texelA, texelB, texelC, texelD, srcIndex;
+							float x_diff, y_diff;
+
+							// NOTE: this formula was found by reverse engineering what MonoGame does
+							//       so I can get the exact same result.
+							float rU = -0.5f + (xRatio * ((x - srcStartX) + 0.5f));
+							float rV = -0.5f + (yRatio * ((y - srcStartY) + 0.5f));
+							u = (int) (rU);
+							v = (int) (rV);
+							x_diff = rU - u;
+							y_diff = rV - v;
+
+							// NOTE: Need to adjust the u and v here for when we use spriteSheets or spriteStrips
+							u += srcStartX;
+							v += srcStartY;
+
+							// TODO: Validate if it is possible to have different values for u, v and w
+							//       and treat them separately if so.
+							switch (this.samplerStates.getSamplerStateCollection(0).getAddressU())
+							{
+								case Wrap:
+									int nextU = 1;
+									if (x_diff < 0)
+									{
+										nextU = -1;
+										x_diff = -x_diff;
+									}
+									int nextV = 1;
+									if (y_diff < 0)
+									{
+										nextV = -1;
+										y_diff = -y_diff;
+									}
+									texelA = srcPixels[u + v * srcWidth];
+									texelB = srcPixels[((u + nextU + srcWidth) % srcWidth) + (v * srcWidth)];
+									texelC = srcPixels[u + (((v + nextV + srcHeight) % srcHeight) * srcWidth)];
+									texelD = srcPixels[((u + nextU + srcWidth) % srcWidth) + (((v + nextV + srcHeight) % srcHeight) * srcWidth)];
+									break;
+								// NOTE: When using spriteSheets, MonoGame allows blending of the last row or column of pixel in the current sprite
+								//		 with the first row or column of the next sprite in the sheet.  This doesn't seem to be a good idea if the
+								//		 sprites are tightly packed (i.e.: no fully translucent pixels on the boundary) so we don't allow it in our
+								//		 software renderer.
+								// TODO: Validate the note compared to OpenGL when we implement it. We probably want this to be the same on both renderer.
+								case Clamp:
+								default:
+									if (x_diff < 0) x_diff = 0;
+									if (y_diff < 0) y_diff = 0;
+									srcIndex = (u + v * srcWidth);
+									texelA = srcPixels[srcIndex];
+									// NOTE: Need to MOD u by oldWidth and v by oldHeight to adjust the the boundary for when we use spriteSheets or spriteStrips
+									texelB = srcPixels[srcIndex + (((u % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
+									texelC = srcPixels[srcIndex + (((v % oldHeight) == (oldHeight -1)) ? 0 : srcWidth)];
+									texelD = srcPixels[srcIndex + (((v % oldHeight) == (oldHeight -1)) ? 0 : srcWidth) + (((u % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
+									break;
+							}
+
+							float b = MathHelper.lerp(MathHelper.lerp(texelA & 0xff, texelB & 0xff, x_diff),
+													  MathHelper.lerp(texelC & 0xff, texelD & 0xff, x_diff),
+													  y_diff);
+							float g = MathHelper.lerp(MathHelper.lerp((texelA >> 8) & 0xff, (texelB >> 8) & 0xff, x_diff),
+													  MathHelper.lerp((texelC >> 8) & 0xff, (texelD >> 8) & 0xff, x_diff),
+													  y_diff);
+							float r = MathHelper.lerp(MathHelper.lerp((texelA >> 16) & 0xff, (texelB >> 16) & 0xff, x_diff),
+													  MathHelper.lerp((texelC >> 16) & 0xff, (texelD >> 16) & 0xff, x_diff),
+													  y_diff);
+							float a = MathHelper.lerp(MathHelper.lerp((texelA >> 24) & 0xff, (texelB >> 24)& 0xff, x_diff),
+													  MathHelper.lerp((texelC >> 24)& 0xff, (texelD >> 24)& 0xff, x_diff),
+													  y_diff);
+
+							// NOTE: Add 0.5f before casting so it rounds properly
+							b += 0.5f;
+							g += 0.5f;
+							r += 0.5f;
+							a += 0.5f;
+
+//							srcColor = ((((int) a) << 24) & 0xff000000) | ((((int) r) << 16) & 0xff0000) | ((((int) g) << 8) & 0xff00) | ((int) b);
+							srcR = (int) r;
+							srcG = (int) g;
+							srcB = (int) b;
+							srcA = (int) a;
+							break;
+					}
+				}
+				else
+				{
+					srcColor = srcPixels[x + y * srcWidth];
+					srcR = (srcColor >> 16) & 0xff;
+					srcG = (srcColor >> 8) & 0xff;
+					srcB = (srcColor) & 0xff;
+					srcA = (srcColor >> 24) & 0xff;
+				}
 
 				// The components of the pixel about to be drawn.
-				int foregroundR = (foregroundCol >> 16) & 0xff;
-				int foregroundG = (foregroundCol >> 8) & 0xff;
-				int foregroundB = (foregroundCol) & 0xff;
-				int foregroundA = (foregroundCol >> 24) & 0xff;
-				
+//				srcR = (srcColor >> 16) & 0xff;
+//				srcG = (srcColor >> 8) & 0xff;
+//				srcB = (srcColor) & 0xff;
+//				srcA = (srcColor >> 24) & 0xff;
+	
 				// Using Color.WHITE would have no effect so skip this
 				if (!tint.equals(Color.White))
 				{
 					// Typical tint formula -> original component * tint / 255
 					// also works with premultiplied alpha
-					foregroundR = foregroundR * rTint / 255;
-					foregroundG = foregroundG * gTint / 255;
-					foregroundB = foregroundB * bTint / 255;
-					foregroundA = foregroundA * aTint / 255;
+					srcR = srcR * rTint / 255;
+					srcG = srcG * gTint / 255;
+					srcB = srcB * bTint / 255;
+					srcA = srcA * aTint / 255;
 				}
 
 				// The resulting color of the pixel to be drawn
 				int col;
-				
+
 				// If alpha is 255 it completely overrides the existing color.
-				if (foregroundA == 255 || _blendState == BlendState.Opaque)
+				if (srcA == 255 || _blendState == BlendState.Opaque)
 				{
-					col = (foregroundA << 24 & 0xff000000) | (foregroundR << 16 & 0x00ff0000) |
-						  (foregroundG << 8 & 0x0000ff00) | (foregroundB & 0x000000ff);
+					col = (srcA << 24 & 0xff000000) | (srcR << 16 & 0x00ff0000) |
+						  (srcG << 8 & 0x0000ff00) | (srcB & 0x000000ff);
 				}
 				else if (_blendState == BlendState.AlphaBlend)
 				{
+					// The color of the pixel already there.
+					int backgroundCol = pixels[destIndex];
+					
 					// Do the alpha-blending with the premultiplied alpha source.
 					int backgroundR = (backgroundCol >> 16) & 0xff;
 					int backgroundG = (backgroundCol >> 8) & 0xff;
 					int backgroundB = (backgroundCol) & 0xff;
 					// Typical over blend formula
-					int r = foregroundR + (backgroundR * (255 - foregroundA) / 255);
-					int g = foregroundG + (backgroundG * (255 - foregroundA) / 255);
-					int b = foregroundB + (backgroundB * (255 - foregroundA) / 255);
-					
-					// NOTE: for some reason, spritefonts could produce value greater
-					// than 255 for a single channel so we need to clamp to value.
+					int r = srcR + (backgroundR * (255 - srcA) / 255);
+					int g = srcG + (backgroundG * (255 - srcA) / 255);
+					int b = srcB + (backgroundB * (255 - srcA) / 255);
+		
+					// NOTE: since this can produce a value greater than 255 for a single
+					// channel we need to clamp those values.
 					r = r > 255 ? 255 : r;
 					g = g > 255 ? 255 : g;
 					b = b > 255 ? 255 : b;
-					
+
 					col = r << 16 | g << 8 | b;
 				}
 				else
 				{
 					// TODO: Should do the other BlendStates
-					// Defaults to BlendState.OPAQUE after tinting.
-					col = foregroundA << 24 | foregroundR << 16 | foregroundG << 8 | foregroundB;
+					// Defaults to BlendState.OPAQUE.
+					col = srcA << 24 | srcR << 16 | srcG << 8 | srcB;
 				}
-				pixels[x + y * screenWidth] = col;
-				++sourceIndex;
+				pixels[destIndex] = col;
+				++destIndex;
 			}
-			// sourceRow += sourceWidth;
+			// destRow += screenWidth;
 		}
+TimedBlock.endTimedBlock_Counted("ProcessPixel", (maxX - minX + 1) * (maxY - minY + 1));;
 	}
-	
-	// TODO: This is probably SamplerState.LinearClamp
-	public int[] resizeBilinear(Texture2D tex, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
-			throws IllegalArgumentException {
-		if (newWidth < 0 || newHeight < 0)
-			throw new IllegalArgumentException("new width or new height cannot be less than 0");
-		int[] temp = new int[newWidth * newHeight];
 
-		int a, b, c, d, x, y, srcIndex;
-		float x_ratio = ((float) (oldWidth - 1)) / newWidth;
-		float y_ratio = ((float) (oldHeight - 1)) / newHeight;
-		float x_diff, y_diff, blue, red, green, alpha;
-		int destIndex = 0;
-
-		for (int i = startY; i < newHeight; ++i) {
-			for (int j = startX; j < newWidth; ++j) {
-				x = (int) (x_ratio * j);
-				y = (int) (y_ratio * i);
-				x_diff = (x_ratio * j) - x;
-				y_diff = (y_ratio * i) - y;
-				srcIndex = (x + y * oldWidth);
-				a = tex.pixels[srcIndex];
-				b = tex.pixels[srcIndex + 1];
-				c = tex.pixels[srcIndex + oldWidth];
-				d = tex.pixels[srcIndex + oldWidth + 1];
-
-				// blue element
-				// Yb = Ab(1-w)(1-h) + Bb(w)(1-h) + Cb(h)(1-w) + Db(wh)
-				blue = (a & 0xff) * (1 - x_diff) * (1 - y_diff) + (b & 0xff) * (x_diff) * (1 - y_diff) + (c & 0xff)
-						* (y_diff) * (1 - x_diff) + (d & 0xff) * (x_diff * y_diff);
-
-				// green element
-				// Yg = Ag(1-w)(1-h) + Bg(w)(1-h) + Cg(h)(1-w) + Dg(wh)
-				green = ((a >> 8) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 8) & 0xff) * (x_diff) * (1 - y_diff)
-						+ ((c >> 8) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 8) & 0xff) * (x_diff * y_diff);
-
-				// red element
-				// Yr = Ar(1-w)(1-h) + Br(w)(1-h) + Cr(h)(1-w) + Dr(wh)
-				red = ((a >> 16) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 16) & 0xff) * (x_diff) * (1 - y_diff)
-						+ ((c >> 16) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 16) & 0xff) * (x_diff * y_diff);
-
-				// alpha element
-				// Ya = Aa(1-w)(1-h) + Ba(w)(1-h) + Ca(h)(1-w) + Da(wh)
-				alpha = ((a >> 24) & 0xff) * (1 - x_diff) * (1 - y_diff) + ((b >> 24) & 0xff) * (x_diff) * (1 - y_diff)
-						+ ((c >> 24) & 0xff) * (y_diff) * (1 - x_diff) + ((d >> 24) & 0xff) * (x_diff * y_diff);
-
-				temp[destIndex++] = ((((int) alpha) << 24) & 0xff000000) | ((((int) red) << 16) & 0xff0000)
-						| ((((int) green) << 8) & 0xff00) | ((int) blue);
-			}
-		}
-		return temp;
-	}
-	
-	// TODO: This is probably SamplerState.PointClamp
-	/**
-	 * Resizes a portion of an ARGB sprite using the nearest neighbor
-	 * interpolation algorithm. Useful for a animation strips. The new width or
-	 * the new height cannot be less than or equal to 0.
-	 * 
-	 * @param texture
-	 *        The original texture to be resized.
-	 * @param startX
-	 *        The starting location on the x axis.
-	 * @param startY
-	 *        The starting location on the y axis.
-	 * @param oldWidth
-	 *        The old sprite width.
-	 * @param oldHeight
-	 *        The old sprite height.
-	 * @param newWidth
-	 *        The new sprite width.
-	 * @param newHeight
-	 *        The new sprite height.
-	 * @return The reference array of pixels containing the resized sprite's
-	 *         pixels.
-	 * @throws IllegalArgumentException
-	 *         If the new width or the new height is less than or equal to
-	 *         0.
-	 */
-	public int[] resizeNearestNeighbor(Texture2D texture, int startX, int startY,int oldWidth, int oldHeight, int newWidth, int newHeight)
+/*	private void drawQuad3(int destStartX, int destStartY, int destEndX, int destEndY,
+	  					  int srcStartX, int srcStartY, int srcEndX, int srcEndY,
+	  					  int srcWidth, int srcHeight, int[] srcPixels, Color tint)
 	{
-		if (newWidth < 0 || newHeight < 0)
-			throw new IllegalArgumentException("new width or new height cannot be less than 0");
-		int[] temp = new int[newWidth * newHeight];
-		float xRatio = (float) newWidth / (float) oldWidth;
-		float yRatio = (float) newHeight / (float) oldHeight;
+		// Note: Premultiply tint up front
+		//Vector4 tintVec4 = Color.fromNonPremultiplied(tint.getRed(), tint.getGreen(), tint.getBlue(), tint.getAlpha()).toVector4();
+		Vector4 tintVec4 = tint.toVector4();
 
-		for (int y = startY; y < newHeight; ++y)
+		Vector2 origin = new Vector2(destStartX, destStartY);
+		Vector2 xAxis = new Vector2(destEndX - destStartX, 0f);
+		Vector2 yAxis = new Vector2(0f, destEndY - destStartY);
+		Rectangle clipRect = new Rectangle();
+
+		float xAxisLength = xAxis.length();
+		float yAxisLength = yAxis.length();
+
+		Vector2 NxAxis = xAxis.multiply(yAxisLength / xAxisLength);
+		Vector2 NyAxis = yAxis.multiply(xAxisLength / yAxisLength);
+
+		float invXAxislengthSq = 1.0f / xAxis.lengthSquared();
+		float invYAxislengthSq = 1.0f / yAxis.lengthSquared();
+
+		Rectangle fillRect = new Rectangle(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+
+		//int screenWidth = this._viewport.getWidth();
+		//int screenHeight = this._viewport.getHeight();
+
+		// check the bounds
+		//int xMin = screenWidth;
+		//int xMax = 0;
+		//int yMin = screenHeight;
+		//int yMax = 0;
+
+		Vector2[] pos = new Vector2[]{ origin,
+				   					   Vector2.add(origin, xAxis),
+				   					   Vector2.add(origin, xAxis).add(yAxis),
+				   					   Vector2.add(origin, yAxis) };
+		for (int pIndex = 0; pIndex < pos.length; ++pIndex)
 		{
-			for (int x = startX; x < newWidth; ++x)
+			Vector2 testPos = pos[pIndex];
+			int floorX = (int) Math.floor(testPos.x);
+			int ceilX = (int) Math.ceil(testPos.x);
+			int floorY = (int) Math.floor(testPos.y);
+			int ceilY = (int) Math.ceil(testPos.y);
+
+			//if (xMin > floorX) { xMin = floorX; }
+			//if (yMin > floorY) { yMin = floorY; }
+			//if (xMax < ceilX)  { xMax = ceilX; }
+			//if (yMax < ceilY)  { yMax = ceilY; }
+			if (fillRect.x > floorX) { fillRect.x = floorX; }
+			if (fillRect.y > floorY) { fillRect.y = floorY; }
+			if (fillRect.right()  < ceilX) { fillRect.width = ceilX - fillRect.x; }
+			if (fillRect.bottom() < ceilY) { fillRect.height = ceilY - fillRect.y; }
+		}
+
+		fillRect = Rectangle.intersect(clipRect, fillRect);
+		//if (xMin < 0) { xMin = 0;}
+		//if (yMin < 0) { yMin = 0;}
+		//if (xMax > screenWidth)  { xMax = screenWidth; }
+		//if (yMax > screenHeight) { yMax = screenHeight; }
+
+		if (fillRect.width > 0 && fillRect.height > 0)
+		{
+			Vector2 nXAxis = Vector2.multiply(xAxis, invXAxislengthSq);
+			Vector2 nYAxis = Vector2.multiply(yAxis, invYAxislengthSq);
+
+			// Cycle through all the sprites pixels. and apply tint and alpha-blending
+			// Set our starting index position for the source Texture.
+			int destRow = fillRect.x + fillRect.y * srcWidth;
+			int yMin = fillRect.y;
+			int yMax = fillRect.y + fillRect.height;
+			int xMin = fillRect.x;
+			int xMax = fillRect.x + fillRect.width;
+			for (int y = yMin; y < yMax; ++y)
 			{
-				// TODO: This needs to be fixed
-				temp[x + y * newWidth] = texture.pixels[(int) (x / xRatio) + (int) (y / yRatio) * oldWidth];
+				float pixelPy = (float) y;
+				pixelPy -= origin.y;
+				float PynX = pixelPy * nXAxis.y;
+				float PynY = pixelPy * nYAxis.y;
+				float pixelPx = (float) xMin;
+				pixelPx -= origin.x;
+				for (int x = xMin; x < xMax; ++x)
+				{
+					float u = (pixelPx * nXAxis.x) + PynX;
+					float v = (pixelPx * nYAxis.x) + PynY;
+
+//TODO: rendu ici dans drawRectangleQuickly
+					float tX = u * (float) (texture.width);
+					float tY = v * (float) (texture.height);
+
+					int xx = (int) tX;
+					int yy = (int) tY;
+
+					float fX = tX - (float)xx;
+					float fY = tY - (float)yy;
+
+					// TODO: Delete these assert
+					assert((xx >= 0) && (xx < texture.width));
+					assert((yy >= 0) && (yy < texture.height));
+
+					int srcIndex = (xx + yy * texture.width);
+					int texelPtrA = texture.pixels[srcIndex];
+					int texelPtrB = texture.pixels[srcIndex + ((xx == (texture.width - 1)) ? 0 : 1)];//((xx % (texture.width -1) == 0) ? 0 : 1)];
+					int texelPtrC = texture.pixels[srcIndex + ((yy == (texture.height -1)) ? 0 : texture.height)];//((yy % (texture.height -1) == 0) ? 0 : texture.width)];
+					int texelPtrD = texture.pixels[srcIndex + ((yy == (texture.height -1)) ? 0 : texture.height) + ((xx == (texture.width - 1)) ? 0 : 1)];// ((yy % (texture.height -1) == 0) ? 0 : texture.width) + ((xx % (texture.width -1) == 0) ? 0 : 1)];
+
+					Vector4 texelA = new Vector4((float) ((texelPtrA >> 16) & 0xFF),
+							 					 (float) ((texelPtrA >>  8) & 0xFF),
+							 					 (float) ((texelPtrA >>  0) & 0xFF),
+							 					 (float) ((texelPtrA >> 24) & 0xFF));
+					Vector4 texelB = new Vector4((float) ((texelPtrB >> 16) & 0xFF),
+							 					 (float) ((texelPtrB >>  8) & 0xFF),
+							 					 (float) ((texelPtrB >>  0) & 0xFF),
+							 					 (float) ((texelPtrB >> 24) & 0xFF));
+					Vector4 texelC = new Vector4((float) ((texelPtrC >> 16) & 0xFF),
+							 					 (float) ((texelPtrC >>  8) & 0xFF),
+							 					 (float) ((texelPtrC >>  0) & 0xFF),
+							 					 (float) ((texelPtrC >> 24) & 0xFF));
+					Vector4 texelD = new Vector4((float) ((texelPtrD >> 16) & 0xFF),
+							 					 (float) ((texelPtrD >>  8) & 0xFF),
+							 					 (float) ((texelPtrD >>  0) & 0xFF),
+							 					 (float) ((texelPtrD >> 24) & 0xFF));
+
+					// NOTE: Go from sRGB to "linear light" space
+//					texelA = sRGB255ToLinear1(texelA);
+//					texelB = sRGB255ToLinear1(texelB);
+//					texelC = sRGB255ToLinear1(texelC);
+//					texelD = sRGB255ToLinear1(texelD);
+					texelA = Vector4.divide(texelA, 255);
+					texelB = Vector4.divide(texelB, 255);
+					texelC = Vector4.divide(texelC, 255);
+					texelD = Vector4.divide(texelD, 255);
+
+					Vector4 texel;
+					// TODO: Add other resizing methods (see TextureFilter.java)
+					switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
+					{
+						case Linear:
+							texel = Vector4.lerp(Vector4.lerp(texelA, texelB, fX),
+												 Vector4.lerp(texelC, texelD, fX),
+												 fY);
+							break;
+//						case Point:
+//							break;
+						default:
+							texel = Vector4.lerp(Vector4.lerp(texelA, texelB, fX),
+									Vector4.lerp(texelC, texelD, fX),
+									fY);
+							break;
+					}
+
+					// tint
+					texel = Vector4.multiply(texel, tintVec4);
+
+					Vector4 dest = new Vector4((float) ((pixels[x + y * screenWidth] >> 16) & 0xFF),
+											   (float) ((pixels[x + y * screenWidth] >>  8) & 0xFF),
+											   (float) ((pixels[x + y * screenWidth] >>  0) & 0xFF),
+											   (float) ((pixels[x + y * screenWidth] >> 24) & 0xFF));
+
+					// NOTE: Go from sRGB to "linear" brightness space
+//					dest = sRGB255ToLinear1(dest);
+					dest = Vector4.divide(dest, 255);
+
+					Vector4 blended = Vector4.add(Vector4.multiply(dest, (1.0f - texel.w)), texel);
+
+					// NOTE: Go from "linear light" to sRGB space
+//					Vector4 blended255 = linear1ToSRGB255(blended);
+					Vector4 blended255 = Vector4.multiply(blended, 255);
+
+					pixels[destIndex++] = ((((int) blended255.w) << 24) & 0xff000000) |
+										  ((((int) blended255.x) << 16) & 0xff0000)	|
+										  ((((int) blended255.y) << 8) & 0xff00) |
+										  ((int) blended255.z);
+				}
+				destRow += screenWidth;
 			}
 		}
-		return temp;
+	}*/
+
+	private Vector4	sRGB255ToLinear1(Vector4 c)
+	{
+		Vector4 result = new Vector4();
+
+		float inv255 = 1.0f / 255.0f;
+
+		result.x = (inv255 * c.x) * (inv255 * c.x);
+		result.y = (inv255 * c.y) * (inv255 * c.y);
+		result.z = (inv255 * c.z) * (inv255 * c.z);
+		result.w = inv255 * c.w;
+
+		return result;
+	}
+
+	private Vector4	linear1ToSRGB255(Vector4 c)
+	{
+		Vector4 result = new Vector4();
+
+		float one255 = 255.0f;
+
+		result.x = (float) (one255 * Math.sqrt(c.x));
+		result.y = (float) (one255 * Math.sqrt(c.y));
+		result.z = (float) (one255 * Math.sqrt(c.z));
+		result.w = 255.0f * c.w;
+
+		return result;
+	}
+
+	// TODO: should add this to the Vector class
+	private Vector2 perp(Vector2 a)
+	{
+		return new Vector2(-a.y, a.x);
 	}
 }
