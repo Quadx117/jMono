@@ -32,8 +32,9 @@ public class ShooterGame extends Game
 	SpriteBatch spriteBatch;
 
 	// Bounding Rectangles
+	final boolean DEBUG_DRAW_BOUNDING_RECTANGLE = false;
 	Texture2D pixel;
-	Rectangle boundingRectPlayer;
+	Rectangle boundingRectPlayer = new Rectangle();
 	List<Rectangle> boundingRectEnemies;
 	List<Rectangle> boundingRectLaser;
 
@@ -143,8 +144,6 @@ public class ShooterGame extends Game
 
 	protected void initialize()
 	{
-		// TODO: Add your initialization logic here
-		
 		// Initialize the Player class
 		player = new Player();
 
@@ -180,9 +179,12 @@ public class ShooterGame extends Game
 		score = 0;
 
 		// Initalize the boundingRectangles list
-		boundingRectEnemies = new ArrayList<Rectangle>();
-		boundingRectLaser = new ArrayList<Rectangle>();
-
+		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+		{
+			boundingRectEnemies = new ArrayList<Rectangle>();
+			boundingRectLaser = new ArrayList<Rectangle>();
+		}
+		
 		// Initialize the current screen state to the screen we want to display first
 		currentScreen = ScreenState.MainMenu;
 
@@ -214,17 +216,19 @@ public class ShooterGame extends Game
 		// TODO: use this.Content to load your game content here
 
 		// Used to draw the Bounding Rectangles. Can be used to draw any primitives
-		pixel = new Texture2D(getGraphicsDevice(), 1, 1, false, SurfaceFormat.Color);
-		pixel.setData(new Color[] { Color.White }); // So we can draw whatever color we want
-
+		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+		{
+			pixel = new Texture2D(getGraphicsDevice(), 1, 1, false, SurfaceFormat.Color);
+			pixel.setData(new Color[] { Color.White }); // So we can draw whatever color we want
+		}
+		
 		// Load the Player resources
 		Animation playerAnimation = new Animation();
 		Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
-		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1f, true);
+		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1.0f, true);
 
 		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
-				getGraphicsDevice().getViewport().getTitleSafeArea().y
-						+ getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
+											 getGraphicsDevice().getViewport().getTitleSafeArea().y + getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
 		player.initialize(playerAnimation, playerPosition);
 
 		mainBackground = getContent().load("mainbackground", Texture2D.class);
@@ -277,8 +281,7 @@ public class ShooterGame extends Game
 		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1f, true);
 
 		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
-				getGraphicsDevice().getViewport().getTitleSafeArea().y
-						+ getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
+											 getGraphicsDevice().getViewport().getTitleSafeArea().y + getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
 		player.initialize(playerAnimation, playerPosition);
 
 		score = 0;
@@ -293,14 +296,9 @@ public class ShooterGame extends Game
 
 	protected void update(GameTime gameTime)
 	{
-		// TODO: Add your update logic here
 		fpsCounter.update(gameTime);
 
-		// Save the previous state of the Keyboard and GamePad so we can determine
-		// single key/button presses
-		// previousGamePadState = currentGamePadState;
-		// NOTE: keyboard.getState() returns a new KeyboardState each time
-		// so this should work.
+		// Save the previous state of the Keyboard and GamePad so we can determine single key/button presses
 		previousKeyboardState = currentKeyboardState;
 
 		// Read the current state of the Keyboard and GamePad and store it
@@ -454,8 +452,8 @@ public class ShooterGame extends Game
 
 	private void updateEndMenu()
 	{
-		// Test if any key is pressed. If a key is pressed .Length = 1 ; if two keys are pressed
-		// simultaneously .Length = 2, etc.
+		// Test if any key is pressed. If a key is pressed .Length = 1,
+		// if two keys are pressed simultaneously .Length = 2, etc.
 		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.getPressedKeys().length > 0)
 		{
 			startNewGame();
@@ -493,9 +491,9 @@ public class ShooterGame extends Game
 		// of our ship over the top left corner (0, 0) of the destinationRect, we have to set our
 		// clamping min. and max. value accordingly.
 		player.position.x = MathHelper.clamp(player.position.x, (player.playerAnimation.frameWidth / 2),
-				getGraphicsDevice().getViewport().getWidth() - (player.playerAnimation.frameWidth / 2));
+											 getGraphicsDevice().getViewport().getWidth() - (player.playerAnimation.frameWidth / 2));
 		player.position.y = MathHelper.clamp(player.position.y, (player.playerAnimation.frameHeight / 2),
-				getGraphicsDevice().getViewport().getHeight() - (player.playerAnimation.frameHeight / 2));
+											 getGraphicsDevice().getViewport().getHeight() - (player.playerAnimation.frameHeight / 2));
 
 		// Fire if we press spacebar and only every interval we set as the fireTime
 		if (currentKeyboardState.isKeyDown(Keys.Space))
@@ -545,18 +543,21 @@ public class ShooterGame extends Game
 
 		// Randomly generate the position of the enemy
 		Vector2 position = new Vector2(getGraphicsDevice().getViewport().getWidth() + enemyTexture.getWidth() / 2,
-				random.nextInt(getGraphicsDevice().getViewport().getHeight() - 200) + 100);
+									   random.nextInt(getGraphicsDevice().getViewport().getHeight() - 200) + 100);
 
 		// Create an enemy
 		Enemy enemy = new Enemy();
-		Rectangle boundingRect = new Rectangle();
 
 		// Initialize the enemy
 		enemy.initialize(enemyAnimation, position);
 
 		// Add the enemy to the active enemies list
 		enemies.add(enemy);
-		boundingRectEnemies.add(boundingRect);
+		
+		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+		{
+			boundingRectEnemies.add(new Rectangle());
+		}
 	}
 
 	private void updateEnemies(GameTime gameTime)
@@ -574,8 +575,7 @@ public class ShooterGame extends Game
 			enemies.get(i).update(gameTime);
 			if (enemies.get(i).isActive == false)
 			{
-				// If not Active and Health <= 0 (so we don't get an explosion when the enemy goes
-				// out of the screen)
+				// If not Active and Health <= 0 (so we don't get an explosion when the enemy goes out of the screen)
 				if (enemies.get(i).health <= 0)
 				{
 					// Add the explosion
@@ -588,7 +588,11 @@ public class ShooterGame extends Game
 					score += enemies.get(i).value;
 				}
 				enemies.remove(i);
-				boundingRectEnemies.remove(i);
+				
+				if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+				{
+					boundingRectEnemies.remove(i);
+				}
 			}
 		}
 	}
@@ -597,14 +601,17 @@ public class ShooterGame extends Game
 	{
 		// Create the projectile
 		Projectiles projectile = new Projectiles();
-		Rectangle boundingRect = new Rectangle();
 
 		// Initialize the projectile
 		projectile.initialize(getGraphicsDevice().getViewport(), projectileTexture, position);
 
 		// Add the projectile to the active enemies list
 		projectiles.add(projectile);
-		boundingRectLaser.add(boundingRect);
+		
+		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+		{
+			boundingRectLaser.add(new Rectangle());
+		}
 	}
 
 	private void updateProjectiles()
@@ -617,7 +624,11 @@ public class ShooterGame extends Game
 			if (projectiles.get(i).isActive == false)
 			{
 				projectiles.remove(i);
-				boundingRectLaser.remove(i);
+				
+				if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+				{
+					boundingRectLaser.remove(i);
+				}
 			}
 		}
 	}
@@ -630,26 +641,34 @@ public class ShooterGame extends Game
 
 		// Only create the rectangle once for the player
 		rectangle1 = new Rectangle((int) player.position.x - (player.getWidth() / 2),
-				(int) player.position.y - (player.getHeight() / 2),
-				player.getWidth(),
-				player.getHeight());
-		boundingRectPlayer = new Rectangle((int) player.position.x - (player.getWidth() / 2),
-				(int) player.position.y - (player.getHeight() / 2),
-				player.getWidth(),
-				player.getHeight());
-
+								   (int) player.position.y - (player.getHeight() / 2),
+								   player.getWidth(),
+								   player.getHeight());
+		
+		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+		{
+			boundingRectPlayer = new Rectangle((int) player.position.x - (player.getWidth() / 2),
+											   (int) player.position.y - (player.getHeight() / 2),
+											   player.getWidth(),
+											   player.getHeight());
+		}
+		
 		// Check collision between Player and Enemies
 		for (int i = 0; i < enemies.size(); ++i)
 		{
 			rectangle2 = new Rectangle((int) enemies.get(i).position.x - (enemies.get(i).getWidth() / 2),
-					(int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
-					enemies.get(i).getWidth(),
-					enemies.get(i).getHeight());
-			boundingRectEnemies.set(i, new Rectangle((int) enemies.get(i).position.x - (enemies.get(i).getWidth() / 2),
-					(int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
-					enemies.get(i).getWidth(),
-					enemies.get(i).getHeight()));
-
+									   (int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
+									   enemies.get(i).getWidth(),
+									   enemies.get(i).getHeight());
+			
+			if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+			{
+				boundingRectEnemies.set(i, new Rectangle((int) enemies.get(i).position.x - (enemies.get(i).getWidth() / 2),
+														 (int) enemies.get(i).position.y - (enemies.get(i).getHeight() / 2),
+														 enemies.get(i).getWidth(),
+														 enemies.get(i).getHeight()));
+			}
+			
 			// Determine if the two objects collided with each other
 			if (rectangle1.intersects(rectangle2))
 			{
@@ -672,32 +691,32 @@ public class ShooterGame extends Game
 			{
 				// Create the rectangles we need to determine if lasers collided with enemies
 				rectangle1 = new Rectangle((int) projectiles.get(i).position.x - (projectiles.get(i).getWidth() / 2),
-						(int) projectiles.get(i).position.y - (projectiles.get(i).getHeight() / 2),
-						projectiles.get(i).getWidth(),
-						projectiles.get(i).getHeight());
+										   (int) projectiles.get(i).position.y - (projectiles.get(i).getHeight() / 2),
+										   projectiles.get(i).getWidth(),
+										   projectiles.get(i).getHeight());
 
 				rectangle2 = new Rectangle((int) enemies.get(j).position.x - (enemies.get(j).getWidth() / 2),
-						(int) enemies.get(j).position.y - (enemies.get(j).getHeight() / 2),
-						enemies.get(j).getWidth(),
-						enemies.get(j).getHeight());
+										   (int) enemies.get(j).position.y - (enemies.get(j).getHeight() / 2),
+										   enemies.get(j).getWidth(),
+										   enemies.get(j).getHeight());
 
 				// Using visible bounding rectangles
-				// boundingRectLaser.get(i) = new Rectangle((int)projectiles.get(i).Position.X -
-				// (projectiles.get(i).Width / 2),
-				// (int)projectiles.get(i).Position.Y - (projectiles.get(i).Height / 2),
-				// projectiles.get(i).Width, projectiles.get(i).Height);
-				// boundingRectEnemies.get(j) = new Rectangle((int)enemies.get(j).Position.X -
-				// (enemies.get(j).Width /
-				// 2),
-				// (int)enemies.get(j).Position.Y - (enemies.get(j).Height / 2),
-				// enemies.get(j).Width,
-				// enemies.get(j).Height);
-
+				if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+				{
+					 boundingRectLaser.set(i, new Rectangle((int) projectiles.get(i).position.x - (projectiles.get(i).getWidth() / 2),
+							 								(int) projectiles.get(i).position.y - (projectiles.get(i).getHeight() / 2),
+							 								projectiles.get(i).getWidth(),
+							 								projectiles.get(i).getHeight()));
+					 boundingRectEnemies.set(j, new Rectangle((int) enemies.get(j).position.x - (enemies.get(j).getWidth() / 2),
+							 								  (int) enemies.get(j).position.y - (enemies.get(j).getHeight() / 2),
+							 								  enemies.get(j).getWidth(),
+							 								  enemies.get(j).getHeight()));
+				}
+				
 				// Determine if the two objects collided with each other
 				if (rectangle1.intersects(rectangle2))
 				{
-					// Subtract enemies Health by the damage of the projectile and deactivate
-					// projectile
+					// Subtract enemies Health by the damage of the projectile and deactivate projectile
 					enemies.get(j).health -= projectiles.get(i).damage;
 					projectiles.get(i).isActive = false;
 				}
@@ -771,7 +790,6 @@ public class ShooterGame extends Game
 	{
 		getGraphicsDevice().clear(Color.CornflowerBlue);
 
-		// TODO: Add your drawing code here
 		fpsCounter.draw(gameTime);
 
 		// Start drawing
@@ -849,9 +867,9 @@ public class ShooterGame extends Game
 
 		// Draw the score
 		spriteBatch.drawString(gameFont, "Score : " + score,
-				new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
-						    getGraphicsDevice().getViewport().getTitleSafeArea().y),
-						    Color.multiply(Color.White, fontAlphaBlend));
+							   new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
+									   	   getGraphicsDevice().getViewport().getTitleSafeArea().y),
+							   Color.multiply(Color.White, fontAlphaBlend));
 
 		// Draw the player's health
 		spriteBatch.drawString(gameFont, "Health : " + player.health,
@@ -860,17 +878,20 @@ public class ShooterGame extends Game
 								Color.multiply(Color.White, fontAlphaBlend));
 
 		// Draw Bounding Rectangles
-		// drawBorder(boundingRectPlayer, 2, Color.BlueViolet);
-
-		// for (int i = 0; i < boundingRectEnemies.size(); i++)
-		// {
-		// drawBorder(boundingRectEnemies.get(i), 2, Color.SpringGreen);
-		// }
-
-		// for (int i = 0; i < boundingRectLaser.size(); i++)
-		// {
-		// drawBorder(boundingRectLaser.get(i), 2, Color.Black);
-		// }
+		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
+		{
+			drawBorder(boundingRectPlayer, 2, Color.BlueViolet);
+	
+			for (int i = 0; i < boundingRectEnemies.size(); i++)
+			{
+				drawBorder(boundingRectEnemies.get(i), 2, Color.SpringGreen);
+			}
+	
+			for (int i = 0; i < boundingRectLaser.size(); i++)
+			{
+				drawBorder(boundingRectLaser.get(i), 2, Color.Black);
+			}
+		}
 	}
 
 	private void drawEndMenu()
@@ -885,25 +906,23 @@ public class ShooterGame extends Game
 	}
 
 	// Used to draw the Bounding Rectangles
-	@SuppressWarnings("unused")
 	private void drawBorder(Rectangle rectangleToDraw, int borderThickness, Color borderColor)
 	{
 		// Draw Top line
 		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y,
-				rectangleToDraw.width, borderThickness), borderColor);
+						 rectangleToDraw.width, borderThickness), borderColor);
 
 		// Draw Left line
 		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y,
-				borderThickness, rectangleToDraw.height), borderColor);
+						 borderThickness, rectangleToDraw.height), borderColor);
 
 		// Draw Right line
 		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x + rectangleToDraw.width - borderThickness,
-				rectangleToDraw.y, borderThickness, rectangleToDraw.height), borderColor);
+						 rectangleToDraw.y, borderThickness, rectangleToDraw.height), borderColor);
 
 		// Draw Bottom line
-		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y + rectangleToDraw.height
-				- borderThickness,
-				rectangleToDraw.width, borderThickness), borderColor);
+		spriteBatch.draw(pixel, new Rectangle(rectangleToDraw.x, rectangleToDraw.y + rectangleToDraw.height - borderThickness,
+						 rectangleToDraw.width, borderThickness), borderColor);
 	}
 
 }
