@@ -1,6 +1,6 @@
-/content/doneFiles
-/content/keywords
-
+/Content
+/Samples/blackjack/Content/res/doneFiles
+/Samples/test
 /src/debug
 
 # from https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
