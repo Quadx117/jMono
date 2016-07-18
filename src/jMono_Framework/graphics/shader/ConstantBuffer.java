@@ -20,7 +20,6 @@ public class ConstantBuffer extends GraphicsResource
 	private long _stateKey;
 
 	private boolean _dirty;
-
 	private boolean isDirty()
 	{
 		return _dirty;
@@ -42,10 +41,10 @@ public class ConstantBuffer extends GraphicsResource
 	}
 
 	public ConstantBuffer(GraphicsDevice device,
-			int sizeInBytes,
-			int[] parameterIndexes,
-			int[] parameterOffsets,
-			String name)
+						  int sizeInBytes,
+						  int[] parameterIndexes,
+						  int[] parameterOffsets,
+						  String name)
 	{
 		graphicsDevice = device;
 
@@ -73,7 +72,7 @@ public class ConstantBuffer extends GraphicsResource
 		final int elementSize = 4;
 		final int rowSize = elementSize * 4;
 
-		// NOTE: I added this because I need to convert data to the same type as _buffer fo
+		// NOTE: I added this because I need to convert data to the same type as _buffer for
 		// System.arraycopy to work. Otherwise, we get an exception.
 		byte[] source = As.floatArrayToByteArray(As.as(data, float[].class));
 

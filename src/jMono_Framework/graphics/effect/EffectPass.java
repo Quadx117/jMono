@@ -12,20 +12,20 @@ import jMono_Framework.graphics.states.BlendState;
 import jMono_Framework.graphics.states.DepthStencilState;
 import jMono_Framework.graphics.states.RasterizerState;
 
-public class EffectPass {
-
+public class EffectPass
+{
 	private Effect _effect;
 	
 	private Shader _pixelShader;
 	private Shader _vertexShader;
-	
+
 	private BlendState _blendState;
 	private DepthStencilState _depthStencilState;
 	private RasterizerState _rasterizerState;
-	
+
 	private String name;
 	public String getName() { return name; }
-	
+
 	private EffectAnnotationCollection annotations;
 	public EffectAnnotationCollection getAnnotations() { return annotations; }
 	
@@ -133,7 +133,7 @@ public class EffectPass {
 		if (_depthStencilState != null)
 			device.setDepthStencilState(_depthStencilState);
 	}
-	
+
 	private void setShaderSamplers(Shader shader, TextureCollection textures, SamplerStateCollection samplerStates)
 	{
 		for (SamplerInfo sampler : shader.getSamplers())

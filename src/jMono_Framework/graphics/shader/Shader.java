@@ -53,36 +53,20 @@ public class Shader extends GraphicsResource
 		public int parameter;
 	}
 
-	// / <summary>
-	// / A hash value which can be used to compare shaders.
-	// / </summary>
+	/**
+	 * A hash value which can be used to compare shaders.
+	 */
 	private int hashKey;
-
-	protected int getHashKey()
-	{
-		return hashKey;
-	}
+	protected int getHashKey() { return hashKey; }
 
 	private SamplerInfo[] samplers;
-
-	public SamplerInfo[] getSamplers()
-	{
-		return samplers;
-	}
+	public SamplerInfo[] getSamplers() { return samplers; }
 
 	private int[] CBuffers;
-
-	public int[] getCBuffers()
-	{
-		return CBuffers;
-	}
+	public int[] getCBuffers() { return CBuffers; }
 
 	private ShaderStage stage;
-
-	public ShaderStage getStage()
-	{
-		return stage;
-	}
+	public ShaderStage getStage() { return stage; }
 
 	public Shader(GraphicsDevice device, BinaryReader reader)
 	{

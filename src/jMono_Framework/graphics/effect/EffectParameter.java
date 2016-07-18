@@ -21,9 +21,16 @@ public class EffectParameter
 	protected static long NextStateKey;
 	public static long getNextStateKey() { return NextStateKey; }
 
-	protected EffectParameter(EffectParameterClass class_, EffectParameterType type, String name, int rowCount,
-			int columnCount, String semantic, EffectAnnotationCollection annotations,
-			EffectParameterCollection elements, EffectParameterCollection structMembers, Object data)
+	protected EffectParameter(EffectParameterClass class_,
+							  EffectParameterType type,
+							  String name,
+							  int rowCount,
+							  int columnCount,
+							  String semantic,
+							  EffectAnnotationCollection annotations,
+							  EffectParameterCollection elements,
+							  EffectParameterCollection structMembers,
+							  Object data)
 	{
 		this.parameterClass = class_;
 		this.parameterType = type;
@@ -105,98 +112,60 @@ public class EffectParameter
 		stateKey = ++NextStateKey;
 	}
 
-	public String name;
+	private String name;
+	public String getName() { return name; }
 
-	public String getName()
-	{
-		return name;
-	}
+	private String semantic;
+	public String getSemantic() { return semantic; }
 
-	public String semantic;
+	private EffectParameterClass parameterClass;
+	public EffectParameterClass getParameterClass() { return parameterClass; }
 
-	public String getSemantic()
-	{
-		return semantic;
-	}
+	private EffectParameterType parameterType;
+	public EffectParameterType getParameterType() { return parameterType; }
 
-	public EffectParameterClass parameterClass;
+	private int rowCount;
+	public int getRowCount() { return rowCount; }
 
-	public EffectParameterClass getParameterClass()
-	{
-		return parameterClass;
-	}
+	private int columnCount;
+	public int getColumnCount() { return columnCount; }
 
-	public EffectParameterType parameterType;
+	private EffectParameterCollection elements;
+	public EffectParameterCollection getElements() 	{ return elements; }
 
-	public EffectParameterType getParameterType()
-	{
-		return parameterType;
-	}
+	private EffectParameterCollection structureMembers;
+	public EffectParameterCollection getStructureMembers() { return structureMembers; }
 
-	public int rowCount;
-
-	public int getRowCount()
-	{
-		return rowCount;
-	}
-
-	public int columnCount;
-
-	public int getColumnCount()
-	{
-		return columnCount;
-	}
-
-	public EffectParameterCollection elements;
-
-	public EffectParameterCollection getElements()
-	{
-		return elements;
-	}
-
-	public EffectParameterCollection structureMembers;
-
-	public EffectParameterCollection getStructureMembers()
-	{
-		return structureMembers;
-	}
-
-	public EffectAnnotationCollection annotations;
-
-	public EffectAnnotationCollection getAnnotations()
-	{
-		return annotations;
-	}
+	private EffectAnnotationCollection annotations;
+	public EffectAnnotationCollection getAnnotations() { return annotations; }
 
 	// TODO: Using object adds alot of boxing/unboxing overhead
 	// and garbage generation. We should consider a templated
 	// type implementation to fix this!
 
-	// TODO: fix problem in ConstantBuffer before refactoring
-	protected Object data;
+	private Object data;
+	public Object getData() { return data; }
 
-	public Object getData()
-	{
-		return data;
-	}
+	private long stateKey;
 
-	protected long stateKey;
-
-	// / <summary>
-	// / The current state key which is used to detect
-	// / if the parameter value has been changed.
-	// / </summary>
+	/**
+	 * The current state key which is used to detect if the parameter value has been changed.
+	 * 
+	 * @return The current state key.
+	 */
 	public long getStateKey()
 	{
 		return stateKey;
 	}
 
-	// / <summary>
-	// / Property referenced by the DebuggerDisplayAttribute.
-	// / </summary>
-	public String debugDisplayString()
+	/**
+	 * Property referenced by the DebuggerDisplayAttribute.
+	 * 
+	 * @return A string containing debugging information
+	 */
+	public String getDebugDisplayString()
 	{
-		String semanticStr = new String(); // String.Empty;
+		String semanticStr = new String();
 		if (!StringHelpers.isNullOrEmpty(semantic))
 			semanticStr = " <" + semantic + ">";
 
@@ -258,13 +227,13 @@ public class EffectParameter
 		if (parameterClass != EffectParameterClass.Scalar || parameterType != EffectParameterType.Boolean)
 			throw new ClassCastException();
 
-		// #if DIRECTX
+// #if DIRECTX
 		// return ((int[])Data)[0] != 0;
-		// #else
+// #else
 
 		// MojoShader encodes even booleans into a float.
 		return ((float[]) data)[0] != 0.0f;
-		// #endif
+// #endif
 	}
 
 	// NOTE: This was already commented in the original
@@ -280,12 +249,12 @@ public class EffectParameter
 		if (parameterClass != EffectParameterClass.Scalar || parameterType != EffectParameterType.Integer)
 			throw new ClassCastException();
 
-		// #if DIRECTX
+// #if DIRECTX
 		return ((int[]) data)[0];
-		// #else
+// #else
 		// MojoShader encodes integers into a float.
 		// return (int) ((float[]) Data)[0];
-		// #endif
+// #endif
 	}
 
 	// NOTE: This was already commented in the original
@@ -306,9 +275,10 @@ public class EffectParameter
 
 		float[] floatData = (float[]) data;
 
-		return new Matrix(floatData[0], floatData[4], floatData[8], floatData[12], floatData[1], floatData[5],
-				floatData[9], floatData[13], floatData[2], floatData[6], floatData[10], floatData[14], floatData[3],
-				floatData[7], floatData[11], floatData[15]);
+		return new Matrix(floatData[0], floatData[4], floatData[8], floatData[12],
+						  floatData[1], floatData[5], floatData[9], floatData[13],
+						  floatData[2], floatData[6], floatData[10], floatData[14],
+						  floatData[3],	floatData[7], floatData[11], floatData[15]);
 	}
 
 	public Matrix[] getValueMatrixArray(int count)
@@ -394,8 +364,7 @@ public class EffectParameter
 		return (Texture2D) data;
 	}
 
-	// TODO: What is GLES
-	// #if !GLES
+// #if !GLES
 	public Texture3D getValueTexture3D()
 	{
 		if (parameterClass != EffectParameterClass.Object || parameterType != EffectParameterType.Texture3D)
@@ -403,8 +372,7 @@ public class EffectParameter
 
 		return (Texture3D) data;
 	}
-
-	// #endif
+// #endif
 
 	public TextureCube getValueTextureCube()
 	{
@@ -500,14 +468,14 @@ public class EffectParameter
 		if (parameterClass != EffectParameterClass.Scalar || parameterType != EffectParameterType.Boolean)
 			throw new ClassCastException();
 
-		// #if DIRECTX
+// #if DIRECTX
 		// We store the boolean as an integer as that
 		// is what the constant buffers expect.
 		((int[]) data)[0] = value ? 1 : 0;
-		// #else
+// #else
 		// MojoShader encodes even booleans into a float.
 		// ((float[]) Data)[0] = value ? 1 : 0;
-		// #endif
+// #endif
 		stateKey = ++NextStateKey;
 	}
 
@@ -524,12 +492,12 @@ public class EffectParameter
 		if (parameterClass != EffectParameterClass.Scalar || parameterType != EffectParameterType.Integer)
 			throw new ClassCastException();
 
-		// #if DIRECTX
+// #if DIRECTX
 		((int[]) data)[0] = value;
-		// #else
+// #else
 		// MojoShader encodes integers into a float.
 		// ((float[]) Data)[0] = value;
-		// #endif
+// #endif
 		stateKey = ++NextStateKey;
 	}
 

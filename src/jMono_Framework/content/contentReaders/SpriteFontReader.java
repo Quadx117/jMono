@@ -33,8 +33,7 @@ public class SpriteFontReader extends ContentTypeReader<SpriteFont>
 			// input.readObject<Texture2D>(existingInstance.getTexture());
 			input.readObject2(existingInstance.getTexture());
 
-			// discard the rest of the SpriteFont data as we are only reloading GPU resources for
-			// now
+			// discard the rest of the SpriteFont data as we are only reloading GPU resources for now
 			// input.readObject<List<Rectangle>>();
 			// input.readObject<List<Rectangle>>();
 			// input.readObject<List<char>>();

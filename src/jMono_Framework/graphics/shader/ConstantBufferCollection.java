@@ -1,43 +1,46 @@
 package jMono_Framework.graphics.shader;
 
-public class ConstantBufferCollection {
-
+public class ConstantBufferCollection
+{
 	private ConstantBuffer[] _buffers;
 
 	private ShaderStage _stage;
-
-	public ShaderStage getStage() {
-		return this._stage;
-	}
+	public ShaderStage getStage() { return this._stage; }
 
 	@SuppressWarnings("unused")
 	private int _valid;
 
-	public ConstantBufferCollection(ShaderStage stage, int maxBuffers) {
+	public ConstantBufferCollection(ShaderStage stage, int maxBuffers)
+	{
 		_stage = stage;
 		_buffers = new ConstantBuffer[maxBuffers];
 		_valid = 0;
 	}
 
-	public ConstantBuffer getConstantBufferCollection(int index) {
+	public ConstantBuffer getConstantBufferCollection(int index)
+	{
 		return _buffers[index];
 	}
 
-	public void setConstantBufferCollection(int index, ConstantBuffer value) {
+	public void setConstantBufferCollection(int index, ConstantBuffer value)
+	{
 		if (_buffers[index] == value)
 			return;
 
-		if (value != null) {
+		if (value != null)
+		{
 			_buffers[index] = value;
 			_valid |= 1 << index;
 		}
-		else {
+		else
+		{
 			_buffers[index] = null;
 			_valid &= ~(1 << index);
 		}
 	}
 
-	public void clear() {
+	public void clear()
+	{
 		for (int i = 0; i < _buffers.length; ++i)
 			_buffers[i] = null;
 

@@ -46,11 +46,11 @@ public class BinaryReader extends FilterInputStream
 
 	/**
 	 * Reads a 2-byte signed integer from the current stream and advances the current position of
-	 * the stream by two bytes. Returns a 32-bit int as there are not 16-bit ints in java.
+	 * the stream by two bytes.
 	 * 
 	 * @return
 	 */
-	public int readInt16()
+	public short readInt16()
 	{
 		return ByteBuffer.wrap(this.readBytes(2)).order(ByteOrder.LITTLE_ENDIAN).getShort();
 	}
@@ -216,5 +216,6 @@ public class BinaryReader extends FilterInputStream
 }
 // TODO: Finish comments as per MSDN :
 // https://msdn.microsoft.com/en-us/library/system.io.binaryreader%28v=vs.110%29.aspx
+// https://github.com/dotnet/coreclr/blob/master/src/mscorlib/src/System/IO/BinaryReader.cs
 
 // TODO: implement other methods and validate the existing one

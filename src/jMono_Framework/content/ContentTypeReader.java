@@ -124,10 +124,10 @@ public abstract class ContentTypeReader<T>
  * // existingInstance
  * // The object receiving the data, or null if a new instance of the object should be created.
  * if (existingInstance == null) {
- * return this.read (input, default(T));
+ * return this.read(input, default(T));
  * }
  * else {
- * return this.read (input, (T)existingInstance);
+ * return this.read(input, (T)existingInstance);
  * }
  * 
  * //return Read(input, (T)existingInstance);

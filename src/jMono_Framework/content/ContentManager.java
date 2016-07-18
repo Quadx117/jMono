@@ -197,7 +197,6 @@ public class ContentManager implements AutoCloseable
 		}
 	}
 
-	// TODO: Delete this comment when done testing
 	// NOTE: I had to add a parameter for the type because of Java's type erasure
 	@SuppressWarnings("unchecked")
 	public <T> T load(String assetName, Class<?> type)
@@ -286,6 +285,7 @@ public class ContentManager implements AutoCloseable
 		return stream;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <T> T readAsset(String assetName, Consumer<AutoCloseable> recordDisposableObject, Class<?> type)
 	{
 		if (StringHelpers.isNullOrEmpty(assetName))
@@ -756,7 +756,7 @@ public class ContentManager implements AutoCloseable
 	}
 	
 	// TODO: Do I want this as a String or a Path ?
-	protected String getRootDirectoryFullPath()
+	public String getRootDirectoryFullPath()
 	{
 		return Paths.get(TitleContainer.getLocation(), getRootDirectory()).toString();
 	}

@@ -15,6 +15,7 @@ import jMono_Framework.utilities.ReflectionHelpers;
 import jMono_Framework.utilities.StringHelpers;
 
 import java.io.InputStream;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,18 @@ public class ContentReader extends BinaryReader
 
         if (!StringHelpers.isNullOrEmpty(externalReference))
         {
-            return contentManager.load(FileHelpers.resolveRelativePath(assetName, externalReference));
+        	// TODO: Need to find what to use as the second parameter of the load method
+        	// TODO: Need to test this
+        	Class<?> cls = null;
+			try
+			{
+				cls = Class.forName(externalReference).getClass();
+			}
+			catch (ClassNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+            return contentManager.load(FileHelpers.resolveRelativePath(assetName, externalReference), cls);
         }
 
         // return default(T);
@@ -134,7 +146,7 @@ public class ContentReader extends BinaryReader
         result.M44 = readSingle();
         return result;
     }
-        
+
     private <T> void recordDisposable(T result)
     {
     	AutoCloseable disposable = As.as(result, AutoCloseable.class);
@@ -156,12 +168,13 @@ public class ContentReader extends BinaryReader
     public <T> T readObject(ContentTypeReader<?> typeReader)
     {
         // T result = (T)typeReader.read(this, default(T));
-    	T result = (T)typeReader.read(this, null);
+    	@SuppressWarnings("unchecked")
+		T result = (T)typeReader.read(this, null);
         recordDisposable(result);
         return result;
     }
 
-    // TODO: Need to find a way to reslove this issue since Java doesn't resolve to the right
+    // TODO: Need to find a way to solve this issue since Java doesn't resolve to the right
     //		 method when passing null. It defaults to the previous method and crash.
     //		 For now I changed the method name to force it through the right one.
     public <T> T readObject2(T existingInstance)
@@ -225,7 +238,7 @@ public class ContentReader extends BinaryReader
         for(ContentTypeReader<?> typeReader : typeReaders)
         {
             if(typeReader.getTargetType().equals(objectType))
-                return (T)readRawObject(typeReader,existingInstance, objectType);
+                return (T)readRawObject(typeReader, existingInstance, objectType);
         }
         throw new IllegalArgumentException("Unsuported type");
     }
@@ -241,14 +254,15 @@ public class ContentReader extends BinaryReader
         int index = read7BitEncodedInt();
         if (index > 0)
         {
-            sharedResourceFixups.add(new AbstractMap.SimpleEntry<Integer, Consumer<Object>>(index - 1, Consumer(Object v)
-                {
+        	// TODO: test this in MonoGame, doesn't understand the anonymous delegate in C#
+            sharedResourceFixups.add(new AbstractMap.SimpleEntry<Integer, Consumer<Object>>(index - 1, (Consumer<Object>) fixup));
+              /*  {
                     if (!(v instanceof T))
                     {
                         throw new ContentLoadException(String.Format("Error loading shared resource. Expected type {0}, received type {1}", typeof(T).Name, v.getClass().getSimpleName()));
                     }
                     fixup.accept((T)v);
-                }));
+                }));*/
         }
     }
 
