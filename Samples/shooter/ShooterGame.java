@@ -4,6 +4,7 @@ import jMono_Framework.Color;
 import jMono_Framework.Game;
 import jMono_Framework.GraphicsDeviceManager;
 import jMono_Framework.Rectangle;
+import jMono_Framework.audio.SoundEffect;
 import jMono_Framework.graphics.SpriteBatch;
 import jMono_Framework.graphics.SpriteEffects;
 import jMono_Framework.graphics.SpriteFont;
@@ -16,14 +17,14 @@ import jMono_Framework.input.KeyboardState;
 import jMono_Framework.input.Keys;
 import jMono_Framework.math.MathHelper;
 import jMono_Framework.math.Vector2;
+import jMono_Framework.media.MediaPlayer;
+import jMono_Framework.media.Song;
 import jMono_Framework.time.GameTime;
 import jMono_Framework.time.TimeSpan;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import debug.TimedBlock;
 
 public class ShooterGame extends Game
 {
@@ -87,17 +88,17 @@ public class ShooterGame extends Game
 	List<Animation> explosions;
 
 	// The sound played when a laser is fired
-	// SoundEffect laserSound;
+	SoundEffect laserSound;
 
 	// The sound used for explosions
-	// SoundEffect explosionSound;
+	SoundEffect explosionSound;
 
 	// Low Beep (Used in menu)
-	// SoundEffect LowBeep;
+	SoundEffect lowBeep;
 
 	// The music played during Gameplay and Menus
-	// Song gameplayMusic;
-	// Song menuMusic;
+	Song gameplayMusic;
+	Song menuMusic;
 
 	// Variables to check which song is playing
 	boolean isPlayingMenuMusic;
@@ -146,8 +147,6 @@ public class ShooterGame extends Game
 
 	protected void initialize()
 	{
-TimedBlock.addTimedBlock("Draw");
-TimedBlock.addTimedBlock("ProcessPixel");
 		// Initialize the Player class
 		player = new Player();
 
@@ -217,7 +216,7 @@ TimedBlock.addTimedBlock("ProcessPixel");
 		// Create a new SpriteBatch, which can be used to draw textures.
 		spriteBatch = new SpriteBatch(getGraphicsDevice());
 
-		// TODO: use this.Content to load your game content here
+		// TODO: use this.getContent() to load your game content here
 
 		// Used to draw the Bounding Rectangles. Can be used to draw any primitives
 		if (DEBUG_DRAW_BOUNDING_RECTANGLE)
@@ -251,16 +250,16 @@ TimedBlock.addTimedBlock("ProcessPixel");
 		explosionTexture = getContent().load("explosion", Texture2D.class);
 
 		// Load the Laser, Explosion and LowBeep sound effect
-		// laserSound = getContent().load("sound/laserFire", SoundEffect.class);
-		// explosionSound = getContent().load("sound/explosion", SoundEffect.class);
-		// lowBeep = getContent().load("sound/LowBeep", SoundEffect.class);
+		laserSound = getContent().load("sounds/laserFire", SoundEffect.class);
+		explosionSound = getContent().load("sounds/explosion", SoundEffect.class);
+		lowBeep = getContent().load("sounds/LowBeep", SoundEffect.class);
 
 		// Load the music
-		// gameplayMusic = getContent().load("sound/gameMusic", Song.class);
-		// menuMusic = getContent().load("sound/menuMusic", Song.class);
+		gameplayMusic = getContent().load("sounds/gameMusic", Song.class);
+		menuMusic = getContent().load("sounds/menuMusic", Song.class);
 
 		// Start the music right away
-		// PlayMusic(menuMusic);
+		playMusic(menuMusic);
 
 		// Load the UI font
 		gameFont = getContent().load("fonts/gameFont", SpriteFont.class);
@@ -301,7 +300,7 @@ TimedBlock.addTimedBlock("ProcessPixel");
 	protected void update(GameTime gameTime)
 	{
 		fpsCounter.update(gameTime);
-TimedBlock.printTimedBlock();
+
 		// Save the previous state of the Keyboard and GamePad so we can determine single key/button presses
 		previousKeyboardState = currentKeyboardState;
 
@@ -351,7 +350,7 @@ TimedBlock.printTimedBlock();
 				{
 					isPlayingMenuMusic = true;
 					isPlayingGameMusic = false;
-					// PlayMusic(menuMusic);
+					playMusic(menuMusic);
 				}
 				break;
 			}
@@ -363,7 +362,7 @@ TimedBlock.printTimedBlock();
 				{
 					isPlayingMenuMusic = true;
 					isPlayingGameMusic = false;
-					// PlayMusic(menuMusic);
+					playMusic(menuMusic);
 				}
 				break;
 			}
@@ -375,7 +374,7 @@ TimedBlock.printTimedBlock();
 				{
 					isPlayingMenuMusic = false;
 					isPlayingGameMusic = true;
-					// PlayMusic(gameplayMusic);
+					playMusic(gameplayMusic);
 				}
 				break;
 			}
@@ -399,7 +398,7 @@ TimedBlock.printTimedBlock();
 			quitColor = Color.OrangeRed;
 		
 			// Play the LowBeep sound effect
-			// lowBeep.Play(0.7f, 0.0f, 0.0f);
+			lowBeep.play(0.9f, 0.0f, 0.0f);
 		}
 
 		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Up) & menuIndex != 0)
@@ -410,7 +409,7 @@ TimedBlock.printTimedBlock();
 			quitColor = Color.White;
 		
 			// Play the LowBeep sound effect
-			// lowBeep.Play(0.7f, 0.0f, 0.0f);
+			lowBeep.play(0.9f, 0.0f, 0.0f);
 		}
 
 		if (previousKeyboardState.notEquals(currentKeyboardState) & currentKeyboardState.isKeyDown(Keys.Enter) & menuIndex == 0)
@@ -512,7 +511,7 @@ TimedBlock.printTimedBlock();
 				addProjectile(Vector2.add(player.position, new Vector2(player.playerAnimation.frameWidth / 2, 0)));
 
 				// Play the laser sound effect
-				// laserSound.Play();
+				laserSound.play();
 			}
 		}
 
@@ -523,7 +522,7 @@ TimedBlock.printTimedBlock();
 			addExplosion(player.position);
 
 			// Play the explosion sound effect
-			// explosionSound.Play(0.3f, 0.0f, 0.0f);
+			explosionSound.play(0.85f, 0.0f, 0.0f);
 
 			elapsedTimeDead += (int) gameTime.getElapsedGameTime().getTotalMilliseconds();
 		}
@@ -586,7 +585,7 @@ TimedBlock.printTimedBlock();
 					addExplosion(enemies.get(i).position);
 
 					// Play the explosion sound effect
-					// explosionSound.Play(0.3f, 0.0f, 0.0f);
+					explosionSound.play(0.85f, 0.0f, 0.0f);
 
 					// Add to the Player's score
 					score += enemies.get(i).value;
@@ -775,20 +774,23 @@ TimedBlock.printTimedBlock();
 		}
 	}
 
-	// private void playMusic(Song song)
-	// {
-	// Due to the way the MediaPlayer plays music, we have to catch the exception.
-	// Music will play when the game is not tethered
-	// try
-	// {
-	// Play the music
-	// MediaPlayer.Play(song);
+	private void playMusic(Song song)
+	{
+		// Due to the way the MediaPlayer plays music, we have to catch the exception.
+		// Music will play when the game is not tethered
+//		try
+//		{
+			// Play the music
+			MediaPlayer.play(song);
 
-	// Loop the currently playing song
-	// MediaPlayer.IsRepeating = true;
-	// }
-	// catch { }
-	// }
+			// Loop the currently playing song
+			MediaPlayer.setIsRepeating(true);
+//		}
+//		catch
+//		{
+//			
+//		}
+	}
 
 	protected void draw(GameTime gameTime)
 	{

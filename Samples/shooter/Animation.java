@@ -51,8 +51,9 @@ public class Animation
 	// Position of a given frame
 	public Vector2 position = new Vector2();
 
-	public void initialize(Texture2D texture, Vector2 position, int frameWidth, int frameHeight, int frameCount,
-			int frametime, Color color, float scale, boolean looping)
+	public void initialize(Texture2D texture, Vector2 position,
+						   int frameWidth, int frameHeight, int frameCount, int frametime,
+						   Color color, float scale, boolean looping)
 	{
 		// Keep a local copy of the values passed in
 		this.color.setPackedValue(color.getPackedValue());
