@@ -1,5 +1,7 @@
 package jMono_Framework;
 
+import jMono_Framework.audio.SoundEffect;
+import jMono_Framework.audio.SoundEffectInstancePool;
 import jMono_Framework.collections.SortingFilteringCollection;
 import jMono_Framework.components.GameComponentCollection;
 import jMono_Framework.components.GameComponentCollectionEventArgs;
@@ -282,7 +284,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 				ContentTypeReaderManager.clearTypeCreators();
 
-				// SoundEffect.PlatformShutdown();
+				 SoundEffect.platformShutdown();
 			}
 // #if ANDROID
 			// Activity = null;
@@ -750,7 +752,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	{
 		platform.present();
 		// TODO: Added this, but is it in the right place ?
-		// Maybe platform.present()
+		// Maybe platform.present() or GraphicsDevice
 		g.dispose();
 		buffStrat.show();
 	}
@@ -772,7 +774,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 	protected void initialize()
 	{
-		// TODO: This should probably go into JavaGameWindow
+		// TODO: This should probably go into JavaGameWindow or GraphicsDevice
 		// Initialize the buffer strategy
 		createBufferStrategy(3);
 		buffStrat = getBufferStrategy();
@@ -910,7 +912,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			// Once per frame, we need to check currently
 			// playing sounds to see if they've stopped,
 			// and return them back to the pool if so.
-			// SoundEffectInstancePool;
+			SoundEffectInstancePool.update();
 
 			update(gameTime);
 
@@ -1034,7 +1036,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	// private boolean isRunning;
 
 	// TODO: All this should probably be added to the JavaGameWindow or some sort of
-	// SoftwareRenderedPlatform
+	// SoftwareRenderedPlatform or GraphicsDevice
 	/** The object used to draw the image in the frame */
 	private BufferedImage image;
 	/** The BufferStrategy used in this game */
@@ -1071,11 +1073,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 // TODO : Do I keep the SortingFilteringCollection class in its own file ?
 // TODO: validate SortingFilteringCollection
 // TODO: refactor all setIsSomething to setSomething
-// TODO: Search for equivalent of GC.SuppressFinalize(this)
 
 // TODO: Get rid of getters and setters in some classes (Vectors and others)
-// and make the members public instead. This will make the code easier
-// to use. Will have to refactor a lot of code.
+// and make the members public instead. This will make the code easier to use.
 
 // TODO: Finish comments (getters and setters, etc)
 // TODO: Create ArgumentOutOfRangeException ? (See RangeExcpetion and OutOfRangeException)
