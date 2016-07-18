@@ -49,7 +49,7 @@ public class FileHelpers
 		try
 		{
 			src = new URI("file://" + filePath);
-			dst = new URI(src + relativeFile);
+			dst = src.resolve(relativeFile);
 		}
 		catch (URISyntaxException e)
 		{
@@ -58,7 +58,11 @@ public class FileHelpers
 
 		// The uri now contains the path to the relativeFile with
 		// relative addresses resolved... get the local path.
-		String localPath = dst.getSchemeSpecificPart();  // dst.LocalPath
+		// NOTE: These all seem to work
+//		String localPath = dst.getSchemeSpecificPart();
+//		String localPath = dst.getRawSchemeSpecificPart();
+		String localPath = dst.getPath();
+//		String localPath = dst.getRawPath();
 
 		if (!hasForwardSlash && localPath.startsWith("/"))
 			localPath = localPath.substring(1);
