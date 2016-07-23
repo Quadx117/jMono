@@ -8,7 +8,7 @@ import blackjack.cardsFramework.rules.GameRule;
 /**
  * Represents a rule which checks if the human player can use insurance
  * 
- * @author Eric Perron
+ * @author Eric Perron (inspired by CardsFramework from Microsoft)
  *
  */
 public class InsuranceRule extends GameRule

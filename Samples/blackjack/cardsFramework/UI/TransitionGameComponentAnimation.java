@@ -3,6 +3,12 @@ package blackjack.cardsFramework.UI;
 import jMono_Framework.math.Vector2;
 import jMono_Framework.time.GameTime;
 
+/**
+ * An animation which moves a component from one point to the other.
+ * 
+ * @author Eric Perron (inspired by CardsFramework from Microsoft)
+ *
+ */
 public class TransitionGameComponentAnimation extends AnimatedGameComponentAnimation
 {
 	private Vector2 sourcePosition;

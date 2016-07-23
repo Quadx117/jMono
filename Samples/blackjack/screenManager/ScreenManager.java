@@ -1,4 +1,4 @@
-package blackjack.cardsFramework.screenManager;
+package blackjack.screenManager;
 
 import jMono_Framework.Color;
 import jMono_Framework.Game;
@@ -14,7 +14,7 @@ import jMono_Framework.time.GameTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import blackjack.cardsFramework.screenManager.GameScreen.ScreenState;
+import blackjack.screenManager.GameScreen.ScreenState;
 
 /**
  * The screen manager is a component which manages one or more GameScreen
@@ -321,7 +321,8 @@ public class ScreenManager extends DrawableGameComponent
 		
 		spriteBatch.begin();
 
-		spriteBatch.draw(blankTexture, new Rectangle(0, 0, viewport.getWidth(), viewport.getHeight()),
+		spriteBatch.draw(blankTexture,
+						 new Rectangle(0, 0, viewport.getWidth(), viewport.getHeight()),
 						 Color.multiply(Color.Black, alpha));
 
 		spriteBatch.end();

@@ -1,4 +1,4 @@
-package blackjack.cardsFramework.screenManager;
+package blackjack.screenManager;
 
 import jMono_Framework.input.Keyboard;
 import jMono_Framework.input.KeyboardState;
@@ -15,7 +15,6 @@ import jMono_Framework.input.Keys;
  */
 public class InputState
 {
-
 	public final int MAX_INPUTS = 4;
 
 	public KeyboardState currentKeyboardStates;
@@ -23,17 +22,16 @@ public class InputState
 	// public GamePadState[] CurrentGamePadStates;
 
 	public KeyboardState lastKeyboardStates;
-
 	// public KeyboardState[] LastKeyboardStates;
 	// public GamePadState[] LastGamePadStates;
 
 	// public boolean[] gamePadWasConnected;
 
-	// #if WINDOWS_PHONE
+// #if WINDOWS_PHONE
 	// public TouchCollection TouchState;
 
 	// public readonly List<GestureSample> Gestures = new List<GestureSample>();
-	// #endif
+// #endif
 
 	/**
 	 * Constructs a new input state.
@@ -51,10 +49,9 @@ public class InputState
 		// gamePadWasConnected = new boolean[MAX_INPUTS];
 	}
 
-	// / <summary>
-	// / Reads the latest state of the keyboard and gamepad.
-	// / </summary>
-
+	/**
+	 * Reads the latest state of the keyboard and gamepad.
+	 */
 	public void update()
 	{
 		lastKeyboardStates = currentKeyboardStates;
@@ -92,7 +89,7 @@ public class InputState
 	 * 
 	 * @param key
 	 *        The key that we want to check for.
-	 * @return Whether or not the specified key was newly pressed.
+	 * @return {@code true} if the specified key was newly pressed, {@code false} otherwise.
 	 */
 	public boolean isNewKeyPress(Keys key)
 	{
@@ -149,7 +146,8 @@ public class InputState
 	/**
 	 * Checks for a "menu select" input action.
 	 * 
-	 * @return
+	 * @return {@code true} if either the space or enter key was pressed,
+	 *         {@code false} otherwise.
 	 */
 	public boolean isMenuSelect()
 	{
@@ -161,7 +159,7 @@ public class InputState
 	/**
 	 * Checks for a "menu cancel" input action.
 	 * 
-	 * @return
+	 * @return {@code true} if the escape key was pressed, {@code false} otherwise.
 	 */
 	public boolean isMenuCancel()
 	{
@@ -173,11 +171,11 @@ public class InputState
 	/**
 	 * Checks for a "menu up" input action.
 	 * 
-	 * @return
+	 * @return {@code true} if either the up or left arrow key was pressed,
+	 *         {@code false} otherwise.
 	 */
 	public boolean isMenuUp()
 	{
-
 		// PlayerIndex playerIndex;
 
 		return isNewKeyPress(Keys.Up) || isNewKeyPress(Keys.Left);
@@ -188,7 +186,8 @@ public class InputState
 	/**
 	 * Checks for a "menu down" input action.
 	 * 
-	 * @return
+	 * @return {@code true} if either the down or right arrow key was pressed,
+	 *         {@code false} otherwise.
 	 */
 	public boolean isMenuDown()
 	{
@@ -202,7 +201,7 @@ public class InputState
 	/**
 	 * Checks for a "pause the game" input action.
 	 * 
-	 * @return
+	 * @return {@code true} if the escape key was pressed, {@code false} otherwise.
 	 */
 	public boolean isPauseGame()
 	{

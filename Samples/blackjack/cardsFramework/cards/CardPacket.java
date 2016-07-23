@@ -10,8 +10,11 @@ import blackjack.cardsFramework.cards.TraditionalCard.CardSuit;
 import blackjack.cardsFramework.cards.TraditionalCard.CardValue;
 
 /**
- * A packet of cards. A card packet may be initialized with a collection of
- * cards. It may lose cards or deal them to {@link Hand}, but may not
+ * A packet of cards.
+ * 
+ * <p>
+ * A card packet may be initialized with a collection of cards.<
+ * It may lose cards or deal them to {@link Hand}, but may not
  * receive new cards unless derived and overridden.
  * 
  * @author Eric Perron (inspired by CardsFramework from Microsoft)
@@ -21,9 +24,9 @@ public class CardPacket
 {
 	protected List<TraditionalCard> cards;
 
-	// <summary>
-	// An event which triggers when a card is removed from the collection.
-	// </summary>
+	/**
+	 * An event which triggers when a card is removed from the collection.
+	 */
 	public Event<CardEventArgs> lostCard = new Event<CardEventArgs>();
 
 	public int getCount() { return cards.size(); }
@@ -36,6 +39,18 @@ public class CardPacket
 		cards = new ArrayList<TraditionalCard>();
 	}
 
+	/**
+	 * Returns a card at a specified index in the collection.
+	 * 
+	 * @param index
+	 *        The card's index.
+	 * @return The card at the specified index.
+	 */
+	public TraditionalCard getTraditionalCard(int index)
+	{
+		return cards.get(index);
+	}
+	
 	/**
 	 * Initializes a new instance of the {@link CardPacket} class.
 	 * 
@@ -275,33 +290,5 @@ public class CardPacket
 		}
 
 		return dealtCards;
-	}
-
-	
-	// TODO: Do I keep these ?
-	// ++++++++++ GETTERS ++++++++++ //
-
-	protected List<TraditionalCard> getCards()
-	{
-		return cards;
-	}
-
-	/**
-	 * Returns a card at a specified index in the collection.
-	 * 
-	 * @param index
-	 *        The card's index.
-	 * @return The card at the specified index.
-	 */
-	public TraditionalCard getTraditionalCard(int index)
-	{
-		return cards.get(index);
-	}
-
-	// ++++++++++ SETTERS ++++++++++ //
-
-	protected void setcards(List<TraditionalCard> cards)
-	{
-		this.cards = cards;
 	}
 }

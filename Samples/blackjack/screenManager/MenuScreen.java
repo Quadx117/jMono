@@ -1,4 +1,4 @@
-package blackjack.cardsFramework.screenManager;
+package blackjack.screenManager;
 
 import jMono_Framework.Color;
 import jMono_Framework.Point;
@@ -140,11 +140,6 @@ public abstract class MenuScreen extends GameScreen
 		{
 			onSelectEntry(selectedEntry);
 		}
-		// TODO: Validate if this is needed (not part of original code)
-		else if (input.isMenuCancel())
-		{
-			onCancel();
-		}
 		
 		MouseState state = Mouse.getState();
 		if (state.getLeftButton() == ButtonState.Released)
@@ -184,7 +179,7 @@ public abstract class MenuScreen extends GameScreen
 				selectedEntry = i;
 		}
 	}
-		
+
 /*
 #elif XBOX
             // Take care of Gamepad input
@@ -266,6 +261,7 @@ public abstract class MenuScreen extends GameScreen
 	public void loadContent()
 	{
 		bounds = screenManager.getSafeArea();
+
 		super.loadContent();
 	}
 
@@ -303,8 +299,7 @@ public abstract class MenuScreen extends GameScreen
 				position.x += transitionOffset * 512;
 			}
 
-			// move down for the next entry the size of this entry plus our
-			// padding
+			// move down for the next entry the size of this entry plus our padding
 			position.y += menuEntry.getHeight(this) + (menuEntryPadding * 2);
 		}
 	}

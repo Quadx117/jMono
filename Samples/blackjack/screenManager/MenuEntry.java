@@ -1,4 +1,4 @@
-package blackjack.cardsFramework.screenManager;
+package blackjack.screenManager;
 
 import jMono_Framework.Color;
 import jMono_Framework.Rectangle;
@@ -27,8 +27,10 @@ public class MenuEntry
 	private String text;
 
 	/**
-	 * Tracks a fading selection effect on the entry. The entries transition out
-	 * of the selection effect when they are deselected.
+	 * Tracks a fading selection effect on the entry.
+	 * 
+	 * <p>
+	 * The entries transition out of the selection effect when they are deselected.
 	 */
 	protected float selectionFade;
 
@@ -140,9 +142,7 @@ public class MenuEntry
 	}
 
 	/**
-	 * Draws the menu entry sprites (like button backgrounds for example). Use
-	 * the {@code drawText()} to draw the text over the background. This can be
-	 * overridden to customize the appearance.
+	 * Draws the menu entry. This can be overridden to customize the appearance.
 	 * 
 	 * @param screen
 	 *        The screen we are rendering.
@@ -182,8 +182,6 @@ public class MenuEntry
 	 * 
 	 * @param screen
 	 *        The screen we are rendering.
-	 * @param g
-	 *        The {@code Graphics} object used for rendering text.
 	 * @return The height of this menu entry.
 	 */
 	public int getHeight(MenuScreen screen)
@@ -195,6 +193,7 @@ public class MenuEntry
 	 * Queries how wide the entry is, used for centering on the screen.
 	 * 
 	 * @param screen
+	 *        The screen we are rendering.
 	 * @return the width in pixels.
 	 */
 	public int getWidth(MenuScreen screen)
@@ -219,39 +218,4 @@ public class MenuEntry
 
 		return textPosition;
 	}
-
-	// ++++++++++ GETTERS ++++++++++ //
-
-	// TODO: Do I keep these ?
-	/**
-	 * Gets the scale of this menu entry.
-	 * 
-	 * @return The scale of this menu entry.
-	 */
-	public float getScale() { return scale; }
-
-	/**
-	 * Gets the rotation of this menu entry.
-	 * 
-	 * @return The rotation of this menu entry.
-	 */
-	public float getRotation() { return rotation; }
-
-	// ++++++++++ SETTERS ++++++++++ //
-
-	/**
-	 * Sets the scale of this menu entry.
-	 * 
-	 * @param value
-	 *        The new scale value.
-	 */
-	public void setScale(float value) { scale = value; }
-
-	/**
-	 * Sets the rotation of this menu entry.
-	 * 
-	 * @param value
-	 *        The new rotation value.
-	 */
-	public void setRotation(float value) { rotation = value; }
 }

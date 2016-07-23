@@ -4,11 +4,17 @@ import jMono_Framework.Rectangle;
 import jMono_Framework.graphics.Texture2D;
 import jMono_Framework.time.GameTime;
 
+/**
+ * An animation which scales a component.
+ * 
+ * @author Eric Perron (inspired by CardsFramework from Microsoft)
+ *
+ */
 public class ScaleGameComponentAnimation extends AnimatedGameComponentAnimation
 {
-	float percent = 0f;
-	float beginFactor;
-	float factorDelta;
+	private float percent = 0f;
+	private float beginFactor;
+	private float factorDelta;
 
 	/**
 	 * Initializes a new instance of the class.

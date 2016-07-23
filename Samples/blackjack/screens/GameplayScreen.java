@@ -14,13 +14,13 @@ import java.util.List;
 import blackjack.BlackjackGame;
 import blackjack.cardsFramework.UI.AnimatedGameComponent;
 import blackjack.cardsFramework.UI.GameTable;
-import blackjack.cardsFramework.screenManager.GameScreen;
-import blackjack.cardsFramework.screenManager.InputState;
 import blackjack.game.BlackjackCardGame;
 import blackjack.misc.BetGameComponent;
 import blackjack.misc.InputHelper;
 import blackjack.players.BlackjackAIPlayer;
 import blackjack.players.BlackjackPlayer;
+import blackjack.screenManager.GameScreen;
+import blackjack.screenManager.InputState;
 
 public class GameplayScreen extends GameScreen
 {
@@ -36,9 +36,9 @@ public class GameplayScreen extends GameScreen
 	Rectangle safeArea;
 
 	static Vector2[] playerCardOffset = new Vector2[] {
-			new Vector2((int) (100 * BlackjackGame.WIDTH_SCALE), (int) (190 * BlackjackGame.HEIGHT_SCALE)),
-			new Vector2((int) (336 * BlackjackGame.WIDTH_SCALE), (int) (210 * BlackjackGame.HEIGHT_SCALE)),
-			new Vector2((int) (570 * BlackjackGame.WIDTH_SCALE), (int) (190 * BlackjackGame.HEIGHT_SCALE))
+			new Vector2(100.0f * BlackjackGame.WIDTH_SCALE, 190.0f * BlackjackGame.HEIGHT_SCALE),
+			new Vector2(336.0f * BlackjackGame.WIDTH_SCALE, 210.0f * BlackjackGame.HEIGHT_SCALE),
+			new Vector2(570.0f * BlackjackGame.WIDTH_SCALE, 190.0f * BlackjackGame.HEIGHT_SCALE)
 	};
 
 	/**
@@ -65,7 +65,7 @@ public class GameplayScreen extends GameScreen
 	{
 		safeArea = screenManager.getSafeArea();
 
-		// TODO: I think this is only for X-box so should be deleted ?
+		// TODO: This is only for X-box (could be refactored)
 		// Initialize virtual cursor
 		inputHelper = new InputHelper(screenManager.getGame());
 		inputHelper.setDrawOrder(1000);
@@ -117,10 +117,10 @@ public class GameplayScreen extends GameScreen
 	public void update(GameTime gameTime, boolean otherScreenHasFocus, boolean coveredByOtherScreen)
 	{
 // #if XBOX
-		// if (Guide.IsVisible)
-		// {
-		// PauseCurrentGame();
-		// }
+//		if (Guide.IsVisible)
+//		{
+//			pauseCurrentGame();
+//		}
 // #endif
 		if (blackJackGame != null && !coveredByOtherScreen)
 		{

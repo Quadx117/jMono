@@ -14,8 +14,8 @@ import jMono_Framework.math.Vector2;
 import jMono_Framework.time.GameTime;
 import blackjack.cardsFramework.UI.AnimatedGameComponent;
 import blackjack.cardsFramework.game.CardsGame;
-import blackjack.cardsFramework.screenManager.InputState;
 import blackjack.misc.InputHelper;
+import blackjack.screenManager.InputState;
 
 public class Button extends AnimatedGameComponent
 {
@@ -190,53 +190,6 @@ public class Button extends AnimatedGameComponent
 		}
 	}
 		
-		// TODO : validate mouse button constants and create enum
-/*		if (Mouse.getButton() == 1)
-		{
-			pressed = true;
-			position = new Vector2(Mouse.getX(), Mouse.getY());
-		}
-		else if (inputHelper.isPressed)
-		{
-			pressed = true;
-			position = inputHelper.getPointPosition();
-		}
-		else
-		{
-			if (isPressed)
-			{
-				if (intersectWith(new Vector2(Mouse.getX(), Mouse.getY()))
-						|| intersectWith(inputHelper.getPointPosition()))
-				{
-					fireClick();
-					isPressed = false;
-				}
-				else
-				{
-
-					isPressed = false;
-				}
-			}
-
-			isKeyDown = false;
-		}
-
-		if (pressed)
-		{
-			if (!isKeyDown)
-			{
-				if (intersectWith(position))
-				{
-					isPressed = true;
-				}
-				isKeyDown = true;
-			}
-		}
-		else
-		{
-			isKeyDown = false;
-		}*/
-
 	/**
 	 * Checks if the button intersects with a specified position.
 	 * 
@@ -293,48 +246,10 @@ public class Button extends AnimatedGameComponent
 		super.dispose(disposing);
 	}
 
-	// TODO: Do I keep these ?
 	// ++++++++++ GETTERS ++++++++++ //
 
-	public Texture2D getRegularTexture()
-	{
-		return regularTexture;
-	}
+	public SpriteFont getFont() { return font; }
 
-	public Texture2D getPressedTexture()
-	{
-		return pressedTexture;
-	}
+	public Rectangle getBounds() { return bounds; }
 
-	public SpriteFont getFont()
-	{
-		return font;
-	}
-
-	public Rectangle getBounds()
-	{
-		return bounds;
-	}
-
-	// ++++++++++ SETTERS ++++++++++ //
-
-	public void setRegularTexture(Texture2D sprite)
-	{
-		regularTexture = sprite;
-	}
-
-	public void setPressedTexture(Texture2D sprite)
-	{
-		pressedTexture = sprite;
-	}
-
-	public void setFont(SpriteFont font)
-	{
-		this.font = font;
-	}
-
-	public void setBounds(Rectangle rectangle)
-	{
-		bounds = rectangle;
-	}
 }

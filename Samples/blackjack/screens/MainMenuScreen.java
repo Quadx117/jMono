@@ -1,9 +1,9 @@
 package blackjack.screens;
 
 import jMono_Framework.dotNet.events.EventArgs;
-import blackjack.cardsFramework.screenManager.GameScreen;
-import blackjack.cardsFramework.screenManager.MenuEntry;
-import blackjack.cardsFramework.screenManager.MenuScreen;
+import blackjack.screenManager.GameScreen;
+import blackjack.screenManager.MenuEntry;
+import blackjack.screenManager.MenuScreen;
 
 /**
  * 

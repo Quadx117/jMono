@@ -5,7 +5,7 @@ import jMono_Framework.Rectangle;
 import jMono_Framework.graphics.Texture2D;
 import jMono_Framework.time.GameTime;
 import jMono_Framework.time.TimeSpan;
-import blackjack.cardsFramework.screenManager.GameScreen;
+import blackjack.screenManager.GameScreen;
 
 /**
  * 
@@ -58,7 +58,6 @@ public class BackgroundScreen extends GameScreen
 	@Override
 	public void draw(GameTime gameTime)
 	{
-
 		screenManager.getSpriteBatch().begin();
 
 		screenManager.getSpriteBatch().draw(background,

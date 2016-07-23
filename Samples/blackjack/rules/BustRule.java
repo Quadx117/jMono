@@ -8,6 +8,12 @@ import blackjack.cardsFramework.rules.GameRule;
 import blackjack.players.BlackjackPlayer;
 import blackjack.players.BlackjackPlayer.HandTypes;
 
+/**
+ * Represents a rule which checks if one of the player has gone bust.
+ * 
+ * @author Eric Perron (inspired by CardsFramework from Microsoft)
+ *
+ */
 public class BustRule extends GameRule
 {
 	List<BlackjackPlayer> players;

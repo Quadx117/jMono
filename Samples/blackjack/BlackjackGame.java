@@ -3,8 +3,8 @@ package blackjack;
 import jMono_Framework.Game;
 import jMono_Framework.GraphicsDeviceManager;
 import jMono_Framework.Rectangle;
-import jMono_Framework.time.GameTime;
-import blackjack.cardsFramework.screenManager.ScreenManager;
+import blackjack.misc.AudioManager;
+import blackjack.screenManager.ScreenManager;
 import blackjack.screens.BackgroundScreen;
 import blackjack.screens.MainMenuScreen;
 
@@ -19,9 +19,6 @@ public class BlackjackGame extends Game
 
 	public static float HEIGHT_SCALE = 1.0f;
 	public static float WIDTH_SCALE = 1.0f;
-
-	/** A FPS counter */
-	private FPS_Counter fpsCounter;
 
 	/**
 	 * Initializes a new instance of the game.
@@ -39,14 +36,18 @@ public class BlackjackGame extends Game
 
 		getComponents().add(screenManager);
 
+// #if WINDOWS
 		setMouseVisible(true);
+// #elif WINDOWS_PHONE
+		// Frame rate is 30 fps by default for Windows Phone.
+//        setTargetElapsedTime(TimeSpan.fromTicks(333333));
+//        graphics.setIsFullScreen(true);
+// #else
 		// getComponents().add(new GamerServicesComponent(this));
+// #endif
 
-		// TODO: Handle sound
 		// Initialize sound system
-		// AudioManager.Initialize(this);
-		
-		fpsCounter = new FPS_Counter(this);
+		AudioManager.initialize(this);
 	}
 
 	/**
@@ -77,27 +78,8 @@ public class BlackjackGame extends Game
 	@Override
 	protected void loadContent()
 	{
-		// TODO: handle sound
-		// AudioManager.loadSounds();
+		AudioManager.loadSounds();
 
 		super.loadContent();
-	}
-
-	// TODO: Get rid of this update call once the game is finished
-	@Override
-	public void update(GameTime gameTime)
-	{
-		super.update(gameTime);
-
-		fpsCounter.update(gameTime);
-	}
-
-	// TODO: Get rid of this draw call once the game is finished
-	@Override
-	protected void draw(GameTime gameTime)
-	{
-		super.draw(gameTime);
-
-		fpsCounter.draw(gameTime);
 	}
 }

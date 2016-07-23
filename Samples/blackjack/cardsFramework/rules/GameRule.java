@@ -12,7 +12,9 @@ import jMono_Framework.dotNet.events.EventArgs;
  */
 public abstract class GameRule
 {
-	// An event which triggers when the rule conditions are matched.
+	/**
+	 * An event which triggers when the rule conditions are matched.
+	 */
 	public Event<EventArgs> ruleMatch = new Event<EventArgs>();
 
 	/**

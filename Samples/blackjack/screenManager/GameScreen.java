@@ -1,4 +1,4 @@
-package blackjack.cardsFramework.screenManager;
+package blackjack.screenManager;
 
 import jMono_Framework.math.MathHelper;
 import jMono_Framework.time.GameTime;
@@ -18,11 +18,10 @@ import java.util.stream.Stream;
  */
 public abstract class GameScreen
 {
-	// TODO: Do I want to put this in its own file
 	/**
 	 * Enumeration describing the screen transition state.
 	 * 
-	 * @author Eric Perron
+	 * @author Eric Perron (inspired by CardsFramework from Microsoft)
 	 *
 	 */
 	public enum ScreenState
@@ -41,7 +40,20 @@ public abstract class GameScreen
 	 * transitioning off.
 	 */
 	protected boolean isPopup = false;
+
+	/**
+	 * Returns whether or not this screen is a small popup window.
+	 * 
+	 * @return {@code true} if this screen is a popup, {@code false} otherwise.
+	 */
 	public boolean isPopup() { return isPopup; }
+
+	/**
+	 * Set {@code isPopup} to the specified value.
+	 * 
+	 * @param value
+	 *        The new value to be assigned to {@code isPopup}
+	 */
 	protected void setIsPopup(boolean value) { isPopup = value; }
 
 	/**
@@ -49,42 +61,92 @@ public abstract class GameScreen
 	 * activated.
 	 */
 	protected TimeSpan transitionOnTime = new TimeSpan(TimeSpan.ZERO);
+
+	/**
+	 * Returns how long the screen takes to transition on when it is
+	 * activated.
+	 * 
+	 * @return A {@link TimeSpan} representing how long the screen takes
+	 *         to transition on when it is activated.
+	 */
 	public TimeSpan getTransitionOnTime() { return transitionOnTime; }
+
+	/**
+	 * Sets how long the screen takes to transition on when it is activated.
+	 * 
+	 * @param value
+	 *        The new transition on {@link TimeSpan} value to be assigned to
+	 *        this screen.
+	 */
 	protected void setTransitionOnTime(TimeSpan value) { transitionOnTime.setTimeSpan(value); }
-	
+
 	/**
 	 * Indicates how long the screen takes to transition off when it is
 	 * deactivated.
 	 */
 	protected TimeSpan transitionOffTime = new TimeSpan(TimeSpan.ZERO);
+
+	/**
+	 * Returns how long the screen takes to transition off when it is
+	 * activated.
+	 * 
+	 * @return A {@link TimeSpan} representing how long the screen takes
+	 *         to transition on when it is activated.
+	 */
 	public TimeSpan getTransitionOffTime() { return transitionOffTime; }
+
+	/**
+	 * Sets how long the screen takes to transition off when it is activated.
+	 * 
+	 * @param value
+	 *        The new transition off {@link TimeSpan} value to be assigned to
+	 *        this screen.
+	 */
 	protected void setTransitionOffTime(TimeSpan value) { transitionOffTime.setTimeSpan(value); }
 
 	/**
-	 * Gets the current position of the screen transition, ranging
+	 * Indicates the current position of the screen transition, ranging
 	 * from zero (fully active, no transition) to one (transitioned
 	 * fully off to nothing).
 	 */
 	protected float transitionPosition = 1f;
+
+	/**
+	 * Returns the current position of the screen transition, ranging
+	 * from zero (fully active, no transition) to one (transitioned
+	 * fully off to nothing).
+	 * 
+	 * @return A {@code float} value representing the current position
+	 *         of the screen transition, ranging from zero to one.
+	 */
 	public float getTransitionPosition() { return transitionPosition; }
+
+	/**
+	 * Sets the current position of the screen transition.
+	 * 
+	 * <p>
+	 * The value must be between zero (fully active, no transition)
+	 * to one (transitioned fully off to nothing).
+	 * @param value
+	 */
 	protected void setTransitionPosition(float value) { transitionPosition = value; }
 
 	/**
-	 * Gets the current alpha of the screen transition, ranging from 1 (fully
-	 * active, no transition) to 0 (transitioned fully off to nothing).
+	 * Returns the current alpha of the screen transition, ranging from 1
+	 * (fully active, no transition) to 0 (transitioned fully off to nothing).
 	 * 
 	 * @return The current alpha of the screen transition.
 	 */
 	public float getTransitionAlpha() { return 1f - transitionPosition; }
-	
+
 	/**
 	 * The screenState of this GameScreen. The default value is set to
 	 * ScreenState.TRANSITION_ON.
 	 */
 	protected ScreenState screenState = ScreenState.TRANSITION_ON;
-	
+
 	/**
-	 * Gets the current screen transition state.
+	 * Returns the current screen transition state.
 	 * 
 	 * @return The current screen transition state.
 	 */
@@ -94,9 +156,10 @@ public abstract class GameScreen
 	 * Sets the current screen transition state.
 	 * 
 	 * @param value
+	 *        The new {@link ScreenState} to be assigned to this screen.
 	 */
 	protected void setScreenState(ScreenState value) { screenState = value; }
-	
+
 	/**
 	 * There are two possible reasons why a screen might be transitioning
 	 * off. It could be temporarily going away to make room for another
@@ -106,9 +169,24 @@ public abstract class GameScreen
 	 * transition finishes.
 	 */
 	protected boolean isExiting = false;
+
+	/**
+	 * Returns whether or not this screen is exiting, that is this screen
+	 * will automatically remove itself as soon as the transition finishes.
+	 * 
+	 * @return {@code true} is this screen is exiting, {@code false} otherwise.
+	 */
 	public boolean isExiting() { return isExiting; }
+
+	/**
+	 * Sets whether or not this screen is exiting, that is this screen
+	 * will automatically remove itself as soon as the transition finishes.
+	 * 
+	 * @param value
+	 *        Wheter or not this screen should be exiting.
+	 */
 	protected void setIsExiting(boolean value) { isExiting = value; }
-	
+
 	/**
 	 * Checks whether this screen is active and can respond to user input.
 	 * 
@@ -117,78 +195,76 @@ public abstract class GameScreen
 	public boolean isActive()
 	{
 		return !otherScreenHasFocus && (screenState == ScreenState.TRANSITION_ON || screenState == ScreenState.ACTIVE);
-	}	
-	
+	}
+
 	/**
 	 * Checks whether this screen is active and can respond to user input.
 	 */
-	protected boolean otherScreenHasFocus;	
-	
+	protected boolean otherScreenHasFocus;
+
 	/**
 	 * A reference to the ScreenManager object which is the parent of every
 	 * GameScreen object.
 	 */
 	protected ScreenManager screenManager;
-	
+
 	/**
 	 * Gets the manager that this screen belongs to.
 	 * 
 	 * @return The manager that this screen belongs to.
 	 */
 	public ScreenManager getScreenManager() { return screenManager; }
-	
+
 	/**
 	 * Sets the manager that this screen belongs to.
 	 * 
 	 * @param value
+	 *        The new {@link ScreenManager} that this screen belongs to.
 	 */
-	public void setScreenManager(ScreenManager value)
-	{
-		screenManager = value;
-	}
-	
-	/// <summary>
-    /// Gets the index of the player who is currently controlling this screen,
-    /// or null if it is accepting input from any player. This is used to lock
-    /// the game to a specific player profile. The main menu responds to input
-    /// from any connected gamepad, but whichever player makes a selection from
-    /// this menu is given control over all subsequent screens, so other gamepads
-    /// are inactive until the controlling player returns to the main menu.
-    /// </summary>
-//	public PlayerIndex? ControllingPlayer
-//	{
-//		get { return controllingPlayer; }
-//		internal set { controllingPlayer = value; }
-//	}
+	public void setScreenManager(ScreenManager value) { screenManager = value; }
 
-//	PlayerIndex? controllingPlayer;
-    
+	// / <summary>
+	// / Gets the index of the player who is currently controlling this screen,
+	// / or null if it is accepting input from any player. This is used to lock
+	// / the game to a specific player profile. The main menu responds to input
+	// / from any connected gamepad, but whichever player makes a selection from
+	// / this menu is given control over all subsequent screens, so other gamepads
+	// / are inactive until the controlling player returns to the main menu.
+	// / </summary>
+	// public PlayerIndex? ControllingPlayer
+	// {
+	// get { return controllingPlayer; }
+	// internal set { controllingPlayer = value; }
+	// }
+
+	// PlayerIndex? controllingPlayer;
+
 // #if WINDOWS_PHONE
-    /// <summary>
-    /// Gets the gestures the screen is interested in. Screens should be as specific
-    /// as possible with gestures to increase the accuracy of the gesture engine.
-    /// For example, most menus only need Tap or perhaps Tap and VerticalDrag to operate.
-    /// These gestures are handled by the ScreenManager when screens change and
-    /// all gestures are placed in the InputState passed to the HandleInput method.
-    /// </summary>
-//    public GestureType EnabledGestures
-//    {
-//        get { return enabledGestures; }
-//        protected set
-//        {
-//            enabledGestures = value;
+	// / <summary>
+	// / Gets the gestures the screen is interested in. Screens should be as specific
+	// / as possible with gestures to increase the accuracy of the gesture engine.
+	// / For example, most menus only need Tap or perhaps Tap and VerticalDrag to operate.
+	// / These gestures are handled by the ScreenManager when screens change and
+	// / all gestures are placed in the InputState passed to the HandleInput method.
+	// / </summary>
+	// public GestureType EnabledGestures
+	// {
+	// get { return enabledGestures; }
+	// protected set
+	// {
+	// enabledGestures = value;
 
-            // the screen manager handles this during screen changes, but
-            // if this screen is active and the gesture types are changing,
-            // we have to update the TouchPanel ourself.
-//            if (ScreenState == ScreenState.Active)
-//            {
-//            	TouchPanel.EnabledGestures = value;
-//            }
-//        }
-//	}
+	// the screen manager handles this during screen changes, but
+	// if this screen is active and the gesture types are changing,
+	// we have to update the TouchPanel ourself.
+	// if (ScreenState == ScreenState.Active)
+	// {
+	// TouchPanel.EnabledGestures = value;
+	// }
+	// }
+	// }
 
-//	GestureType enabledGestures = GestureType.None;
+	// GestureType enabledGestures = GestureType.None;
 // #endif
 
 	/**
@@ -198,20 +274,18 @@ public abstract class GameScreen
 	 * By default, all screens are assumed to be serializable.
 	 * 
 	 * <p>
-	 * If this is true, the screen will be recorded into the screen manager's state and its
-	 * Serialize and Deserialize methods will be called as appropriate. If this is false, the screen
-	 * will be ignored during serialization.
+	 * If this is true, the screen will be recorded into the screen manager's state and its Serialize and Deserialize
+	 * methods will be called as appropriate. If this is false, the screen will be ignored during serialization.
 	 * 
 	 */
 	protected boolean isSerializable = true;
-	
+
 	/**
 	 * Gets whether or not this screen is serializable.
 	 * 
-	 * <P>
-	 * If this is true, the screen will be recorded into the screen manager's state and its
-	 * Serialize and Deserialize methods will be called as appropriate. If this is false, the screen
-	 * will be ignored during serialization.
+	 * <p>
+	 * If this is true, the screen will be recorded into the screen manager's state and its Serialize and Deserialize
+	 * methods will be called as appropriate. If this is false, the screen will be ignored during serialization.
 	 * 
 	 * @return Whether or not this screen is serializable.
 	 */
@@ -219,14 +293,13 @@ public abstract class GameScreen
 	{
 		return isSerializable;
 	}
-	
+
 	/**
 	 * Sets whether or not this screen is serializable.
 	 * 
 	 * <P>
-	 * If this is true, the screen will be recorded into the screen manager's state and its
-	 * Serialize and Deserialize methods will be called as appropriate. If this is false, the screen
-	 * will be ignored during serialization.
+	 * If this is true, the screen will be recorded into the screen manager's state and its Serialize and Deserialize
+	 * methods will be called as appropriate. If this is false, the screen will be ignored during serialization.
 	 * 
 	 * @param value
 	 *        The new value for this attribute.
@@ -235,7 +308,7 @@ public abstract class GameScreen
 	{
 		isSerializable = value;
 	}
-	
+
 	/**
 	 * Load graphics content for the screen.
 	 */
@@ -358,13 +431,12 @@ public abstract class GameScreen
 	 */
 	protected void draw(GameTime gameTime) {}
 
-	// TODO: Serialization
-	// TODO: Check if need to implement Serializable
-	// TODO: finish comments and check type for Stream<>
+	// TODO: Serialization and check type for Stream<> (create my own in dotNet)
 	/**
 	 * Tells the screen to serialize its state into the given stream.
 	 * 
 	 * @param stream
+	 *        The {@code Stream} used for serialization
 	 */
 	public void serialize(Stream<?> stream) {}
 
@@ -372,6 +444,7 @@ public abstract class GameScreen
 	 * Tells the screen to deserialize its state from the given stream.
 	 * 
 	 * @param stream
+	 *        The {@code Stream} used for deserialization
 	 */
 	public void deserialize(Stream<?> stream) {}
 
@@ -395,19 +468,19 @@ public abstract class GameScreen
 			isExiting = true;
 		}
 	}
-	
+
 	/**
 	 * A helper method which loads assets using the screen manager's associated game content loader.
 	 * 
 	 * @param assetName
-	 * 			Asset name, relative to the loader root directory,
-	 * 			and not including the .xnb extension.
+	 *        Asset name, relative to the loader root directory,
+	 *        and not including the .xnb extension.
 	 * @param type
-	 * 			Type of asset.
+	 *        Type of asset.
 	 * @return
 	 */
-    public <T> T load(String assetName, Class<?> type)
-    {
-        return screenManager.getGame().getContent().load(assetName, type);
-    }
+	public <T> T load(String assetName, Class<?> type)
+	{
+		return screenManager.getGame().getContent().load(assetName, type);
+	}
 }

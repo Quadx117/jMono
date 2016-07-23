@@ -14,7 +14,10 @@ import blackjack.cardsFramework.UI.GameTable;
 public class BlackJackTable extends GameTable
 {
 	private Texture2D ringTexture;
+	public Texture2D getRingTexture() { return ringTexture; }
+	
 	private Vector2 ringOffset;
+	public Vector2 getRingOffset() { return ringOffset; }
 
 	public BlackJackTable(Vector2 ringOffset, Rectangle tableBounds, Vector2 dealerPosition, int places,
 			Function<Integer, Vector2> placeOrder, String theme, Game game)
@@ -53,17 +56,4 @@ public class BlackJackTable extends GameTable
 
 		spriteBatch.end();
 	}
-
-	// ++++++++++ GETTERS ++++++++++ //
-
-	public Texture2D getRingTexture()
-	{
-		return ringTexture;
-	}
-
-	public Vector2 getRingOffset()
-	{
-		return ringOffset;
-	}
-
 }

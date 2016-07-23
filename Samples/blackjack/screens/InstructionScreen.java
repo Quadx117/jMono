@@ -11,7 +11,7 @@ import jMono_Framework.input.MouseState;
 import jMono_Framework.math.Vector2;
 import jMono_Framework.time.GameTime;
 import jMono_Framework.time.TimeSpan;
-import blackjack.cardsFramework.screenManager.GameScreen;
+import blackjack.screenManager.GameScreen;
 
 public class InstructionScreen extends GameplayScreen
 {
@@ -54,6 +54,8 @@ public class InstructionScreen extends GameplayScreen
 	 */
 	private void handleInput(MouseState mouseState) // , GamePadState padState)
 	{
+		if (!isExit)
+		{
 // #if WINDOWS_PHONE
 		// if (ScreenManager.input.Gestures.Count > 0 &&
 		// ScreenManager.input.Gestures[0].GestureType == GestureType.Tap)
@@ -61,8 +63,6 @@ public class InstructionScreen extends GameplayScreen
 		// isExit = true;
 		// }
 // #else
-		if (!isExit)
-		{
 			// PlayerIndex result;
 			if (mouseState.getLeftButton() == ButtonState.Pressed)
 			{

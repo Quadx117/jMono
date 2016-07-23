@@ -7,14 +7,14 @@ import jMono_Framework.dotNet.events.EventArgs;
 import java.util.ArrayList;
 import java.util.List;
 
-import blackjack.cardsFramework.screenManager.GameScreen;
-import blackjack.cardsFramework.screenManager.MenuEntry;
-import blackjack.cardsFramework.screenManager.MenuScreen;
-import blackjack.cardsFramework.screenManager.ScreenManager;
+import blackjack.screenManager.GameScreen;
+import blackjack.screenManager.MenuEntry;
+import blackjack.screenManager.MenuScreen;
+import blackjack.screenManager.ScreenManager;
 
 /**
  * 
- * @author Eric Perron
+ * @author Eric Perron (inspired by CardsFramework from Microsoft)
  *
  */
 public class PauseScreen extends MenuScreen

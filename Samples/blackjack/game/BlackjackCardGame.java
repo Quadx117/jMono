@@ -34,8 +34,7 @@ import blackjack.cardsFramework.cards.TraditionalCard.CardValue;
 import blackjack.cardsFramework.game.CardsGame;
 import blackjack.cardsFramework.players.Player;
 import blackjack.cardsFramework.rules.GameRule;
-import blackjack.cardsFramework.screenManager.GameScreen;
-import blackjack.cardsFramework.screenManager.ScreenManager;
+import blackjack.misc.AudioManager;
 import blackjack.misc.BetGameComponent;
 import blackjack.misc.InputHelper;
 import blackjack.players.BlackjackAIPlayer;
@@ -45,6 +44,8 @@ import blackjack.rules.BlackJackRule;
 import blackjack.rules.BlackjackGameEventArgs;
 import blackjack.rules.BustRule;
 import blackjack.rules.InsuranceRule;
+import blackjack.screenManager.GameScreen;
+import blackjack.screenManager.ScreenManager;
 import blackjack.screens.BackgroundScreen;
 import blackjack.screens.MainMenuScreen;
 
@@ -232,7 +233,6 @@ public class BlackjackCardGame extends CardsGame
 				dealerPlayer.calculateValues();
 
 				// Make sure no animations are running
-				// if (!checkForRunningAnimations<AnimatedCardsGameComponent>())
 				if (!checkForRunningAnimations(AnimatedGameComponent.class))
 				{
 					BlackjackPlayer player = (BlackjackPlayer) getCurrentPlayer();
@@ -327,8 +327,7 @@ public class BlackjackCardGame extends CardsGame
 	 */
 	private void playShuffleAndRemoveComponent(Object obj)
 	{
-		// TODO: Handle sound
-		// AudioManager.PlaySound("Shuffle");
+		AudioManager.playSound("Shuffle");
 		game.getComponents().remove((AnimatedGameComponent) obj);
 	}
 
@@ -720,7 +719,6 @@ public class BlackjackCardGame extends CardsGame
 		}
 	}
 
-	// TODO: Handle sound
 	/**
 	 * Helper method to play deal sound.
 	 * 
@@ -728,10 +726,9 @@ public class BlackjackCardGame extends CardsGame
 	 */
 	private void playDealSound(Object obj)
 	{
-		// AudioManager.PlaySound("Deal");
+		AudioManager.playSound("Deal");
 	}
 
-	// TODO: Handle sound
 	/**
 	 * Helper method to play flip sound.
 	 * 
@@ -739,7 +736,7 @@ public class BlackjackCardGame extends CardsGame
 	 */
 	private void playFlipSound(Object obj)
 	{
-		// AudioManager.PlaySound("Flip");
+		AudioManager.playSound("Flip");
 	}
 
 	/**
@@ -892,8 +889,7 @@ public class BlackjackCardGame extends CardsGame
 	private void showResultForPlayer(BlackjackPlayer player, int dealerValue, HandTypes currentHandType)
 			throws IllegalArgumentException
 	{
-		// Calculate the player's hand value and check his state
-		// (blackjack/bust)
+		// Calculate the player's hand value and check his state (blackjack/bust)
 		boolean blackjack, bust;
 		int playerValue;
 		switch (currentHandType)
@@ -923,8 +919,7 @@ public class BlackjackCardGame extends CardsGame
 			default:
 				throw new IllegalArgumentException("Player has an unsupported hand type.");
 		}
-		// The bust or blackjack state are animated independently of this
-		// method,
+		// The bust or blackjack state are animated independently of this method,
 		// so only trigger different outcome indications
 		if (player.madeBet() && (!blackjack || (dealerPlayer.isBlackJack() && blackjack)) && !bust)
 		{
@@ -1009,8 +1004,7 @@ public class BlackjackCardGame extends CardsGame
 			return;
 		}
 
-		// Draw cards until 17 is reached, or the dealer gets a blackjack or
-		// busts
+		// Draw cards until 17 is reached, or the dealer gets a blackjack or busts
 		int cardsDealed = 0;
 		while (dealerValue <= 17)
 		{
@@ -1067,8 +1061,7 @@ public class BlackjackCardGame extends CardsGame
 	public void startRound()
 	{
 		playerHandValueTexts.clear();
-		// TODO: Manage sound
-		// AudioManager.PlaySound("Shuffle");
+		AudioManager.playSound("Shuffle");
 		dealer.shuffle();
 		displayPlayingHands();
 		state = BlackjackGameState.Shuffling;
@@ -1081,8 +1074,7 @@ public class BlackjackCardGame extends CardsGame
 	private void setButtonAvailability()
 	{
 		BlackjackPlayer player = (BlackjackPlayer) getCurrentPlayer();
-		// Hide all buttons if no player is in play or the player is an AI
-		// player
+		// Hide all buttons if no player is in play or the player is an AI player
 		if (player == null || player instanceof BlackjackAIPlayer)
 		{
 			enableButtons(false);
@@ -1100,8 +1092,7 @@ public class BlackjackCardGame extends CardsGame
 
 		if (player.isSplit() == false)
 		{
-			// Remember that the bet amount was already reduced from the
-			// balance,
+			// Remember that the bet amount was already reduced from the balance,
 			// so we only need to check if the player has more money than the
 			// current bet when trying to double/split
 
@@ -1124,8 +1115,7 @@ public class BlackjackCardGame extends CardsGame
 		}
 		else
 		{
-			// We've performed a split. Get the initial bet amount to check
-			// whether
+			// We've performed a split. Get the initial bet amount to check whether
 			// or not we can double the current bet.
 			float initialBet = player.getBetAmount()
 					/ ((player.isDouble() ? 2f : 1f) + (player.isSecondDouble() ? 2f : 1f));
@@ -1143,13 +1133,11 @@ public class BlackjackCardGame extends CardsGame
 		}
 	}
 
-	// internal bool checkForRunningAnimations<T>() where T : AnimatedGameComponent
-	// <typeparam name="T">The type of animation to look for.</typeparam>
 	/**
 	 * Checks for running animations.
 	 * 
-	 * @return True if a running animation of the desired type is found and
-	 *         false otherwise.
+	 * @return {@code true} if a running animation of the desired type is found and
+	 *         {@code false} otherwise.
 	 */
 	public <T extends AnimatedGameComponent> boolean checkForRunningAnimations(Class<T> type)
 	{
@@ -1330,8 +1318,7 @@ public class BlackjackCardGame extends CardsGame
 		if (player == null)
 			return;
 
-		// If the player only has one hand, his turn ends. Otherwise, he now
-		// plays
+		// If the player only has one hand, his turn ends. Otherwise, he now plays
 		// using his next hand
 		if (player.isSplit() == false)
 		{
@@ -1348,7 +1335,7 @@ public class BlackjackCardGame extends CardsGame
 					}
 					else
 					{
-						player.setCurrentHandType(HandTypes.Second);
+						player.currentHandType = HandTypes.Second;
 					}
 					break;
 				case Second:
@@ -1438,8 +1425,7 @@ public class BlackjackCardGame extends CardsGame
 				}
 				else
 				{
-					// The first hand's bet is double, add one third of the
-					// total
+					// The first hand's bet is double, add one third of the total
 					betGameComponent.addChips(playerIndex, player.getBetAmount() / 3f, false, true);
 				}
 				break;
@@ -1550,12 +1536,14 @@ public class BlackjackCardGame extends CardsGame
 		showInsurance = false;
 	}
 
-	// / <summary>
-	// / Shows the insurance button if the first player can afford insurance.
-	// / </summary>
-	// / <param name="sender">The sender.</param>
-	// / <param name="e">The {@link System.EventArgs} instance containing
-	// / the event data.</param>
+	/**
+	 * Shows the insurance button if the first player can afford insurance.
+	 * 
+	 * @param sender
+	 *        The sender.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void insuranceGameRule(Object sender, EventArgs e)
 	{
 		BlackjackPlayer player = (BlackjackPlayer)players.get(0);
@@ -1565,12 +1553,14 @@ public class BlackjackCardGame extends CardsGame
 		}
 	}
 
-	// / <summary>
-	// / Shows the bust visual cue after the bust rule has been matched.
-	// / </summary>
-	// / <param name="sender">The sender.</param>
-	// / <param name="e">The {@link System.EventArgs} instance containing
-	// / the event data.</param>
+	/**
+	 * Shows the bust visual cue after the bust rule has been matched.
+	 * 
+	 * @param sender
+	 *        The sender.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void bustGameRule(Object sender, EventArgs e)
 	{
 		showInsurance = false;
@@ -1602,13 +1592,14 @@ public class BlackjackCardGame extends CardsGame
 		}
 	}
 
-	// / <summary>
-	// / Shows the blackjack visual cue after the blackjack rule has been
-	// matched.
-	// / </summary>
-	// / <param name="sender">The sender.</param>
-	// / <param name="e">The {@link System.EventArgs} instance containing
-	// / the event data.</param>
+	/**
+	 * Shows the blackjack visual cue after the blackjack rule has been matched.
+	 * 
+	 * @param sender
+	 *        The sender.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void blackJackGameRule(Object sender, EventArgs e)
 	{
 		showInsurance = false;
@@ -1643,13 +1634,14 @@ public class BlackjackCardGame extends CardsGame
 		}
 	}
 	
-	// / <summary>
-	// / Handles the Click event of the insurance button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the insurance button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void insurance_Click(Object sender, EventArgs e)
 	{
 		BlackjackPlayer player = (BlackjackPlayer) getCurrentPlayer();
@@ -1663,13 +1655,14 @@ public class BlackjackCardGame extends CardsGame
 		showInsurance = false;
 	}
 
-	// / <summary>
-	// / Handles the Click event of the new game button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the new game button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void newGame_Click(Object sender, EventArgs e)
 	{
 		finishTurn();
@@ -1678,65 +1671,70 @@ public class BlackjackCardGame extends CardsGame
 		newGame.setVisible(false);
 	}
 
-	// / <summary>
-	// / Handles the Click event of the hit button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the hit button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void hit_Click(Object sender, EventArgs e)
 	{
 		hit();
 		showInsurance = false;
 	}
 
-	// / <summary>
-	// / Handles the Click event of the stand button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the stand button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void stand_Click(Object sender, EventArgs e)
 	{
 		stand();
 		showInsurance = false;
 	}
 
-	// / <summary>
-	// / Handles the Click event of the double button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the double button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void double_Click(Object sender, EventArgs e)
 	{
 		Double();
 		showInsurance = false;
 	}
 
-	// / <summary>
-	// / Handles the Click event of the split button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the split button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void split_Click(Object sender, EventArgs e)
 	{
 		split();
 		showInsurance = false;
 	}
 
-	// / <summary>
-	// / Handles the Click event of the back button.
-	// / </summary>
-	// / <param name="sender">The source of the event.</param>
-	// / <param name="e">>The
-	// / {@link System.EventArgs} instance containing the event
-	// data.</param>
+	/**
+	 * Handles the Click event of the back button.
+	 * 
+	 * @param sender
+	 *        The source of the event.
+	 * @param e
+	 *        The {@link System.EventArgs} instance containing the event data.
+	 */
 	void backButton_Click(Object sender, EventArgs e)
 	{
 		// Remove all unnecessary components
@@ -1756,7 +1754,6 @@ public class BlackjackCardGame extends CardsGame
 	screenManager.addScreen(new MainMenuScreen());
 	}
 
-	// TODO: Do I keep these ?
 	// ++++++++++ GETTERS ++++++++++ //
 
 	/**

@@ -15,7 +15,6 @@ package blackjack.cardsFramework.cards;
  */
 public class TraditionalCard
 {
-	// TODO: Do I want to keep these in this class or in a separate file ?
 	/**
 	 * Enumeration defining the various types of cards for a traditional-western
 	 * card-set.
@@ -55,24 +54,24 @@ public class TraditionalCard
 	 */
 	public enum CardValue
 	{
-		Ace(0x01),
-		Two(0x02),
-		Three(0x04),
-		Four(0x08),
-		Five(0x10),
-		Six(0x20),
-		Seven(0x40),
-		Eight(0x80),
-		Nine(0x100),
-		Ten(0x200),
-		Jack(0x400),
-		Queen(0x800),
-		King(0x1000),
-		FirstJoker(0x2000),
+		Ace(0x01),			//
+		Two(0x02),			//
+		Three(0x04),		//
+		Four(0x08),			//
+		Five(0x10),			//
+		Six(0x20),			//
+		Seven(0x40),		//
+		Eight(0x80),		//
+		Nine(0x100),		//
+		Ten(0x200),			//
+		Jack(0x400),		//
+		Queen(0x800),		//
+		King(0x1000),		//
+		FirstJoker(0x2000),	//
 		SecondJoker(0x4000),
 		// Sets:
-		AllNumbers(0x3FF),
-		NonJokers(0x1FFF),
+		AllNumbers(0x3FF),	//
+		NonJokers(0x1FFF),	//
 		Jokers(FirstJoker.getValue() | SecondJoker.getValue()),
 		AlFigures(Jack.getValue() | Queen.getValue() | King.getValue());
 		
@@ -167,7 +166,6 @@ public class TraditionalCard
 		hand.add(this);
 	}
 
-	// TODO: Do I want to keep these ?
 	// ++++++++++ GETTERS ++++++++++ //
 
 	/**

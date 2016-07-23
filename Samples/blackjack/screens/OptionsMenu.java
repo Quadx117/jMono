@@ -10,8 +10,8 @@ import jMono_Framework.time.GameTime;
 import java.util.HashMap;
 
 import blackjack.cardsFramework.UI.AnimatedGameComponent;
-import blackjack.cardsFramework.screenManager.MenuEntry;
-import blackjack.cardsFramework.screenManager.MenuScreen;
+import blackjack.screenManager.MenuEntry;
+import blackjack.screenManager.MenuScreen;
 
 public class OptionsMenu extends MenuScreen
 {

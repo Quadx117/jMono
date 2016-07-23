@@ -19,9 +19,10 @@ import blackjack.cardsFramework.rules.GameRule;
 import blackjack.cardsFramework.util.UIUtility;
 
 /**
- * A cards-game handler. Use a singleton of a class that derives from class to
- * empower a cards-game, while making sure to call the various methods in order
- * to allow the implementing instance to run the game.
+ * A cards-game handler.
+ * <p>
+ * Use a singleton of a class that derives from class to empower a cards-game, while making sure
+ * to call the various methods in order to allow the implementing instance to run the game.
  * 
  * @author Eric Perron (inspired by CardsFramework from Microsoft)
  * 
@@ -220,27 +221,4 @@ public abstract class CardsGame
 	{
 		return cardsAssets;
 	}
-
-	// ++++++++++ SETTERS ++++++++++ //
-
-	protected void setMinimumPlayers(int value)
-	{
-		minimumPlayers = value;
-	}
-
-	protected void setMaximumPlayers(int value)
-	{
-		maximumPlayers = value;
-	}
-
-	protected void setTheme(String theme)
-	{
-		this.theme = theme;
-	}
-
-	protected void setGameTable(GameTable gameTable)
-	{
-		this.gameTable = gameTable;
-	}
-
 }

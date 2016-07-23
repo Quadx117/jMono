@@ -91,29 +91,6 @@ public class BlackjackPlayer extends Player
 		currentHandType = HandTypes.First;
 	}
 
-	// TODO: Need to find a way to make this work
-/*	private static void CalulateValue(Hand hand, CardsFramework.CardsGame game,
-									  out int value, out bool considerAce)
-        {
-            value = 0;
-            considerAce = false;
-
-            for (int cardIndex = 0; cardIndex < hand.Count; cardIndex++)
-            {
-                value += game.CardValue(hand[cardIndex]);
-
-                if (hand[cardIndex].Value == CardValue.Ace)
-                {
-                    considerAce = true;
-                }
-            }
-
-            if (considerAce && value + 10 > 21)
-            {
-                considerAce = false;
-            }
-        }*/
-	
 	/**
 	 * Calculates the value represented by a specified hand. The results are
 	 * stored in the appropriate fields (firstValue, secondValue,
@@ -192,20 +169,6 @@ public class BlackjackPlayer extends Player
 		betAmount = 0;
 	}
 
-	/// <summary>
-    /// Calculates the values of the player's two hands.
-    /// </summary>
-/*    public void CalculateValues()
-    {
-        CalulateValue(Hand, Game, out firstValue, out firstValueConsiderAce);
-
-        if (SecondHand != null)
-        {
-            CalulateValue(SecondHand, Game, out secondValue,
-                out secondValueConsiderAce);
-        }
-    }*/
-    
 	/**
 	 * Calculates the values of the player's two hands.
 	 */
@@ -288,7 +251,6 @@ public class BlackjackPlayer extends Player
 		hand.getTraditionalCard(1).moveToHand(secondHand);
 	}
 
-	// TODO: Do I keep these ?
 	// ++++++++++ GETTERS ++++++++++ //
 
 	/**
@@ -298,111 +260,35 @@ public class BlackjackPlayer extends Player
 	 */
 	public HandTypes getCurrentHandType() { return currentHandType; }
 	
-	/**
-	 * Sets the type of hand that the player is currently interacting with.
-	 * 
-	 * @param handType
-	 *        The type of hand that the player is currently interacting
-	 *        with.
-	 */
-	public void setCurrentHandType(HandTypes handType) { currentHandType = handType; }
-	
 	public boolean isDoneBetting() { return isDoneBetting; }
 	
 	public float getBalance() { return balance; }
 	
 	public boolean isInsurance() { return isInsurance; }
 	
-	public boolean isBust()
-	{
-		return isBust;
-	}
+	public boolean isBust() { return isBust; }
 
-	public boolean isSecondBust()
-	{
-		return isSecondBust;
-	}
+	public boolean isSecondBust() { return isSecondBust; }
 
-	public boolean isBlackJack()
-	{
-		return isBlackJack;
-	}
+	public boolean isBlackJack() { return isBlackJack; }
 
-	public boolean isSecondBlackJack()
-	{
-		return isSecondBlackJack;
-	}
+	public boolean isSecondBlackJack() { return isSecondBlackJack; }
 
-	public boolean isDouble()
-	{
-		return isDouble;
-	}
+	public boolean isDouble() { return isDouble; }
 
-	public boolean isSecondDouble()
-	{
-		return isSecondDouble;
-	}
+	public boolean isSecondDouble() { return isSecondDouble; }
 
-	public boolean isSplit()
-	{
-		return isSplit;
-	}
+	public boolean isSplit() { return isSplit; }
 
-	public Hand getSecondHand()
-	{
-		return secondHand;
-	}
+	public Hand getSecondHand() { return secondHand; }
 
 	// ++++++++++ SETTERS ++++++++++ //
 
-	public void setIsBust(boolean value)
-	{
-		isBust = value;
-	}
+	public void setIsBust(boolean value) { isBust = value; }
 
-	public void setIsSecondBust(boolean value)
-	{
-		isSecondBust = value;
-	}
+	public void setIsBlackJack(boolean value) { isBlackJack = value; }
 
-	public void setIsBlackJack(boolean value)
-	{
-		isBlackJack = value;
-	}
+	public void setIsDouble(boolean value) { isDouble = value; }
 
-	public void setIsSecondBlackJack(boolean value)
-	{
-		isSecondBlackJack = value;
-	}
-
-	public void setIsDouble(boolean value)
-	{
-		isDouble = value;
-	}
-
-	public void setIsSecondDouble(boolean value)
-	{
-		isSecondDouble = value;
-	}
-
-	public void setIsSplit(boolean value)
-	{
-		isSplit = value;
-	}
-
-	public void setIsDoneBetting(boolean value)
-	{
-		isDoneBetting = value;
-	}
-
-	public void setIsInsurance(boolean value)
-	{
-		isInsurance = value;
-	}
-
-	public void setBalance(float value)
-	{
-		balance = value;
-	}
-
+	public void setIsSecondDouble(boolean value) { isSecondDouble = value; }
 }

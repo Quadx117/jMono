@@ -36,16 +36,11 @@ public class AnimatedGameComponent extends DrawableGameComponent
 	private List<AnimatedGameComponentAnimation> runningAnimations = new ArrayList<AnimatedGameComponentAnimation>();;
 
 	/**
-	 * Whether or not an animation belonging to the component is running.
-	 */
-	private boolean isAnimating;
-	
-	/**
 	 * Returns whether or not an animation belonging to the component is
 	 * running.
 	 * 
-	 * @return Whether or not an animation belonging to the component is
-	 *         running.
+	 * @return {@code true} if an animation belonging to the component is
+	 *         running, {@code false} otherwise.
 	 */
 	public boolean isAnimating()
 	{
@@ -211,26 +206,4 @@ public class AnimatedGameComponent extends DrawableGameComponent
 
 		return result;
 	}
-
-	// TODO: Delete these ?
-	// ++++++++++ GETTERS ++++++++++ //
-
-//	public Texture2D getCurrentFrame() { return currentFrame; }
-//	public Rectangle getCurrentSegment() { return currentSegment; }
-//	public String getText() { return text; }
-//	public Color getTextColor() { return textColor; }
-//	public boolean isFaceDown() { return isFaceDown; }
-//	public Vector2 getCurrentPosition() { return currentPosition; }
-//	public Rectangle getCurrentDestination() { return currentDestination; }
-
-	// ++++++++++ SETTERS ++++++++++ //
-
-//	public void setCurrentFrame(Texture2D value) { currentFrame = value; }
-//	public void setCurrentSegment(Rectangle rectangle) { currentSegment = rectangle; }
-//	public void setText(String text) { this.text = text; }
-//	public void setTextColor(Color color) { textColor = color; }
-//	public void setIsFaceDown(boolean value) { isFaceDown = value; }
-//	public void setCurrentPosition(Vector2 value) { currentPosition.set(value); }
-//	public void setCurrentDestination(Rectangle destination) 	{ currentDestination.setRect(destination); }
-
 }

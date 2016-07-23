@@ -25,12 +25,12 @@ import blackjack.cardsFramework.UI.FlipGameComponentAnimation;
 import blackjack.cardsFramework.UI.TransitionGameComponentAnimation;
 import blackjack.cardsFramework.game.CardsGame;
 import blackjack.cardsFramework.players.Player;
-import blackjack.cardsFramework.screenManager.InputState;
 import blackjack.game.BlackjackCardGame;
 import blackjack.game.BlackjackCardGame.BlackjackGameState;
 import blackjack.players.BlackjackAIPlayer;
 import blackjack.players.BlackjackPlayer;
 import blackjack.players.BlackjackPlayer.HandTypes;
+import blackjack.screenManager.InputState;
 
 public class BetGameComponent extends DrawableGameComponent
 {
@@ -87,10 +87,10 @@ public class BetGameComponent extends DrawableGameComponent
 	@Override
 	public void initialize()
 	{
-		// #if WINDOWS_PHONE
+// #if WINDOWS_PHONE
 		// Enable tap gesture
 		// TouchPanel.EnabledGestures = GestureType.Tap;
-		// #endif
+// #endif
 		// Get xbox cursor
 		inputHelper = null;
 		for (int componentIndex = 0; componentIndex < game.getComponents().size(); ++componentIndex)
@@ -203,8 +203,7 @@ public class BetGameComponent extends DrawableGameComponent
 				}
 			}
 
-			// Once all players are done betting, advance the game to the
-			// dealing stage
+			// Once all players are done betting, advance the game to the dealing stage
 			if (((BlackjackPlayer) players.get(players.size() - 1)).isDoneBetting())
 			{
 				BlackjackCardGame blackjackGame = ((BlackjackCardGame) cardGame);
@@ -428,8 +427,7 @@ public class BetGameComponent extends DrawableGameComponent
 	 */
 	void playBetSound(Object obj)
 	{
-		// TODO: Sound
-		// AudioManager.PlaySound("Bet");
+		AudioManager.playSound("Bet");
 	}
 
 	/**
@@ -595,8 +593,7 @@ public class BetGameComponent extends DrawableGameComponent
 	{
 		Object[] arr = (Object[]) obj;
 		((AnimatedGameComponent) arr[0]).text = (arr[1].toString());
-		// TODO: Sound
-		// AudioManager.PlaySound("Bet");
+		AudioManager.playSound("Bet");
 	}
 
 	/**
@@ -784,21 +781,5 @@ public class BetGameComponent extends DrawableGameComponent
 		((BlackjackPlayer) players.get(playerIndex)).isDoneBetting = true;
 		currentChipComponent.clear();
 		currentBet = 0;
-	}
-	
-
-	// TODO: Do I keep these ?
-	// ++++++++++ GETTERS ++++++++++ //
-
-	public Vector2 getChipOffset()
-	{
-		return chipOffset;
-	}
-
-	// ++++++++++ SETTERS ++++++++++ //
-
-	public void setChipOffset(Vector2 offset)
-	{
-		chipOffset = offset;
 	}
 }
