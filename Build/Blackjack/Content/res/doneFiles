@@ -1,0 +1,66 @@
+CardsGame												renamed blackjack
+	BlackjackGame.cs
+	Program.cs											renamed Main
+	
+----Blackjack											didn't create this folder, put everything in parent folder renamed blackjack
+--------Game
+			BlackjackCardGame.cs
+--------Misc
+			BetGameComponent.cs
+--------Players
+			BlackjackAIPlayer.cs
+			BlackjackPlayer.cs
+--------Rules
+			BlackjackGameEventArgs.cs
+			BlackjackRule.cs
+			BustRule.cs
+			InsuranceRule.cs
+--------UI
+			BlackjackAnimatedDealerHandComponent.cs
+			BlackJackAnimatedPlayerHandComponent.cs
+			BlackJackTable.cs
+			Button.cs
+----Misc
+		AudioManager.cs
+		InputHelper.cs
+
+----ScreenManager
+		GameScreen.cs
+		InputState.cs
+		MenuEntry.cs
+		MenuScreen.cs
+											PlayerIndexEventArgs.cs
+		ScreenManager.cs
+----Screens
+		BackgroundScreen.cs
+		GameplayScreen.cs
+		InstructionScreen.cs
+		MainMenuScreen.cs
+		OptionsMenu.cs
+		PauseScreen.cs
+											
+
+CardsFramework
+----Cards
+		CardPacket.cs
+		Hand.cs
+		TraditionalCard.cs
+----Game
+		CardsGame.cs
+----Players
+		Player.cs
+----Rules
+		GameRule.cs
+----UI
+		AnimatedCardsGameComponent.cs
+		AnimatedGameComponent.cs
+		AnimatedGameComponentAnimation.cs
+		AnimatedHandGameComponent.cs
+		FlipGameComponentAnimation.cs
+		FramesetGameComponentAnimation.cs
+		GameTable.cs
+		ScaleGameComponentAnimation.cs
+		TransitionGameComponentAnimation.cs
+----Utils
+		MathUtility.cs									Added to gameCore.math.MathHelper
+		UIUtilty.cs
