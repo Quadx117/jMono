@@ -1,13 +1,13 @@
 package game;
 
-import gameCore.Color;
-import gameCore.Game;
-import gameCore.GraphicsDeviceManager;
-import gameCore.graphics.SpriteBatch;
-import gameCore.input.Keyboard;
-import gameCore.input.KeyboardState;
-import gameCore.input.Keys;
-import gameCore.time.GameTime;
+import jMono_Framework.Color;
+import jMono_Framework.Game;
+import jMono_Framework.GraphicsDeviceManager;
+import jMono_Framework.graphics.SpriteBatch;
+import jMono_Framework.input.Keyboard;
+import jMono_Framework.input.KeyboardState;
+import jMono_Framework.input.Keys;
+import jMono_Framework.time.GameTime;
 
 import javax.swing.UIManager;
 
@@ -22,7 +22,7 @@ public class Game1 extends Game
 	// Keyboard states used to determine key presses
 	KeyboardState currentKeyboardState = new KeyboardState();
 	KeyboardState previousKeyboardState = new KeyboardState();
-		
+
 	public Game1()
 	{
 		try
@@ -85,5 +85,4 @@ public class Game1 extends Game
 
 		super.draw(gameTime);
 	}
-
 }
