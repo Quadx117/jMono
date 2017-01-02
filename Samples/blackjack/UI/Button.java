@@ -129,7 +129,7 @@ public class Button extends AnimatedGameComponent
 	private void handleInput(MouseState mouseState)
 	{
 		boolean pressed = false;
-		Vector2 position = new Vector2(Vector2.ZERO);
+		Vector2 position = new Vector2(Vector2.Zero());
 
 // #if WINDOWS_PHONE
 		// if ((input.Gestures.Count > 0) && input.Gestures[0].GestureType == GestureType.Tap)

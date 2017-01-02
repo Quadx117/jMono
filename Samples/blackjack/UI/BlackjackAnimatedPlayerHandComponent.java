@@ -22,7 +22,7 @@ public class BlackjackAnimatedPlayerHandComponent extends AnimatedHandGameCompon
 	public BlackjackAnimatedPlayerHandComponent(int place, Hand hand, CardsGame cardGame)
 	{
 		super(place, hand, cardGame);
-		this.offset = new Vector2(Vector2.ZERO);
+		this.offset = new Vector2(Vector2.Zero());
 	}
 
 	/**

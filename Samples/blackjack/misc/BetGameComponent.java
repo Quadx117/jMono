@@ -248,7 +248,7 @@ public class BetGameComponent extends DrawableGameComponent
 	private void handleInput(MouseState mouseState)
 	{
 		boolean isPressed = false;
-		Vector2 position = new Vector2(Vector2.ZERO);
+		Vector2 position = Vector2.Zero();
 
 		if (mouseState.getLeftButton() == ButtonState.Pressed)
 		{
@@ -392,8 +392,8 @@ public class BetGameComponent extends DrawableGameComponent
 			}
 
 			// Add transition animation
-			TransitionGameComponentAnimation transitionAnimation = new TransitionGameComponentAnimation(
-					positions[currentChipIndex], position);
+			TransitionGameComponentAnimation transitionAnimation =
+					new TransitionGameComponentAnimation(positions[currentChipIndex], position);
 			transitionAnimation.duration = TimeSpan.fromSeconds(1f);
 			transitionAnimation.performBeforeStart = this::showComponent;
 			transitionAnimation.performBeforSartArgs = chipComponent;
@@ -608,7 +608,7 @@ public class BetGameComponent extends DrawableGameComponent
 	 */
 	private Vector2 getChipOffset(int playerIndex, boolean secondHand)
 	{
-		Vector2 offset = new Vector2(Vector2.ZERO);
+		Vector2 offset = Vector2.Zero();
 
 		BlackJackTable table = ((BlackJackTable) cardGame.getGameTable());
 		offset = Vector2.add(table.getRingOffset(),

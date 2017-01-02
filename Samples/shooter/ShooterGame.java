@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import debug.TimedBlock;
+
 public class ShooterGame extends Game
 {
 	/** Default serial version UID */
@@ -147,6 +149,8 @@ public class ShooterGame extends Game
 
 	protected void initialize()
 	{
+TimedBlock.addTimedBlock("Draw"); // TODO: Delete these after testing
+TimedBlock.addTimedBlock("ProcessPixel");
 		// Initialize the Player class
 		player = new Player();
 
@@ -228,7 +232,7 @@ public class ShooterGame extends Game
 		// Load the Player resources
 		Animation playerAnimation = new Animation();
 		Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
-		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1.0f, true);
+		playerAnimation.initialize(playerTexture, Vector2.Zero(), 115, 69, 8, 60, Color.White, 1.0f, true);
 
 		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
 											 getGraphicsDevice().getViewport().getTitleSafeArea().y + getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
@@ -281,7 +285,7 @@ public class ShooterGame extends Game
 
 		Texture2D playerTexture = getContent().load("shipAnimation", Texture2D.class);
 
-		playerAnimation.initialize(playerTexture, Vector2.ZERO, 115, 69, 8, 60, Color.White, 1f, true);
+		playerAnimation.initialize(playerTexture, Vector2.Zero(), 115, 69, 8, 60, Color.White, 1f, true);
 
 		Vector2 playerPosition = new Vector2(getGraphicsDevice().getViewport().getTitleSafeArea().x,
 											 getGraphicsDevice().getViewport().getTitleSafeArea().y + getGraphicsDevice().getViewport().getTitleSafeArea().height / 2);
@@ -300,7 +304,7 @@ public class ShooterGame extends Game
 	protected void update(GameTime gameTime)
 	{
 		fpsCounter.update(gameTime);
-
+TimedBlock.printTimedBlock();	// TODO: Delete these after testing
 		// Save the previous state of the Keyboard and GamePad so we can determine single key/button presses
 		previousKeyboardState = currentKeyboardState;
 
@@ -542,7 +546,7 @@ public class ShooterGame extends Game
 		Animation enemyAnimation = new Animation();
 
 		// Initialize the animation with the correct animation information
-		enemyAnimation.initialize(enemyTexture, Vector2.ZERO, 47, 61, 8, 60, Color.White, 1f, true);
+		enemyAnimation.initialize(enemyTexture, Vector2.Zero(), 47, 61, 8, 60, Color.White, 1f, true);
 
 		// Randomly generate the position of the enemy
 		Vector2 position = new Vector2(getGraphicsDevice().getViewport().getWidth() + enemyTexture.getWidth() / 2,
@@ -830,7 +834,7 @@ public class ShooterGame extends Game
 	private void drawMainMenu()
 	{
 		// Draw all the elements that are part of the Main Menu
-		spriteBatch.draw(mainMenuScreenBackground, Vector2.ZERO, Color.White);
+		spriteBatch.draw(mainMenuScreenBackground, Vector2.Zero(), Color.White);
 
 		fontOrigin = menuFont.measureString("Play").divide(2f);
 		spriteBatch.drawString(menuFont, "Play", new Vector2(fontPos.x, fontPos.y + 10),
@@ -843,7 +847,7 @@ public class ShooterGame extends Game
 	private void drawMainGame()
 	{
 		// Draw the static background
-		spriteBatch.draw(mainBackground, Vector2.ZERO, Color.White);
+		spriteBatch.draw(mainBackground, Vector2.Zero(), Color.White);
 
 		// Draw the moving backgrounds
 		bgLayer1.draw(spriteBatch);
@@ -904,7 +908,7 @@ public class ShooterGame extends Game
 	{
 		// Draw all the elements that are part of the End Menu
 		// Draw the EndMenu Background
-		spriteBatch.draw(endMenuScreenBackground, Vector2.ZERO, Color.White);
+		spriteBatch.draw(endMenuScreenBackground, Vector2.Zero(), Color.White);
 
 		// Draw the score
 		fontOrigin = menuFont.measureString("Score : " + score).divide(2);

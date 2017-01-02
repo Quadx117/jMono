@@ -401,7 +401,7 @@ public final class MathHelper
 		// Point relative to origin
 		Vector2 u = new Vector2(Vector2.subtract(point, origin));
 
-		if (u.equals(Vector2.ZERO))
+		if (u.equals(Vector2.Zero()))
 			return point;
 
 		// Angle relative to origin

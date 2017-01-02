@@ -173,7 +173,7 @@ public class MenuEntry
 		spriteBatch.draw(screenManager.getButtonBackground(), destination, tintColor);
 
 		spriteBatch.drawString(font, text, getTextPosition(screen),
-				textColor, rotation, Vector2.ZERO, scale, SpriteEffects.None, 0);
+				textColor, rotation, Vector2.Zero(), scale, SpriteEffects.None, 0);
 	}
 
 	/**
@@ -203,7 +203,7 @@ public class MenuEntry
 
 	private Vector2 getTextPosition(MenuScreen screen)
 	{
-		Vector2 textPosition = Vector2.ZERO;
+		Vector2 textPosition = Vector2.Zero();
 		if (scale == 1f)
 		{
 			textPosition = new Vector2((int) destination.x + destination.width / 2 - getWidth(screen) / 2,

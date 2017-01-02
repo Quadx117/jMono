@@ -72,7 +72,7 @@ public class InputHelper extends DrawableGameComponent
 	{
 		spriteBatch.begin();
 		spriteBatch.draw(texture, drawPosition, null, Color.White, 0,
-						 Vector2.ZERO, 1, SpriteEffects.None, 0);
+						 Vector2.Zero(), 1, SpriteEffects.None, 0);
 		spriteBatch.end();
 	}
 
