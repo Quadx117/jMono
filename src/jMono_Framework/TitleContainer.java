@@ -1,10 +1,14 @@
 package jMono_Framework;
 
+import jMono_Framework.utilities.FileHelpers;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -41,11 +45,9 @@ public class TitleContainer
 
 // #if IOS
 	// static private boolean SupportRetina;
-	// static public boolean supportRetina()
-	// { return SupportRetina; }
+	// static public boolean supportRetina() { return SupportRetina; }
 	// static private int RetinaScale;
-	// static public int getRetinaScale()
-	// { return RetinaScale; }
+	// static public int getRetinaScale() { return RetinaScale; }
 // #endif
 
 // #if WINRT
@@ -69,11 +71,13 @@ public class TitleContainer
 
 // #endif // WINRT
 
-	// / <summary>
-	// / Returns an open stream to an exsiting file in the title storage area.
-	// / </summary>
-	// / <param name="name">The filepath relative to the title storage area.</param>
-	// / <returns>A open stream or null if the file is not found.</returns>
+	/**
+	 * Returns an open stream to an exsiting file in the title storage area.
+	 * 
+	 * @param name
+	 *        The filepath relative to the title storage area.
+	 * @return A open stream or null if the file is not found.
+	 */
 	public static FileInputStream openStream(String name)
 	{
 		// Normalize the file path.
@@ -134,15 +138,19 @@ public class TitleContainer
 		String result = "";
 		try
 		{
-			URI a = new URI("file:///" + name);
-			// result = FileHelpers.normalizeFilePathSeparators(a.getSchemeSpecificPart().substring(1));
+			URL url = new URL("file:///" + name);
+			URI a = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), new String());
 			result = a.getSchemeSpecificPart().substring(3);
 		}
 		catch (URISyntaxException e)
 		{
 			e.printStackTrace();
 		}
-		return result;
+		catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+		}
+		return FileHelpers.normalizeFilePathSeparators(result);
 	}
 
 	// TODO: If this is needed elsewhere, put in helper class (Assembly)

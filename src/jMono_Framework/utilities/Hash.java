@@ -2,6 +2,7 @@ package jMono_Framework.utilities;
 
 public class Hash {
 
+	// TODO: Do I need an Ellipsis (...) here (c# params keyword)
 	/**
 	 * Compute a hash from a byte array.
 	 * 

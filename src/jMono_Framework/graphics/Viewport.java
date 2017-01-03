@@ -20,70 +20,136 @@ public class Viewport
 	private float minDepth;
 	private float maxDepth;
 
-	public int getWidth()
-	{
-		return this.width;
-	}
-
-	public void setWidth(int value)
-	{
-		width = value;
-	}
-
+	/**
+	 * Returns the height of the bounds in pixels.
+	 * 
+	 * @return The height of the bounds in pixels.
+	 */
 	public int getHeight()
 	{
 		return this.height;
 	}
 
+	/**
+	 * Sets the height of the bounds in pixels to the specified value.
+	 * 
+	 * @param value
+	 *        The new height of the bounds in pixels.
+	 */
 	public void setHeight(int value)
 	{
 		height = value;
 	}
 
+	/**
+	 * Returns the upper limit of depth of this viewport.
+	 * 
+	 * @return The upper limit of depth of this viewport.
+	 */
 	public float getMaxDepth()
 	{
 		return this.maxDepth;
 	}
 
+	/**
+	 * Sets the upper limit of depth of this viewport to the specified value.
+	 * 
+	 * @param value
+	 *        The new upper limit of depth of this viewport.
+	 */
 	public void setMaxDepth(float value)
 	{
 		maxDepth = value;
 	}
 
+	/**
+	 * Returns the lower limit of depth of this viewport.
+	 * 
+	 * @return The lower limit of depth of this viewport.
+	 */
 	public float getMinDepth()
 	{
 		return this.minDepth;
 	}
 
+	/**
+	 * Sets the lower limit of depth of this viewport to the specified value.
+	 * 
+	 * @param value
+	 *        The new lower limit of depth of this viewport.
+	 */
 	public void setMinDepth(float value)
 	{
 		minDepth = value;
 	}
 
-	public int getX()
+	/**
+	 * Returns the width of the bounds in pixels.
+	 * 
+	 * @return The width of the bounds in pixels.
+	 */
+	public int getWidth()
 	{
-		return x;
+		return this.width;
 	}
 
-	public void setX(int value)
+	/**
+	 * Sets the width of the bounds in pixels to the specified value.
+	 * 
+	 * @param value
+	 *        The new width of the bounds in pixels.
+	 */
+	public void setWidth(int value)
 	{
-		x = value;
+		width = value;
 	}
 
+	/**
+	 * Returns the y coordinate of the beginning of this viewport.
+	 * 
+	 * @return The y coordinate of the beginning of this viewport.
+	 */
 	public int getY()
 	{
 		return this.y;
 	}
 
+	/**
+	 * Sets the y coordinate of the beginning of this viewport to the specified value.
+	 * 
+	 * @param value
+	 *        The new y coordinate of the beginning of this viewport.
+	 */
 	public void setY(int value)
 	{
 		y = value;
 	}
 
 	/**
-	 * Gets the aspect ratio of this {@link Viewport}, which is width / height.
+	 * Returns the x coordinate of the beginning of this viewport.
 	 * 
-	 * @return The aspect ratio of this {@link Viewport}
+	 * @return The x coordinate of the beginning of this viewport.
+	 */
+	public int getX()
+	{
+		return x;
+	}
+
+	/**
+	 * Sets the x coordinate of the beginning of this viewport.
+	 * 
+	 * @param value
+	 *        The new x coordinate of the beginning of this viewport.
+	 */
+	public void setX(int value)
+	{
+		x = value;
+	}
+
+	/**
+	 * Returns the aspect ratio of this {@code Viewport}, which is width / height.
+	 * 
+	 * @return The aspect ratio of this {@code Viewport}
 	 */
 	public float getAspectRatio()
 	{
@@ -94,11 +160,22 @@ public class Viewport
 		return 0f;
 	}
 
+	/**
+	 * Returns a boundary of this {@code Viewport}.
+	 * 
+	 * @return A boundary of this {@code Viewport}.
+	 */
 	public Rectangle getBounds()
 	{
 		return new Rectangle(x, y, width, height);
 	}
 
+	/**
+	 * Sets the boundary of this {@code Viewport} to the specified {@link Rectangle} value.
+	 * 
+	 * @param value
+	 *        The new bounds of this {@code Viewport}
+	 */
 	public void setBounds(Rectangle value)
 	{
 		x = value.x;
@@ -107,12 +184,20 @@ public class Viewport
 		height = value.height;
 	}
 
+	/**
+	 * Returns the subset of the viewport that is guaranteed to be visible on a lower quality display.
+	 * 
+	 * @return Returns the subset of the viewport that is guaranteed to be visible on a lower quality display.
+	 */
 	public Rectangle getTitleSafeArea()
 	{
 		return new Rectangle(x, y, width, height);
 	}
 
 	// Note: Added this since it is provided by default for struct in C#
+	/**
+	 * Constructs a viewport with all its components set to 0.
+	 */
 	public Viewport()
 	{
 		this.x = 0;
@@ -123,6 +208,19 @@ public class Viewport
 		this.maxDepth = 0.0f;
 	}
 
+	/**
+	 * Constructs a viewport from the given values.
+	 * The {@link #minDepth} will be 0.0 and {@link #maxDepth} will be 1.0.
+	 * 
+	 * @param x
+	 *        The x coordinate of the upper-left corner of the view bounds in pixels.
+	 * @param y
+	 *        The y coordinate of the upper-left corner of the view bounds in pixels.
+	 * @param width
+	 *        The width of the view bounds in pixels.
+	 * @param height
+	 *        The height of the view bounds in pixels.
+	 */
 	public Viewport(int x, int y, int width, int height)
 	{
 		this.x = x;
@@ -133,12 +231,50 @@ public class Viewport
 		this.maxDepth = 1.0f;
 	}
 
+	/**
+	 * Constructs a viewport from the given values.
+	 * 
+	 * @param x
+	 *        The x coordinate of the upper-left corner of the view bounds in pixels.
+	 * @param y
+	 *        The y coordinate of the upper-left corner of the view bounds in pixels.
+	 * @param width
+	 *        The width of the view bounds in pixels.
+	 * @param height
+	 *        The height of the view bounds in pixels.
+	 * @param minDepth
+	 *        The lower limit of depth.
+	 * @param maxDepth
+	 *        The upper limit of depth.
+	 */
+	public Viewport(int x, int y, int width, int height, float minDepth, float maxDepth)
+	{
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.minDepth = minDepth;
+		this.maxDepth = maxDepth;
+	}
+
+	/**
+	 * Constructs a viewport from the specified {@link Rectangle} value.
+	 * 
+	 * @param bounds
+	 *        A {@code Rectangle} that defines the location and size of the {@code Viewport} in a render target.
+	 */
 	public Viewport(Rectangle bounds)
 	{
 		this(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
 	// NOTE: added this utility method since struct behaves differently than class in C#
+	/**
+	 * Constructs a viewport from the specified {@code Viewport} value.
+	 * 
+	 * @param viewport
+	 *        A {@code Viewport} that defines the location and size of the {@code Viewport} in a render target.
+	 */
 	public Viewport(Viewport viewport)
 	{
 		this.x = viewport.x;
@@ -149,6 +285,19 @@ public class Viewport
 		this.maxDepth = viewport.maxDepth;
 	}
 
+	/**
+	 * Projects a {@link Vector3} from world space into screen space.
+	 * 
+	 * @param source
+	 *        The {@code Vector3} to project.
+	 * @param projection
+	 *        The projection {@link Matrix}.
+	 * @param view
+	 *        The view {@code Matrix}.
+	 * @param world
+	 *        The world {@code Matrix}.
+	 * @return The {@code Vector3} projected into screen space.
+	 */
 	public Vector3 project(Vector3 source, Matrix projection, Matrix view, Matrix world)
 	{
 		Matrix matrix = Matrix.multiply(Matrix.multiply(world, view), projection);
@@ -166,6 +315,19 @@ public class Viewport
 		return vector;
 	}
 
+	/**
+	 * Unprojects a {@link Vector3} from screen space into world space.
+	 * 
+	 * @param source
+	 *        The {@code Vector3} to unproject.
+	 * @param projection
+	 *        The projection {@link Matrix}.
+	 * @param view
+	 *        The view {@code Matrix}.
+	 * @param world
+	 *        The world {@code Matrix}.
+	 * @return The {@code Vector3} unprojected into world space.
+	 */
 	public Vector3 unproject(Vector3 source, Matrix projection, Matrix view, Matrix world)
 	{
 		Matrix matrix = Matrix.invert(Matrix.multiply(Matrix.multiply(world, view), projection));
@@ -189,10 +351,15 @@ public class Viewport
 		return ((-1.401298E-45f <= num) && (num <= Float.MIN_VALUE));
 	}
 
+	/**
+	 * Returns a {@link String} representation of this {@code Viewport} in the format:
+	 * {X:[{@link #x}] Y:[{@link #y}] Width:[{@link #width}] Height:[{@link #height}] MinDepth:[{@link #minDepth}] MaxDepth:[{@link #maxDepth}]}
+	 * 
+	 * @return A {@code String} representation of this {@code Viewport}.
+	 */
 	@Override
 	public String toString()
 	{
-		return "{X:" + x + " Y:" + y + " Width:" + width + " Height:" + height + " MinDepth:" + minDepth + " MaxDepth:"
-				+ maxDepth + "}";
+		return "{X:" + x + " Y:" + y + " Width:" + width + " Height:" + height + " MinDepth:" + minDepth + " MaxDepth:" + maxDepth + "}";
 	}
 }

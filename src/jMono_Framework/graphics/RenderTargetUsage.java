@@ -1,10 +1,10 @@
 package jMono_Framework.graphics;
 
 /**
- * Defines if the previous content in a render target is preserved when it set on the graphics
- * device.
+ * Defines if the previous content in a render target is preserved
+ * when it set on the graphics device.
  * 
- * @author Eric
+ * @author Eric Perron
  *
  */
 public enum RenderTargetUsage
@@ -20,8 +20,8 @@ public enum RenderTargetUsage
 	PreserveContents,
 
 	/**
-	 * The render target content might be preserved if the platform can do so without a penalty in
-	 * performance or memory usage.
+	 * The render target content might be preserved if the platform can do so without a penalty
+	 * in performance or memory usage.
 	 */
 	PlatformContents
 }

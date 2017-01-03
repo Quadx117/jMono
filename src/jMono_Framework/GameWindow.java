@@ -4,6 +4,8 @@ import jMono_Framework.dotNet.events.Event;
 import jMono_Framework.dotNet.events.EventArgs;
 import jMono_Framework.input.MouseState;
 
+import javax.swing.JFrame;
+
 public abstract class GameWindow
 {
 	public boolean allowUserResizing;
@@ -19,10 +21,7 @@ public abstract class GameWindow
 	 * @return Whether or not Alt+F4 is enabled for closing the window.
 	 * 
 	 */
-	public boolean allowAltF4()
-	{
-		return _allowAltF4;
-	}
+	public boolean allowAltF4() { return _allowAltF4; }
 
 	/**
 	 * Sets a boolean that enables usage of Alt+F4 for window closing on desktop platforms.
@@ -31,10 +30,7 @@ public abstract class GameWindow
 	 * @param value
 	 *        The new value for this attribute.
 	 */
-	public void setAllowAltF4(boolean value)
-	{
-		_allowAltF4 = value;
-	}
+	public void setAllowAltF4(boolean value) { _allowAltF4 = value; }
 
 // #if (WINDOWS && !WINRT) || DESKTOPGL
 	/**
@@ -48,10 +44,9 @@ public abstract class GameWindow
     // public abstract System.Drawing.Icon Icon { get; set; }
 // #endif
 
-	public DisplayOrientation currentOrientation;
+	public abstract DisplayOrientation getCurrentOrientation();
 
-	// NOTE: Don't need that
-	// public IntPtr handle;
+	public abstract JavaGameWindow getHandle();
 
 	public String screenDeviceName;
 

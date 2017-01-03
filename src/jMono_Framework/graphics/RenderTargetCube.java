@@ -5,82 +5,99 @@ import jMono_Framework.graphics.states.DepthFormat;
 /**
  * Represents a texture cube that can be used as a render target.
  * 
- * @author Eric
+ * @author Eric Perron
  *
  */
 public class RenderTargetCube extends TextureCube implements IRenderTarget
 {
 // #if DIRECTX
-	// vprivate RenderTargetView[] _renderTargetViews;
+	// private RenderTargetView[] _renderTargetViews;
 	// private DepthStencilView _depthStencilView;
 // #endif
 
+	/**
+	 * The format of the depth-stencil buffer.
+	 */
 	private DepthFormat depthStencilFormat;
-	// / <summary>
-	// / Gets the depth-stencil buffer format of this render target.
-	// / </summary>
-	// / <value>The format of the depth-stencil buffer.</value>
+
+	/**
+	 * Returns the depth-stencil buffer format of this render target.
+	 * 
+	 * @return The format of the depth-stencil buffer.
+	 */
 	public DepthFormat getDepthStencilFormat() { return depthStencilFormat; }
 
+	/**
+	 * The number of multisample locations.
+	 */
 	private int multiSampleCount;
-	// / <summary>
-	// / Gets the number of multisample locations.
-	// / </summary>
-	// / <value>The number of multisample locations.</value>
+
+	/**
+	 * Returns the number of multisample locations.
+	 * 
+	 * @return The number of multisample locations.
+	 */
 	public int getMultiSampleCount() { return multiSampleCount; }
-	
+
+	/**
+	 * The usage mode of the render target.
+	 */
 	private RenderTargetUsage renderTargetUsage;
-	// / <summary>
-	// / Gets the usage mode of this render target.
-	// / </summary>
-	// / <value>The usage mode of the render target.</value>
+
+	/**
+	 * Returns the usage mode of this render target.
+	 * 
+	 * @return The usage mode of this render target.
+	 */
 	public RenderTargetUsage getRenderTargetUsage() { return renderTargetUsage; }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getWidth()
-	{
-		return size;
-	}
+	public int getWidth() { return size; }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public int getHeight()
-	{
-		return size;
-	}
+	public int getHeight() { return size; }
 
-	// / <summary>
-	// / Initializes a new instance of the <see cref="RenderTargetCube"/> class.
-	// / </summary>
-	// / <param name="graphicsDevice">The graphics device.</param>
-	// / <param name="size">The width and height of a texture cube face in pixels.</param>
-	// / <param name="mipMap"><see langword="true"/> to generate a full mipmap chain; otherwise <see
-	// langword="false"/>.</param>
-	// / <param name="preferredFormat">The preferred format of the surface.</param>
-	// / <param name="preferredDepthFormat">The preferred format of the depth-stencil
-	// buffer.</param>
-	public RenderTargetCube(GraphicsDevice graphicsDevice, int size, boolean mipMap, SurfaceFormat preferredFormat,
-			DepthFormat preferredDepthFormat)
+	/**
+	 * Initializes a new instance of the {@code RenderTargetCube} class.
+	 * 
+	 * @param graphicsDevice
+	 *        The graphics device.
+	 * @param size
+	 *        The width and height of a texture cube face in pixels.
+	 * @param mipMap
+	 *        {@code true} to generate a full mipmap chain, {@code false} otherwise.
+	 * @param preferredFormat
+	 *        The preferred format of the surface.
+	 * @param preferredDepthFormat
+	 *        The preferred format of the depth-stencil buffer.
+	 */
+	public RenderTargetCube(GraphicsDevice graphicsDevice, int size, boolean mipMap, SurfaceFormat preferredFormat, DepthFormat preferredDepthFormat)
 	{
 		this(graphicsDevice, size, mipMap, preferredFormat, preferredDepthFormat, 0, RenderTargetUsage.DiscardContents);
 	}
 
-	// / <summary>
-	// / Initializes a new instance of the <see cref="RenderTargetCube"/> class.
-	// / </summary>
-	// / <param name="graphicsDevice">The graphics device.</param>
-	// / <param name="size">The width and height of a texture cube face in pixels.</param>
-	// / <param name="mipMap"><see langword="true"/> to generate a full mipmap chain; otherwise <see
-	// langword="false"/>.</param>
-	// / <param name="preferredFormat">The preferred format of the surface.</param>
-	// / <param name="preferredDepthFormat">The preferred format of the depth-stencil
-	// buffer.</param>
-	// / <param name="preferredMultiSampleCount">The preferred number of multisample
-	// locations.</param>
-	// / <param name="usage">The usage mode of the render target.</param>
+	/**
+	 * Initializes a new instance of the {@code RenderTargetCube} class.
+	 * 
+	 * @param graphicsDevice
+	 *        The graphics device.
+	 * @param size
+	 *        The width and height of a texture cube face in pixels.
+	 * @param mipMap
+	 *        {@code true} to generate a full mipmap chain, {@code false} otherwise.
+	 * @param preferredFormat
+	 *        The preferred format of the surface.
+	 * @param preferredDepthFormat
+	 *        The preferred format of the depth-stencil buffer.
+	 * @param preferredMultiSampleCount
+	 *        The preferred number of multisample locations.
+	 * @param usage
+	 *        The usage mode of the render target.
+	 */
 	public RenderTargetCube(GraphicsDevice graphicsDevice, int size, boolean mipMap, SurfaceFormat preferredFormat,
 			DepthFormat preferredDepthFormat, int preferredMultiSampleCount, RenderTargetUsage usage)
 	{

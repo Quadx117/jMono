@@ -28,37 +28,37 @@ public class SpriteBatcher
 	 * exercise caution when making changes to this class.
 	 */
 
-	// / <summary>
-	// / Initialization size for the batch item list and queue.
-	// / </summary>
+	/**
+	 * Initialization size for the batch item list and queue.
+	 */
 	private final int InitialBatchSize = 256;
-	// / <summary>
-	// / The maximum number of batch items that can be processed per iteration
-	// / </summary>
+	/**
+	 * The maximum number of batch items that can be processed per iteration.
+	 */
 	private final int MaxBatchSize = Short.MAX_VALUE / 6; // 6 = 4 vertices unique and 2 shared, per
-	// / <summary>
-	// / Initialization size for the vertex array, in batch units.
-	// / </summary>
+	/**
+	 * Initialization size for the vertex array, in batch units.
+	 */
 	private final int InitialVertexArraySize = 256;
 
-	// / <summary>
-	// / The list of batch items to process.
-	// / </summary>
-	private List<SpriteBatchItem> _batchItemList;
+	/**
+	 * The list of batch items to process.
+	 */
+	private final List<SpriteBatchItem> _batchItemList;
 
-	// / <summary>
-	// / The available SpriteBatchItem queue so that we reuse these objects when we can.
-	// / </summary>
-	private Queue<SpriteBatchItem> _freeBatchItemQueue;
+	/**
+	 * The available SpriteBatchItem queue so that we reuse these objects when we can.
+	 */
+	private final Queue<SpriteBatchItem> _freeBatchItemQueue;
 
-	// / <summary>
-	// / The target graphics device.
-	// / </summary>
-	private GraphicsDevice _device;
+	/**
+	 * The target graphics device.
+	 */
+	private final GraphicsDevice _device;
 
-	// / <summary>
-	// / Vertex index array. The values in this array never change.
-	// / </summary>
+	/**
+	 * Vertex index array. The values in this array never change.
+	 */
 	private short[] _index;
 
 	private VertexPositionColorTexture[] _vertexArray;
@@ -73,12 +73,12 @@ public class SpriteBatcher
 		ensureArrayCapacity(InitialBatchSize);
 	}
 
-	// / <summary>
-	// / Create an instance of SpriteBatchItem if there is none available in the free item queue.
-	// Otherwise,
-	// / a previously allocated SpriteBatchItem is reused.
-	// / </summary>
-	// / <returns></returns>
+	/**
+	 * Create an instance of SpriteBatchItem if there is none available in the free item queue.
+	 * Otherwise, a previously allocated SpriteBatchItem is reused.
+	 * 
+	 * @return A SpriteBatchItem instance.
+	 */
 	public SpriteBatchItem createBatchItem()
 	{
 		SpriteBatchItem item;
@@ -90,10 +90,12 @@ public class SpriteBatcher
 		return item;
 	}
 
-	// / <summary>
-	// / Resize and recreate the missing indices for the index and vertex position color buffers.
-	// / </summary>
-	// / <param name="numBatchItems"></param>
+	/**
+	 * Resize and recreate the missing indices for the index and vertex position color buffers.
+	 * 
+	 * @param numBatchItems
+	 *        The number of Items that we want to test.
+	 */
 	private void ensureArrayCapacity(int numBatchItems)
 	{
 		int neededCapacity = 6 * numBatchItems;
@@ -136,47 +138,57 @@ public class SpriteBatcher
 		_vertexArray = new VertexPositionColorTexture[4 * numBatchItems];
 	}
 
-	// / <summary>
-	// / Reference comparison of the underlying Texture objects for each given SpriteBatchitem.
-	// / </summary>
-	// / <param name="a"></param>
-	// / <param name="b"></param>
-	// / <returns>0 if they are not reference equal, and 1 if so.</returns>
+	/**
+	 * Comparison of the underlying Texture objects for each given SpriteBatchitem.
+	 * 
+	 * @param a
+	 *        First SpriteBatchItem used in the comparison.
+	 * @param b
+	 *        Second SpriteBatchItem used in the comparison.
+	 * @return 0 if they are equal, -1 or 1 otherwise.
+	 */
 	static int compareTexture(SpriteBatchItem a, SpriteBatchItem b)
 	{
-		return (a.texture == b.texture) ? 0 : 1;
+		return Integer.compare(a.texture.getSortingKey(), b.texture.getSortingKey());
 	}
 
-	// / <summary>
-	// / Compares the Depth of a against b returning -1 if a is less than b,
-	// / 0 if equal, and 1 if a is greater than b. The test uses Float.compare(float, float)
-	// / </summary>
-	// / <param name="a"></param>
-	// / <param name="b"></param>
-	// / <returns>-1 if a is less than b, 0 if equal, and 1 if a is greater than b</returns>
+	/**
+	 * Compares the Depth of a against b returning -1 if a is less than b,
+	 * 0 if equal, and 1 if a is greater than b. The test uses Float.compare(float, float)
+	 * @param a
+	 *        First SpriteBatchItem used in the comparison.
+	 * @param b
+	 *        Second SpriteBatchItem used in the comparison.
+	 * @return -1 if a is less than b, 0 if equal, and 1 if a is greater than b.
+	 */
 	static int compareDepth(SpriteBatchItem a, SpriteBatchItem b)
 	{
 		return Float.compare(a.depth, b.depth);
 	}
 
-	// / <summary>
-	// / Implements the opposite of compareDepth, where b is compared against a.
-	// / </summary>
-	// / <param name="a"></param>
-	// / <param name="b"></param>
-	// / <returns>-1 if b is less than a, 0 if equal, and 1 if b is greater than a</returns>
+	/**
+	 * Implements the opposite of compareDepth, where b is compared against a.
+	 * 
+	 * @param a
+	 *        First SpriteBatchItem used in the comparison.
+	 * @param b
+	 *        Second SpriteBatchItem used in the comparison.
+	 * @return -1 if b is less than a, 0 if equal, and 1 if b is greater than a.
+	 */
 	static int compareReverseDepth(SpriteBatchItem a, SpriteBatchItem b)
 	{
 		return Float.compare(b.depth, a.depth);
 	}
 
-	// / <summary>
-	// / Sorts the batch items and then groups batch drawing into maximal allowed batch sets that do
-	// not
-	// / overflow the 16 bit array indices for vertices.
-	// / </summary>
-	// / <param name="sortMode">The type of depth sorting desired for the rendering.</param>
-	// / <param name="effect">The custom effect to apply to the drawn geometry</param>
+	/**
+	 * Sorts the batch items and then groups batch drawing into maximal allowed batch sets that
+	 * do not overflow the 16 bit array indices for vertices.
+	 * 
+	 * @param sortMode
+	 *        The type of depth sorting desired for the rendering.
+	 * @param effect
+	 *        The custom effect to apply to the drawn geometry
+	 */
 	public void drawBatch(SpriteSortMode sortMode, Effect effect)
 	{
 		// nothing to do
@@ -187,7 +199,6 @@ public class SpriteBatcher
 		switch (sortMode)
 		{
 			case Texture:
-				// _batchItemList.sort(textureComparator);
 				_batchItemList.sort(SpriteBatcher::compareTexture);
 				break;
 			case FrontToBack:
@@ -254,14 +265,18 @@ public class SpriteBatcher
 		_batchItemList.clear();
 	}
 
-	// / <summary>
-	// / Sends the triangle list to the graphics device. Here is where the actual drawing starts.
-	// / </summary>
-	// / <param name="start">Start index of vertices to draw. Not used except to compute the count
-	// of vertices to draw.</param>
-	// / <param name="end">End index of vertices to draw. Not used except to compute the count of
-	// vertices to draw.</param>
-	// / <param name="effect">The custom effect to apply to the geometry</param>
+	/**
+	 * Sends the triangle list to the graphics device. Here is where the actual drawing starts.
+	 * 
+	 * @param start
+	 *        Start index of vertices to draw. Not used except to compute the count of vertices to draw.
+	 * @param end
+	 *        End index of vertices to draw. Not used except to compute the count of vertices to draw.
+	 * @param effect
+	 *        The custom effect to apply to the geometry.
+	 * @param texture
+	 *        The texture we want to draw.
+	 */
 	private void flushVertexArray(int start, int end, Effect effect, Texture texture)
 	{
 		if (start == end)

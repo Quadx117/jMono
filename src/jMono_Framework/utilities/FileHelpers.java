@@ -10,14 +10,14 @@ public class FileHelpers
 	public static final String ForwardSlashString = String.valueOf(ForwardSlash);
 	public static final char BackwardSlash = '\\';
 
-	// #if WINRT
+// #if WINRT
 	// public static final char NotSeparator = ForwardSlash;
 	// public static final char Separator = BackwardSlash;
-	// #else
+// #else
 	public static final char NotSeparator = File.separatorChar == BackwardSlash ? ForwardSlash : BackwardSlash;
 	public static final char Separator = File.separatorChar;
 
-	// #endif
+// #endif
 
 	public static String normalizeFilePathSeparators(String name)
 	{

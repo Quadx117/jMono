@@ -1079,13 +1079,11 @@ public class Color
 		}
 	}
 
-	// / <summary>
-	// / Creates a new instance of {@code Color} struct.
-	// / </summary>
-	// / <param name="color">A <see cref="Vector4"/> representing color.</param>
 	/**
+	 * Creates a new instance of {@code Color} struct.
 	 * 
 	 * @param color
+	 *        A {@link Vector4} representing the color.
 	 */
 	public Color(Vector4 color)
 	{
@@ -1521,7 +1519,7 @@ public class Color
 	}
 
 	/**
-	 * Gets a three-component {@link Vector3} representation for this object.
+	 * Returns a three-component {@link Vector3} representation for this object.
 	 * 
 	 * @return A three-component {@link Vector3} representation for this object.
 	 */
@@ -1530,10 +1528,11 @@ public class Color
 		return new Vector3(getRed() / 255.0f, getGreen() / 255.0f, getBlue() / 255.0f);
 	}
 
-	// / <summary>
-	// / Gets a four-component <see cref="Vector4"/> representation for this object.
-	// / </summary>
-	// / <returns>A four-component <see cref="Vector4"/> representation for this object.</returns>
+	/**
+	 * Returns a four-component {@link Vector4} representation for this object.
+	 * 
+	 * @return A four-component {@link Vector4} representation for this object.
+	 */
 	public Vector4 toVector4()
 	{
 		return new Vector4(getRed() / 255.0f, getGreen() / 255.0f, getBlue() / 255.0f, getAlpha() / 255.0f);
@@ -1547,11 +1546,12 @@ public class Color
 				this.getAlpha();
 	}
 
-	// / <summary>
-	// / Returns a <see cref="String"/> representation of this <see cref="Color"/> in the format:
-	// / {R:[red] G:[green] B:[blue] A:[alpha]}
-	// / </summary>
-	// / <returns><see cref="String"/> representation of this <see cref="Color"/>.</returns>
+	/**
+	 * Returns a <see cref="String"/> representation of this <see cref="Color"/> in the format:
+	 * {R:[red] G:[green] B:[blue] A:[alpha]}
+	 * 
+	 * @return {@link String} representation of this {@code Color}.
+	 */
 	@Override
 	public String toString()
 	{

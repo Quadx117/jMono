@@ -45,8 +45,7 @@ public class TransitionGameComponentAnimation extends AnimatedGameComponentAnima
 			// Calculate the animation's completion percentage.
 			percent += (float) (gameTime.getElapsedGameTime().getTotalSeconds() / duration.getTotalSeconds());
 
-			// Move the component towards the destination as the animation
-			// progresses
+			// Move the component towards the destination as the animation progresses
 			component.currentPosition = Vector2.add(sourcePosition, Vector2.multiply(positionDelta, percent));
 
 			if (isDone())

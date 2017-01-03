@@ -1,5 +1,7 @@
 package jMono_Framework.math;
 
+import jMono_Framework.Point;
+
 // C# struct
 /**
  * Defines a vector with two float components.
@@ -9,35 +11,10 @@ package jMono_Framework.math;
  */
 public class Vector2 // implements IEquatable<Vector2>
 {
-
-	// TODO : Do I keep those private static fields ?
 	private static final Vector2 zeroVector = new Vector2(0.0f, 0.0f);
 	private static final Vector2 unitVector = new Vector2(1.0f, 1.0f);
 	private static final Vector2 unitXVector = new Vector2(1.0f, 0.0f);
 	private static final Vector2 unitYVector = new Vector2(0.0f, 1.0f);
-
-	// TODO: Change all these like in Vector3
-	/**
-	 * Returns a Vector2 with all of its components set to zero.
-	 */
-	public static final Vector2 ZERO = zeroVector;
-
-	/**
-	 * Returns a Vector2 with all of its components set to one.
-	 */
-	public static final Vector2 ONE = unitVector;
-
-	/**
-	 * Returns the unit vector for the x-axis, that is a Vector2 with its x
-	 * component set to one and all the other components set to zero (1, 0).
-	 */
-	public static final Vector2 UNIT_X = unitXVector;
-
-	/**
-	 * Returns the unit vector for the y-axis, that is a Vector2 with its y
-	 * component set to one and all the other components set to zero (0, 1).
-	 */
-	public static final Vector2 UNIT_Y = unitYVector;
 
 	/**
 	 * The x component of this Vector.
@@ -48,6 +25,46 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * The y component of this Vector.
 	 */
 	public float y;
+	
+	/**
+	 * Returns a {@code Vector3} with components 0, 0.
+	 * 
+	 * @return A {@code Vector3} with components 0, 0.
+	 */
+	public static Vector2 Zero()
+	{
+		return new Vector2(zeroVector);
+	}
+
+	/**
+	 * Returns a {@code Vector3} with components 1, 1.
+	 * 
+	 * @return A {@code Vector3} with components 1, 1.
+	 */
+	public static Vector2 One()
+	{
+		return new Vector2(unitVector);
+	}
+
+	/**
+	 * Returns a {@code Vector3} with components 1, 0.
+	 * 
+	 * @return A {@code Vector3} with components 1, 0.
+	 */
+	public static Vector2 UnitX()
+	{
+		return new Vector2(unitXVector);
+	}
+
+	/**
+	 * Returns a {@code Vector3} with components 0, 1.
+	 * 
+	 * @return A {@code Vector3} with components 0, 1.
+	 */
+	public static Vector2 UnitY()
+	{
+		return new Vector2(unitYVector);
+	}
 
 	protected String debugDisplayString()
 	{
@@ -56,8 +73,7 @@ public class Vector2 // implements IEquatable<Vector2>
 
 	// Note: Added this since it is provided by default for struct in C#
 	/**
-	 * Initializes a new instance of Vector2 with both of its component set to
-	 * 0.0f.
+	 * Initializes a new instance of Vector2 with both of its component set to 0.0f.
 	 */
 	public Vector2()
 	{
@@ -166,7 +182,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains hermite spline interpolation.
+	// / Creates a new {@link Vector2} that contains hermite spline interpolation.
 	// / </summary>
 	// / <param name="value1">The first position vector.</param>
 	// / <param name="tangent1">The first tangent vector.</param>
@@ -176,12 +192,13 @@ public class Vector2 // implements IEquatable<Vector2>
 	// / <returns>The hermite spline interpolation vector.</returns>
 	public static Vector2 hermite(Vector2 value1, Vector2 tangent1, Vector2 value2, Vector2 tangent2, float amount)
 	{
-		return new Vector2(MathHelper.hermite(value1.x, tangent1.x, value2.x, tangent2.x, amount),	//
+		return new Vector2(
+				MathHelper.hermite(value1.x, tangent1.x, value2.x, tangent2.x, amount),	//
 				MathHelper.hermite(value1.y, tangent1.y, value2.y, tangent2.y, amount));
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains hermite spline interpolation.
+	// / Creates a new {@link Vector2} that contains hermite spline interpolation.
 	// / </summary>
 	// / <param name="value1">The first position vector.</param>
 	// / <param name="tangent1">The first tangent vector.</param>
@@ -203,16 +220,16 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Returns the squared length of this <see cref="Vector2"/>.
+	// / Returns the squared length of this {@link Vector2}.
 	// / </summary>
-	// / <returns>The squared length of this <see cref="Vector2"/>.</returns>
+	// / <returns>The squared length of this {@link Vector2}.</returns>
 	public float lengthSquared()
 	{
 		return (x * x) + (y * y);
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains linear interpolation of the specified
+	// / Creates a new {@link Vector2} that contains linear interpolation of the specified
 	// vectors.
 	// / </summary>
 	// / <param name="value1">The first vector.</param>
@@ -227,7 +244,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains linear interpolation of the specified
+	// / Creates a new {@link Vector2} that contains linear interpolation of the specified
 	// vectors.
 	// / </summary>
 	// / <param name="value1">The first vector.</param>
@@ -242,23 +259,24 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a maximal values from the two vectors.
+	// / Creates a new {@link Vector2} that contains a maximal values from the two vectors.
 	// / </summary>
 	// / <param name="value1">The first vector.</param>
 	// / <param name="value2">The second vector.</param>
-	// / <returns>The <see cref="Vector2"/> with maximal values from the two vectors.</returns>
+	// / <returns>The {@link Vector2} with maximal values from the two vectors.</returns>
 	public static Vector2 max(Vector2 value1, Vector2 value2)
 	{
-		return new Vector2(value1.x > value2.x ? value1.x : value2.x,
+		return new Vector2(
+				value1.x > value2.x ? value1.x : value2.x,
 				value1.y > value2.y ? value1.y : value2.y);
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a maximal values from the two vectors.
+	// / Creates a new {@link Vector2} that contains a maximal values from the two vectors.
 	// / </summary>
 	// / <param name="value1">The first vector.</param>
 	// / <param name="value2">The second vector.</param>
-	// / <param name="result">The <see cref="Vector2"/> with maximal values from the two vectors as
+	// / <param name="result">The {@link Vector2} with maximal values from the two vectors as
 	// an output parameter.</param>
 	public static void max(final Vector2 value1, final Vector2 value2, Vector2 result)
 	{
@@ -267,23 +285,24 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a minimal values from the two vectors.
+	// / Creates a new {@link Vector2} that contains a minimal values from the two vectors.
 	// / </summary>
 	// / <param name="value1">The first vector.</param>
 	// / <param name="value2">The second vector.</param>
-	// / <returns>The <see cref="Vector2"/> with minimal values from the two vectors.</returns>
+	// / <returns>The {@link Vector2} with minimal values from the two vectors.</returns>
 	public static Vector2 min(Vector2 value1, Vector2 value2)
 	{
-		return new Vector2(value1.x < value2.x ? value1.x : value2.x,
+		return new Vector2(
+				value1.x < value2.x ? value1.x : value2.x,
 				value1.y < value2.y ? value1.y : value2.y);
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a minimal values from the two vectors.
+	// / Creates a new {@link Vector2} that contains a minimal values from the two vectors.
 	// / </summary>
 	// / <param name="value1">The first vector.</param>
 	// / <param name="value2">The second vector.</param>
-	// / <param name="result">The <see cref="Vector2"/> with minimal values from the two vectors as
+	// / <param name="result">The {@link Vector2} with minimal values from the two vectors as
 	// an output parameter.</param>
 	public static void min(final Vector2 value1, final Vector2 value2, Vector2 result)
 	{
@@ -334,9 +353,16 @@ public class Vector2 // implements IEquatable<Vector2>
 		}
 		return this.equals((Vector2) obj);
 	}
-	
-	// Helper method
-	private boolean equals(Vector2 other)
+
+	// TODO: Should I make this method private so we always use the other one ?
+	/**
+	 * Compares whether current instance is equal to specified {@link Vector2}.
+	 * 
+	 * @param other
+	 *        The {@link Vector2} to compare.
+	 * @return {@code true} if the instances are equal; {@code false} otherwise.
+	 */
+	public boolean equals(Vector2 other)
 	{
 		return this.x == other.x && this.y == other.y;
 	}
@@ -355,6 +381,19 @@ public class Vector2 // implements IEquatable<Vector2>
 		return !this.equals(obj);
 	}
 	
+	/// <summary>
+    /// Gets the hash code of this {@link Vector2}.
+    /// </summary>
+    /// <returns>Hash code of this {@link Vector2}.</returns>
+	/**
+	 * 
+	 */
+	@Override
+    public int hashCode()
+    {
+        return Float.hashCode(x) + Float.hashCode(y);
+    }
+
 	// ++++++++++ Static methods ++++++++++ //
 
 	/**
@@ -369,24 +408,165 @@ public class Vector2 // implements IEquatable<Vector2>
 		return new Vector2(-value.x, -value.y);
 	}
 
-	public static Vector2 add(Vector2 v0, Vector2 v1)
+	/**
+	 * Creates a new {@link Vector2} that contains the specified vector inversion.
+	 * @param value
+	 *        Source {@link Vector2}.
+	 * @param result The result of the vector inversion as an output parameter.
+	 */
+	public static void negate(final Vector2 value, Vector2 result)
 	{
-		return new Vector2(v0.getX() + v1.getX(), v0.getY() + v1.getY());
+		result.x = -value.x;
+		result.y = -value.y;
+	}
+    
+	/**
+	 * Adds two vectors.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2} on the left of the add sign.
+	 * @param value2
+	 *        Source {@link Vector2} on the right of the add sign.
+	 * @return
+	 */
+	public static Vector2 add(Vector2 value1, Vector2 value2)
+	{
+		Vector2 result = new Vector2(value1);
+		result.x += value2.x;
+		result.y += value2.y;
+		return result;
 	}
 
-	public static Vector2 subtract(Vector2 v0, Vector2 v1)
+	/**
+	 * Performs vector addition on {@code value1} and {@code value2},
+	 * storing the result of the addition in {@code result}.
+	 * 
+	 * @param value1
+	 *        The first vector to add.
+	 * @param value2
+	 *        The second vector to add.
+	 * @param result
+	 *        The result of the vector addition.
+	 */
+	public static void add(final Vector2 value1, final Vector2 value2, Vector2 result)
 	{
-		return new Vector2(v0.getX() - v1.getX(), v0.getY() - v1.getY());
+		result.x = value1.x + value2.x;
+		result.y = value1.y + value2.y;
+	}
+	
+	/**
+	 * Subtracts a {@link Vector2} from a {@link Vector2}.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2} on the left of the sub sign.
+	 * @param value2
+	 *        Source {@link Vector2} on the right of the sub sign.
+	 * @return Result of the vector subtraction.
+	 */
+	public static Vector2 subtract(Vector2 value1, Vector2 value2)
+	{
+		Vector2 result = new Vector2(value1);
+		result.x -= value2.x;
+		result.y -= value2.y;
+		return result;
 	}
 
+	/**
+	 * Creates a new {@link Vector2} that contains subtraction of on <see cref="Vector2"/> from a another.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2}.
+	 * @param value2
+	 *        Source {@link Vector2}.
+	 * @param result
+	 *        The result of the vector subtraction as an output parameter.
+	 */
+	public static void subtract(final Vector2 value1, final Vector2 value2, Vector2 result)
+	{
+		result.x = value1.x - value2.x;
+		result.y = value1.y - value2.y;
+	}
+
+	/**
+	 * Multiplies the components of vector by a scalar.
+	 * 
+	 * @param vector
+	 *        Source {@link Vector2} on the left of the mul sign.
+	 * @param value
+	 *        Scalar value on the right of the mul sign.
+	 * @return Result of the vector multiplication.
+	 */
 	public static Vector2 multiply(Vector2 vector, float value)
 	{
-		return new Vector2((float) (vector.getX() * value), (float) (vector.getY() * value));
+		Vector2 result = new Vector2(vector);
+		result.x *= value;
+		result.y *= value;
+		return result;
 	}
 
+	/**
+	 * Creates a new {@link Vector2} that contains a multiplication of {@link Vector2} and a scalar.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2}.
+	 * @param scaleFactor
+	 *        Scalar value.
+	 * @param result
+	 *        The result of the multiplication with a scalar as an output parameter.
+	 */
+	public static void multiply(final Vector2 value1, float scaleFactor, Vector2 result)
+	{
+		result.x = value1.x * scaleFactor;
+		result.y = value1.y * scaleFactor;
+	}
+
+	/**
+	 * Multiplies the components of vector by a scalar.
+	 * 
+	 * @param value
+	 *        Scalar value on the left of the mul sign.
+	 * @param vector
+	 *        Source {@link Vector2} on the right of the mul sign.
+	 * @return Result of the vector multiplication.
+	 */
+	public static Vector2 multiply(float value, Vector2 vector)
+	{
+		Vector2 result = new Vector2(value);
+		result.x *= value;
+		result.y *= value;
+		return result;
+	}
+
+	/**
+	 * Multiplies the components of two vectors by each other.
+	 * 
+	 * @param vector1
+	 *        Source {@link Vector2} on the left of the mul sign.
+	 * @param vector2
+	 *        Source {@link Vector2} on the right of the mul sign.
+	 * @return Result of the vector multiplication.
+	 */
 	public static Vector2 multiply(Vector2 vector1, Vector2 vector2)
 	{
-		return new Vector2((vector1.getX() * vector2.getX()), (vector1.getY() * vector2.getY()));
+		Vector2 result = new Vector2(vector1);
+		result.x += vector2.x;
+		result.y += vector2.y;
+		return result;
+	}
+
+	/**
+	 * Creates a new {@link Vector2} that contains a multiplication of two vectors.
+	 * @param value1
+	 *        Source {@link Vector2}.
+	 * @param value2
+	 *        Source {@link Vector2}.
+	 * @param result
+	 *        The result of the vector multiplication as an output parameter.
+	 */
+	public static void multiply(final Vector2 value1, final Vector2 value2, Vector2 result)
+	{
+		result.x = value1.x * value2.x;
+		result.y = value1.y * value2.y;
 	}
 
 	/**
@@ -400,12 +580,60 @@ public class Vector2 // implements IEquatable<Vector2>
 	 */
 	public static Vector2 divide(Vector2 value1, Vector2 value2)
 	{
-		return new Vector2(value1.x / value2.x, value1.y /= value2.y);
+		Vector2 result = new Vector2(value1);
+		result.x /= value2.x;
+		result.y /= value2.y;
+		return result;
 	}
 
+	/**
+	 * Divides the components of a {@link Vector2} by the components of another {@link Vector2}.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2}.
+	 * @param value2
+	 *        Divisor {@link Vector2}.
+	 * @param result
+	 *        The result of dividing the vectors as an output parameter.
+	 */
+	public static void divide(final Vector2 value1, final Vector2 value2, Vector2 result)
+	{
+		result.x = value1.x / value2.x;
+		result.y = value1.y / value2.y;
+	}
+	
+	/**
+	 * Divides the components of a {@link Vector2} by a scalar.
+	 * 
+	 * @param vector
+	 *        Source {@link Vector2} on the left of the div sign.
+	 * @param value
+	 *        Divisor scalar on the right of the div sign.
+	 * @return The result of dividing a vector by a scalar.
+	 */
 	public static Vector2 divide(Vector2 vector, float value)
 	{
-		return new Vector2((float) (vector.getX() / value), (float) (vector.getY() / value));
+		Vector2 result = new Vector2(vector);
+		result.x /= value;
+		result.y /= value;
+		return result;
+	}
+
+	/**
+	 * Divides the components of a {@link Vector2} by a scalar.
+	 * 
+	 * @param vector
+	 *        Source {@link Vector2}.
+	 * @param divider
+	 *        Divisor scalar.
+	 * @param result
+	 *        The result of dividing a vector by a scalar as an output parameter.
+	 */
+	public static void divide(final Vector2 vector, float divider, Vector2 result)
+	{
+		float factor = 1 / divider;
+        result.x = vector.x * factor;
+        result.y = vector.y * factor;
 	}
 
 	/**
@@ -428,7 +656,8 @@ public class Vector2 // implements IEquatable<Vector2>
 	 */
 	public static Vector2 barycentric(Vector2 value1, Vector2 value2, Vector2 value3, float amount1, float amount2)
 	{
-		return new Vector2(MathHelper.barycentric(value1.x, value2.x, value3.x, amount1, amount2),
+		return new Vector2(
+				MathHelper.barycentric(value1.x, value2.x, value3.x, amount1, amount2),
 				MathHelper.barycentric(value1.y, value2.y, value3.y, amount1, amount2));
 	}
 
@@ -451,8 +680,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * @param result
 	 *        A cartesian translation of barycentric coordinates as an output parameter.
 	 */
-	public static void barycentric(final Vector2 value1, final Vector2 value2, final Vector2 value3, float amount1,
-			float amount2, Vector2 result)
+	public static void barycentric(final Vector2 value1, final Vector2 value2, final Vector2 value3, float amount1, float amount2, Vector2 result)
 	{
 		result.x = MathHelper.barycentric(value1.x, value2.x, value3.x, amount1, amount2);
 		result.y = MathHelper.barycentric(value1.y, value2.y, value3.y, amount1, amount2);
@@ -476,7 +704,8 @@ public class Vector2 // implements IEquatable<Vector2>
 	 */
 	public static Vector2 catmullRom(Vector2 value1, Vector2 value2, Vector2 value3, Vector2 value4, float amount)
 	{
-		return new Vector2(MathHelper.catmullRom(value1.x, value2.x, value3.x, value4.x, amount),
+		return new Vector2(
+				MathHelper.catmullRom(value1.x, value2.x, value3.x, value4.x, amount),
 				MathHelper.catmullRom(value1.y, value2.y, value3.y, value4.y, amount));
 	}
 
@@ -497,23 +726,28 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * @param result
 	 *        The result of CatmullRom interpolation as an output parameter.
 	 */
-	public static void catmullRom(final Vector2 value1, final Vector2 value2, final Vector2 value3,
-			final Vector2 value4, float amount, Vector2 result)
+	public static void catmullRom(final Vector2 value1, final Vector2 value2, final Vector2 value3, final Vector2 value4, float amount, Vector2 result)
 	{
 		result.x = MathHelper.catmullRom(value1.x, value2.x, value3.x, value4.x, amount);
 		result.y = MathHelper.catmullRom(value1.y, value2.y, value3.y, value4.y, amount);
 	}
 
-	// / <summary>
-	// / Clamps the specified value within a range.
-	// / </summary>
-	// / <param name="value1">The value to clamp.</param>
-	// / <param name="min">The min value.</param>
-	// / <param name="max">The max value.</param>
-	// / <returns>The clamped value.</returns>
+	/**
+	 * Clamps the specified value within a range.
+	 * 
+	 * @param value1
+	 *        The value to clamp.
+	 * @param min
+	 *        The min value.
+	 * @param max
+	 *        The max value.
+	 * @return The clamped value.
+	 */
 	public static Vector2 clamp(Vector2 value1, Vector2 min, Vector2 max)
 	{
-		return new Vector2(MathHelper.clamp(value1.x, min.x, max.x), MathHelper.clamp(value1.y, min.y, max.y));
+		return new Vector2(
+				MathHelper.clamp(value1.x, min.x, max.x),
+				MathHelper.clamp(value1.y, min.y, max.y));
 	}
 
 	/**
@@ -596,6 +830,126 @@ public class Vector2 // implements IEquatable<Vector2>
 		result = (v1 * v1) + (v2 * v2);
 	}
 
+	/// <summary>
+	/// Returns a dot product of two vectors.
+	/// </summary>
+	/// <param name="value1">The first vector.</param>
+	/// <param name="value2">The second vector.</param>
+	/// <returns>The dot product of two vectors.</returns>
+//	public static float dot(Vector2 value1, Vector2 value2)
+//	{
+//		return (value1.x * value2.x) + (value1.y * value2.y);
+//	}
+
+	/// <summary>
+	/// Returns a dot product of two vectors.
+	/// </summary>
+	/// <param name="value1">The first vector.</param>
+	/// <param name="value2">The second vector.</param>
+	/// <param name="result">The dot product of two vectors as an output parameter.</param>
+//	public static void dot(final Vector2 value1, final Vector2 value2, float result)
+//	{
+//		result = (value1.x * value2.x) + (value1.y * value2.y);
+//	}
+
+	/**
+	 * Creates a new {@link Vector2} that contains a normalized values from another vector.
+	 * @param value
+	 *        Source {@link Vector2}.
+	 * @return Unit vector.
+	 */
+	public static Vector2 normalize(Vector2 value)
+	{
+		float val = 1.0f / (float)Math.sqrt((value.x * value.x) + (value.y * value.y));
+		return new Vector2(value.x * val, value.y * val);
+    }
+
+	/**
+	 * Creates a new {@link Vector2} that contains a normalized values from another vector.
+	 * 
+	 * @param value
+	 *        Source {@link Vector2}.
+	 * @param result
+	 *        Unit vector as an output parameter.
+	 */
+	public static void normalize(final Vector2 value, Vector2 result)
+	{
+		float val = 1.0f / (float)Math.sqrt((value.x * value.x) + (value.y * value.y));
+		result.x = value.x * val;
+		result.y = value.y * val;
+	}
+
+	/**
+	 * Creates a new {@link Vector2} that contains reflect vector of the given vector and normal.
+	 * 
+	 * @param vector
+	 *        Source {@link Vector2}
+	 * @param normal
+	 *        Reflection normal.
+	 * @return Reflected vector.
+	 */
+	public static Vector2 reflect(Vector2 vector, Vector2 normal)
+	{
+		Vector2 result = Vector2.Zero();
+		float val = 2.0f * ((vector.x * normal.x) + (vector.y * normal.y));
+		result.x = vector.x - (normal.x * val);
+		result.y = vector.y - (normal.y * val);
+		return result;
+	}
+
+	/**
+	 * Creates a new {@link Vector2} that contains reflect vector of the given vector and normal.
+	 * 
+	 * @param vector
+	 *        Source {@link Vector2}.
+	 * @param normal
+	 *        Reflection normal.
+	 * @param result
+	 *        Reflected vector as an output parameter.
+	 */
+	public static void reflect(final Vector2 vector, final Vector2 normal, Vector2 result)
+	{
+		float val = 2.0f * ((vector.x * normal.x) + (vector.y * normal.y));
+		result.x = vector.x - (normal.x * val);
+		result.y = vector.y - (normal.y * val);
+	}
+
+	/**
+	 * Creates a new {@link Vector2} that contains cubic interpolation of the specified vectors.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2}.
+	 * @param value2
+	 *        Source {@link Vector2}.
+	 * @param amount
+	 *        Weighting value.
+	 * @return Cubic interpolation of the specified vectors.
+	 */
+	public static Vector2 smoothStep(Vector2 value1, Vector2 value2, float amount)
+	{
+		return new Vector2(
+				MathHelper.smoothStep(value1.x, value2.x, amount),
+				MathHelper.smoothStep(value1.y, value2.y, amount));
+    }
+
+	/**
+	 * Creates a new {@link Vector2} that contains cubic interpolation of the specified vectors.
+	 * 
+	 * @param value1
+	 *        Source {@link Vector2}.
+	 * @param value2
+	 *        Source {@link Vector2}.
+	 * @param amount
+	 *        Weighting value.
+	 * @param result
+	 *        Cubic interpolation of the specified vectors as an output parameter.
+	 */
+	public static void smoothStep(final Vector2 value1, final Vector2 value2, float amount, Vector2 result)
+	{
+		result.x = MathHelper.smoothStep(value1.x, value2.x, amount);
+		result.y = MathHelper.smoothStep(value1.y, value2.y, amount);
+	}
+
 	// ++++++++++ GETTERS ++++++++++ //
 
 	/**
@@ -665,26 +1019,37 @@ public class Vector2 // implements IEquatable<Vector2>
 		return "(" + x + ", " + y + ")";
 	}
 
+	/**
+	 * Gets a {@link Point} representation for this object.
+	 * 
+	 * @return A {@link Point} representation for this object.
+	 */
+	public Point toPoint()
+	{
+		return new Point((int) x,(int) y);
+	}
+
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the
+	// / Creates a new {@link Vector2} that contains a transformation of 2d-vector by the
 	// specified <see cref="Matrix"/>.
 	// / </summary>
-	// / <param name="position">Source <see cref="Vector2"/>.</param>
+	// / <param name="position">Source {@link Vector2}.</param>
 	// / <param name="matrix">The transformation <see cref="Matrix"/>.</param>
-	// / <returns>Transformed <see cref="Vector2"/>.</returns>
+	// / <returns>Transformed {@link Vector2}.</returns>
 	public static Vector2 transform(Vector2 position, Matrix matrix)
 	{
-		return new Vector2((position.x * matrix.M11) + (position.y * matrix.M21) + matrix.M41,
+		return new Vector2(
+				(position.x * matrix.M11) + (position.y * matrix.M21) + matrix.M41,
 				(position.x * matrix.M12) + (position.y * matrix.M22) + matrix.M42);
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the
+	// / Creates a new {@link Vector2} that contains a transformation of 2d-vector by the
 	// specified <see cref="Matrix"/>.
 	// / </summary>
-	// / <param name="position">Source <see cref="Vector2"/>.</param>
+	// / <param name="position">Source {@link Vector2}.</param>
 	// / <param name="matrix">The transformation <see cref="Matrix"/>.</param>
-	// / <param name="result">Transformed <see cref="Vector2"/> as an output parameter.</param>
+	// / <param name="result">Transformed {@link Vector2} as an output parameter.</param>
 	public static void transform(final Vector2 position, final Matrix matrix, Vector2 result)
 	{
 		float x = (position.x * matrix.M11) + (position.y * matrix.M21) + matrix.M41;
@@ -694,13 +1059,13 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the
+	// / Creates a new {@link Vector2} that contains a transformation of 2d-vector by the
 	// specified <see cref="Quaternion"/>, representing the rotation.
 	// / </summary>
-	// / <param name="value">Source <see cref="Vector2"/>.</param>
+	// / <param name="value">Source {@link Vector2}.</param>
 	// / <param name="rotation">The <see cref="Quaternion"/> which contains rotation
 	// transformation.</param>
-	// / <returns>Transformed <see cref="Vector2"/>.</returns>
+	// / <returns>Transformed {@link Vector2}.</returns>
 	public static Vector2 transform(Vector2 value, Quaternion rotation)
 	{
 		transform(value, rotation, value);
@@ -708,13 +1073,13 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Creates a new <see cref="Vector2"/> that contains a transformation of 2d-vector by the
+	// / Creates a new {@link Vector2} that contains a transformation of 2d-vector by the
 	// specified <see cref="Quaternion"/>, representing the rotation.
 	// / </summary>
-	// / <param name="value">Source <see cref="Vector2"/>.</param>
+	// / <param name="value">Source {@link Vector2}.</param>
 	// / <param name="rotation">The <see cref="Quaternion"/> which contains rotation
 	// transformation.</param>
-	// / <param name="result">Transformed <see cref="Vector2"/> as an output parameter.</param>
+	// / <param name="result">Transformed {@link Vector2} as an output parameter.</param>
 	public static void transform(final Vector2 value, final Quaternion rotation, Vector2 result)
 	{
 		Vector3 rot1 = new Vector3(rotation.x + rotation.x, rotation.y + rotation.y, rotation.z + rotation.z);
@@ -733,7 +1098,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Apply transformation on vectors within array of <see cref="Vector2"/> by the specified <see
+	// / Apply transformation on vectors within array of {@link Vector2} by the specified <see
 	// cref="Matrix"/> and places the results in an another array.
 	// / </summary>
 	// / <param name="sourceArray">Source array.</param>
@@ -741,7 +1106,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	// / <param name="matrix">The transformation <see cref="Matrix"/>.</param>
 	// / <param name="destinationArray">Destination array.</param>
 	// / <param name="destinationIndex">The starting index in the destination array, where the first
-	// <see cref="Vector2"/> should be written.</param>
+	// {@link Vector2} should be written.</param>
 	// / <param name="length">The number of vectors to be transformed.</param>
 	public static void transform(
 			Vector2[] sourceArray,
@@ -771,7 +1136,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Apply transformation on vectors within array of <see cref="Vector2"/> by the specified <see
+	// / Apply transformation on vectors within array of {@link Vector2} by the specified <see
 	// cref="Quaternion"/> and places the results in an another array.
 	// / </summary>
 	// / <param name="sourceArray">Source array.</param>
@@ -780,7 +1145,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	// transformation.</param>
 	// / <param name="destinationArray">Destination array.</param>
 	// / <param name="destinationIndex">The starting index in the destination array, where the first
-	// <see cref="Vector2"/> should be written.</param>
+	// {@link Vector2} should be written.</param>
 	// / <param name="length">The number of vectors to be transformed.</param>
 	@SuppressWarnings("null")
 	public static void transform(Vector2[] sourceArray,
@@ -815,7 +1180,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Apply transformation on all vectors within array of <see cref="Vector2"/> by the specified
+	// / Apply transformation on all vectors within array of {@link Vector2} by the specified
 	// <see cref="Matrix"/> and places the results in an another array.
 	// / </summary>
 	// / <param name="sourceArray">Source array.</param>
@@ -827,7 +1192,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	// / <summary>
-	// / Apply transformation on all vectors within array of <see cref="Vector2"/> by the specified
+	// / Apply transformation on all vectors within array of {@link Vector2} by the specified
 	// <see cref="Quaternion"/> and places the results in an another array.
 	// / </summary>
 	// / <param name="sourceArray">Source array.</param>
@@ -837,5 +1202,75 @@ public class Vector2 // implements IEquatable<Vector2>
 	public static void transform(Vector2[] sourceArray, final Quaternion rotation, Vector2[] destinationArray)
 	{
 		transform(sourceArray, 0, rotation, destinationArray, 0, sourceArray.length);
+	}
+	
+	/// <summary>
+    /// Apply transformation on normals within array of <see cref="Vector2"/> by the specified <see cref="Matrix"/> and places the results in an another array.
+    /// </summary>
+    /// <param name="sourceArray">Source array.</param>
+    /// <param name="sourceIndex">The starting index of transformation in the source array.</param>
+    /// <param name="matrix">The transformation <see cref="Matrix"/>.</param>
+    /// <param name="destinationArray">Destination array.</param>
+    /// <param name="destinationIndex">The starting index in the destination array, where the first <see cref="Vector2"/> should be written.</param>
+    /// <param name="length">The number of normals to be transformed.</param>
+	public static void transformNormal
+		(
+			Vector2[] sourceArray,
+			int sourceIndex,
+			final Matrix matrix,
+			Vector2[] destinationArray,
+			int destinationIndex,
+			int length
+		)
+	{
+		if (sourceArray == null)
+			throw new NullPointerException("sourceArray");
+		if (destinationArray == null)
+			throw new NullPointerException("destinationArray");
+		if (sourceArray.length < sourceIndex + length)
+			throw new IllegalArgumentException("Source array length is lesser than sourceIndex + length");
+		if (destinationArray.length < destinationIndex + length)
+			throw new IllegalArgumentException("Destination array length is lesser than destinationIndex + length");
+
+		for (int i = 0; i < length; ++i)
+		{
+			Vector2 normal = sourceArray[sourceIndex + i];
+
+			destinationArray[destinationIndex + i] = new Vector2((normal.x * matrix.M11) + (normal.y * matrix.M21),
+                                                                 (normal.x * matrix.M12) + (normal.y * matrix.M22));
+        }
+    }
+
+	/**
+	 * Apply transformation on all normals within array of <see cref="Vector2"/> by the specified <see cref="Matrix"/> and places the results in an another array.
+	 * 
+	 * @param sourceArray
+	 *        Source array.
+	 * @param matrix
+	 *        The transformation <see cref="Matrix"/>.
+	 * @param destinationArray
+	 *        Destination array.
+	 */
+   	public static void transformNormal
+		(
+			Vector2[] sourceArray,
+			final Matrix matrix,
+			Vector2[] destinationArray
+		)
+	{
+    	if (sourceArray == null)
+    		throw new NullPointerException("sourceArray");
+    	if (destinationArray == null)
+    		throw new NullPointerException("destinationArray");
+    	if (destinationArray.length < sourceArray.length)
+    		throw new IllegalArgumentException("Destination array length is lesser than source array length");
+
+    	for (int i = 0; i < sourceArray.length; i++)
+    	{
+    		Vector2 normal = sourceArray[i];
+
+    		destinationArray[i] = new Vector2((normal.x * matrix.M11) + (normal.y * matrix.M21),
+                                              (normal.x * matrix.M12) + (normal.y * matrix.M22));
+    	}
 	}
 }

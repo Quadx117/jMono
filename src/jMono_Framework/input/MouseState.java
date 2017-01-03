@@ -20,10 +20,7 @@ public class MouseState
 	ButtonState _xButton2;
 
 	// Note: Added this since it is provided by default for struct in C#
-	public MouseState()
-	{
-		
-	}
+	public MouseState() {}
 	
 	/**
 	 * Initializes a new instance of the MouseState.

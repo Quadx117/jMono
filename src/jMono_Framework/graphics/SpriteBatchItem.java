@@ -53,8 +53,8 @@ public class SpriteBatchItem
 		vertexBR.textureCoordinate.y = texCoordBR.y;
 	}
 
-	public void set(float x, float y, float dx, float dy, float w, float h, float sin, float cos, Color color,
-			Vector2 texCoordTL, Vector2 texCoordBR)
+	public void set(float x, float y, float dx, float dy, float w, float h, float sin, float cos,
+					Color color, Vector2 texCoordTL, Vector2 texCoordBR)
 	{
 		// TODO, Should we be just assigning the Depth Value to Z?
 		// According to

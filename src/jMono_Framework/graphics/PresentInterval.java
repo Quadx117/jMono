@@ -9,7 +9,7 @@ package jMono_Framework.graphics;
 public enum PresentInterval
 {
 	/**
-	 * Equivalent to <see cref="PresentInterval.One"/>.
+	 * Equivalent to {@code PresentInterval.One}.
 	 */
 	Default,
 

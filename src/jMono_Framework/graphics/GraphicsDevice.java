@@ -26,6 +26,10 @@ import jMono_Framework.math.MathHelper;
 import jMono_Framework.math.Vector2;
 import jMono_Framework.math.Vector4;
 
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,10 +39,6 @@ import java.util.Map;
 
 public class GraphicsDevice implements AutoCloseable
 {
-	// TODO: I added this for the software renderer, see where this should go.
-	/** The array of pixels to be painted on the screen */
-	public int[] pixels;
-
 	private Viewport _viewport;
 	private GraphicsProfile _graphicsProfile;
 
@@ -82,39 +82,19 @@ public class GraphicsDevice implements AutoCloseable
 	private int _currentRenderTargetCount;
 
 	private GraphicsCapabilities graphicsCapabilities;
-
-	public GraphicsCapabilities getGraphicsCapabilities()
-	{
-		return graphicsCapabilities;
-	}
+	public GraphicsCapabilities getGraphicsCapabilities() { return graphicsCapabilities; }
 
 	private TextureCollection vertexTextures;
-
-	public TextureCollection getVertexTextures()
-	{
-		return vertexTextures;
-	}
+	public TextureCollection getVertexTextures() { return vertexTextures; }
 
 	private SamplerStateCollection vertexSamplerStates;
-
-	public SamplerStateCollection getVertexSamplerStates()
-	{
-		return samplerStates;
-	}
+	public SamplerStateCollection getVertexSamplerStates() { return samplerStates; }
 
 	private TextureCollection textures;
-
-	public TextureCollection getTextures()
-	{
-		return vertexTextures;
-	}
+	public TextureCollection getTextures() { return textures; }
 
 	private SamplerStateCollection samplerStates;
-
-	public SamplerStateCollection getSamplerStates()
-	{
-		return samplerStates;
-	}
+	public SamplerStateCollection getSamplerStates() { return samplerStates; }
 
 	// On Intel Integrated graphics, there is a fast hw unit for doing
 	// clears to colors where all components are either 0 or 255.
@@ -131,7 +111,6 @@ public class GraphicsDevice implements AutoCloseable
 	 */
 	private Shader _vertexShader;
 	private boolean _vertexShaderDirty;
-
 	private boolean isVertexShaderDirty()
 	{
 		return _vertexShaderDirty;
@@ -142,14 +121,13 @@ public class GraphicsDevice implements AutoCloseable
 	 */
 	private Shader _pixelShader;
 	private boolean _pixelShaderDirty;
-
 	private boolean isPixelShaderDirty()
 	{
 		return _pixelShaderDirty;
 	}
 
-	private ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
-	private ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
+	private final ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
+	private final ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
 
 	/**
 	 * The cache of effects from unique byte streams.
@@ -157,7 +135,7 @@ public class GraphicsDevice implements AutoCloseable
 	public Map<Integer, Effect> effectCache;
 
 	// Resources may be added to and removed from the list from many threads.
-	private Object _resourcesLock = new Object();
+	private final Object _resourcesLock = new Object();
 
 	// Use WeakReference for the global resources list as we do not know when a resource
 	// may be disposed and collected. We do not want to prevent a resource from being
@@ -181,9 +159,8 @@ public class GraphicsDevice implements AutoCloseable
 				disposing != null;
 	}
 
-	// TODO: This is initialized in other GraphicsDevice files
-	protected int maxTextureSlots = 16;
-	protected int maxVertexTextureSlots = 16;
+	protected int maxTextureSlots;
+	protected int maxVertexTextureSlots;
 
 	public boolean isDisposed()
 	{
@@ -203,11 +180,7 @@ public class GraphicsDevice implements AutoCloseable
 	}
 
 	private GraphicsAdapter adapter;
-
-	public GraphicsAdapter getAdapter()
-	{
-		return adapter;
-	}
+	public GraphicsAdapter getAdapter() { return adapter; }
 
 	protected GraphicsMetrics _graphicsMetrics = new GraphicsMetrics();
 
@@ -251,11 +224,9 @@ public class GraphicsDevice implements AutoCloseable
 	 * @throws NullPointerException
 	 *         If {@code presentationParameters} is {@code null}.
 	 */
-	public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile,
-			PresentationParameters presentationParameters)
+	public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters)
 	{
 		this.adapter = adapter;
-
 		if (presentationParameters == null)
 			throw new NullPointerException("presentationParameters");
 		this.presentationParameters = presentationParameters;
@@ -263,21 +234,15 @@ public class GraphicsDevice implements AutoCloseable
 		this.graphicsCapabilities = new GraphicsCapabilities(this);
 		setGraphicsProfile(graphicsProfile);
 		initialize();
-		
-		// TODO: I added this for the software renderer. Check where that would go
-		pixels = new int[this.getViewport().getWidth() * this.getViewport().getHeight()];
-		// end TODO
 	}
 
 	private void setup()
 	{
 		// Initialize the main viewport
-		// TODO: Need to change this to #if WINDOWS
 		_viewport = new Viewport(0, 0, getDisplayMode().getWidth(), getDisplayMode().getHeight());
 		_viewport.setMaxDepth(1.0f);
 
-		// TODO: See other GraphicsDevice files
-		// PlatformSetup();
+		platformSetup();
 
 		vertexTextures = new TextureCollection(this, maxVertexTextureSlots, true);
 		vertexSamplerStates = new SamplerStateCollection(this, maxVertexTextureSlots, true);
@@ -315,8 +280,7 @@ public class GraphicsDevice implements AutoCloseable
 
 	protected void initialize()
 	{
-		// TODO: See other GraphicsDevice files
-		// PlatformInitialize();
+		platformInitialize();
 
 		// Force set the default render states.
 		_blendStateDirty = _depthStencilStateDirty = _rasterizerStateDirty = true;
@@ -364,8 +328,7 @@ public class GraphicsDevice implements AutoCloseable
 			return;
 
 		if (!value.getDepthClipEnable() && !getGraphicsCapabilities().supportsDepthClamp())
-			throw new UnsupportedOperationException(
-					"Cannot set RasterizerState.DepthClipEnable to false on this graphics device");
+			throw new UnsupportedOperationException("Cannot set RasterizerState.DepthClipEnable to false on this graphics device");
 
 		_rasterizerState = value;
 
@@ -386,10 +349,7 @@ public class GraphicsDevice implements AutoCloseable
 		_rasterizerStateDirty = true;
 	}
 
-	public BlendState getBlendState()
-	{
-		return _blendState;
-	}
+	public BlendState getBlendState() { return _blendState; }
 
 	public void setBlendState(BlendState value)
 	{
@@ -423,10 +383,7 @@ public class GraphicsDevice implements AutoCloseable
 		_blendStateDirty = true;
 	}
 
-	public DepthStencilState getDepthStencilState()
-	{
-		return _depthStencilState;
-	}
+	public DepthStencilState getDepthStencilState() { return _depthStencilState; }
 
 	public void setDepthStencilState(DepthStencilState value)
 	{
@@ -458,32 +415,30 @@ public class GraphicsDevice implements AutoCloseable
 
 	protected void applyState(boolean applyShaders)
 	{
-		// TODO: see other GraphicsDevice files
-		// PlatformBeginApplyState();
+		platformBeginApplyState();
 
 		if (_blendStateDirty)
 		{
 			// TODO: see other GraphicsDevice files
-			// _actualBlendState.PlatformApplyState(this);
+//			_actualBlendState.PlatformApplyState(this);
 			_blendStateDirty = false;
 		}
 
 		if (_depthStencilStateDirty)
 		{
 			// TODO: see other GraphicsDevice files
-			// _actualDepthStencilState.PlatformApplyState(this);
+//			_actualDepthStencilState.PlatformApplyState(this);
 			_depthStencilStateDirty = false;
 		}
 
 		if (_rasterizerStateDirty)
 		{
 			// TODO: see other GraphicsDevice files
-			// _actualRasterizerState.PlatformApplyState(this);
+//			_actualRasterizerState.PlatformApplyState(this);
 			_rasterizerStateDirty = false;
 		}
 
-		// TODO: see other GraphicsDevice files
-		// PlatformApplyState(applyShaders);
+		platformApplyState(applyShaders);
 	}
 
 	public void clear(Color color)
@@ -491,25 +446,17 @@ public class GraphicsDevice implements AutoCloseable
 		int options = ClearOptions.Target.getValue() |		//
 					  ClearOptions.DepthBuffer.getValue() |	//
 					  ClearOptions.Stencil.getValue();
-		// TODO: See other GraphicsDevice files
-		// PlatformClear(options, color.toVector4(), _viewport.maxDepth, 0);
-		// TODO: Test code not part of the original code.
-		for (int i = 0; i < pixels.length; ++i)
-		{
-			pixels[i] = color.getPackedValue();
-		}
+		platformClear(options, color.toVector4(), _viewport.getMaxDepth(), 0);
 	}
 
 	public void clear(ClearOptions options, Color color, float depth, int stencil)
 	{
-		// TODO: See other GraphicsDevice files
-		// PlatformClear(options, color.toVector4(), depth, stencil);
+		platformClear(options.getValue(), color.toVector4(), depth, stencil);
 	}
 
 	public void clear(ClearOptions options, Vector4 color, float depth, int stencil)
 	{
-		// TODO: See other GraphicsDevice files
-		// PlatformClear(options, color, depth, stencil);
+		platformClear(options.getValue(), color, depth, stencil);
 	}
 
 	@Override
@@ -525,13 +472,12 @@ public class GraphicsDevice implements AutoCloseable
 		{
 			if (disposing)
 			{
-				// Dispose of all remaining graphics resources before disposing of the graphics
-				// device
+				// Dispose of all remaining graphics resources before disposing of the graphics device
 				synchronized (_resourcesLock)
 				{
 					for (WeakReference<?> resource : _resources)
 					{
-						AutoCloseable target = (AutoCloseable) resource.get();
+						AutoCloseable target = As.as(resource.get(), AutoCloseable.class);
 						if (target != null)
 							try
 							{
@@ -548,7 +494,7 @@ public class GraphicsDevice implements AutoCloseable
 				// Clear the effect cache.
 				effectCache.clear();
 
-				// platformDispose();
+				platformDispose();
 			}
 
 			_isDisposed = true;
@@ -574,8 +520,7 @@ public class GraphicsDevice implements AutoCloseable
 	public void present()
 	{
 		_graphicsMetrics = new GraphicsMetrics();
-		// TODO: See other GraphicsDevice files
-		// PlatformPresent();
+		platformPresent();
 	}
 
 	// NOTE: Already commented out in the original code
@@ -583,13 +528,13 @@ public class GraphicsDevice implements AutoCloseable
 	 * public void Present(Rectangle? sourceRectangle, Rectangle? destinationRectangle, IntPtr
 	 * overrideWindowHandle)
 	 * {
-	 * throw new NotImplementedException();
+	 * throw new UnsupportedOperationException();
 	 * }
 	 * 
 	 * public void Reset()
 	 * {
 	 * // Manually resetting the device is not currently supported.
-	 * throw new NotImplementedException();
+	 * throw new UnsupportedOperationException();
 	 * }
 	 */
 
@@ -602,7 +547,6 @@ public class GraphicsDevice implements AutoCloseable
 		// createSizeDependentResources();
 		applyRenderTargets(null);
 	}
-
 // #endif
 
 	// NOTE: Already commented out in the original code
@@ -610,7 +554,7 @@ public class GraphicsDevice implements AutoCloseable
 	 * public void Reset(PresentationParameters presentationParameters, GraphicsAdapter
 	 * graphicsAdapter)
 	 * {
-	 * throw new NotImplementedException();
+	 * throw new UnsupportedOperationException();
 	 * }
 	 */
 
@@ -627,7 +571,7 @@ public class GraphicsDevice implements AutoCloseable
 		{
 			for (WeakReference<?> resource : _resources)
 			{
-				GraphicsResource target = (GraphicsResource) resource.get();
+				GraphicsResource target = As.as(resource.get(), GraphicsResource.class);
 				if (target != null)
 					target.graphicsDeviceResetting();
 			}
@@ -637,11 +581,10 @@ public class GraphicsDevice implements AutoCloseable
 		}
 	}
 
-	// / <summary>
-	// / Trigger the DeviceReset event to allow games to be notified of a device reset.
-	// / Currently protected to allow the various platforms to send the event at the appropriate
-	// time.
-	// / </summary>
+	/**
+	 * Trigger the DeviceReset event to allow games to be notified of a device reset.
+	 * Currently protected to allow the various platforms to send the event at the appropriate time.
+	 */
 	protected void onDeviceReset()
 	{
 		if (deviceReset != null)
@@ -659,11 +602,7 @@ public class GraphicsDevice implements AutoCloseable
 	}
 
 	private PresentationParameters presentationParameters;
-
-	public PresentationParameters getPresentationParameters()
-	{
-		return presentationParameters;
-	}
+	public PresentationParameters getPresentationParameters() { return presentationParameters; }
 
 	public Viewport getViewport()
 	{
@@ -673,8 +612,7 @@ public class GraphicsDevice implements AutoCloseable
 	public void setViewport(Viewport value)
 	{
 		_viewport = value;
-		// TODO: See other GraphicsDevice files
-		// PlatformSetViewport(value);
+		platformSetViewport(value);
 	}
 
 	public GraphicsProfile getGraphicsProfile()
@@ -688,8 +626,7 @@ public class GraphicsDevice implements AutoCloseable
 		// TODO: [DirectX] Recreate the Device using the new
 		// feature level each time the Profile changes.
 		if (value.ordinal() > getHighestSupportedGraphicsProfile(this).ordinal())
-			throw new UnsupportedOperationException(String.format(
-					"Could not find a graphics device that supports the %s profile", value.toString()));
+			throw new UnsupportedOperationException(String.format("Could not find a graphics device that supports the %s profile", value.toString()));
 		_graphicsProfile = value;
 		graphicsCapabilities.initialize(this);
 	}
@@ -701,7 +638,7 @@ public class GraphicsDevice implements AutoCloseable
 
 	public void setScissorRectangle(Rectangle value)
 	{
-		if (_scissorRectangle == value)
+		if (_scissorRectangle.equals(value))
 			return;
 
 		_scissorRectangle = new Rectangle(value);
@@ -747,7 +684,7 @@ public class GraphicsDevice implements AutoCloseable
 			for (int i = 0; i < _currentRenderTargetCount; ++i)
 			{
 				if (_currentRenderTargetBindings[i].getRenderTarget() != renderTargets[i].getRenderTarget() ||
-						_currentRenderTargetBindings[i].getArraySlice() != renderTargets[i].getArraySlice())
+					_currentRenderTargetBindings[i].getArraySlice() != renderTargets[i].getArraySlice())
 				{
 					isEqual = false;
 					break;
@@ -765,10 +702,9 @@ public class GraphicsDevice implements AutoCloseable
 	{
 		boolean clearTarget = false;
 
-		// platformResolveRenderTargets();
+		platformResolveRenderTargets();
 
 		// Clear the current bindings.
-		// Array.Clear(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.Length);
 		Arrays.fill(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.length, null);
 
 		int renderTargetWidth;
@@ -777,8 +713,7 @@ public class GraphicsDevice implements AutoCloseable
 		{
 			_currentRenderTargetCount = 0;
 
-			// TODO: See other GraphicsDevice files
-			// PlatformApplyDefaultRenderTarget();
+			platformApplyDefaultRenderTarget();
 			clearTarget = presentationParameters.renderTargetUsage == RenderTargetUsage.DiscardContents;
 
 			renderTargetWidth = presentationParameters.getBackBufferWidth();
@@ -787,16 +722,13 @@ public class GraphicsDevice implements AutoCloseable
 		else
 		{
 			// Copy the new bindings.
-			// Array.Copy(renderTargets, _currentRenderTargetBindings, renderTargets.Length);
 			_currentRenderTargetBindings = Arrays.copyOf(renderTargets, renderTargets.length);
-
 			_currentRenderTargetCount = renderTargets.length;
 
-			// RenderTargets renderTarget = platformApplyRenderTargets();
-			IRenderTarget renderTarget = (IRenderTarget) _currentRenderTargetBindings[0].getRenderTarget();
+			IRenderTarget renderTarget = platformApplyRenderTargets();
 
 			// We clear the render target if asked.
-			clearTarget = renderTarget.getRenderTargetUsage() == RenderTargetUsage.DiscardContents;
+			clearTarget = renderTarget.getRenderTargetUsage().equals(RenderTargetUsage.DiscardContents);
 
 			renderTargetWidth = renderTarget.getWidth();
 			renderTargetHeight = renderTarget.getHeight();
@@ -847,20 +779,10 @@ public class GraphicsDevice implements AutoCloseable
 		_indexBufferDirty = true;
 	}
 
-	public IndexBuffer getIndices()
-	{
-		return _indexBuffer;
-	}
+	public IndexBuffer getIndices() { return _indexBuffer; }
+	public void setIndices(IndexBuffer value) { setIndexBuffer(value); }
 
-	public void setIndices(IndexBuffer value)
-	{
-		setIndexBuffer(value);
-	}
-
-	protected Shader getVertexShader()
-	{
-		return _vertexShader;
-	}
+	protected Shader getVertexShader() { return _vertexShader; }
 
 	public void setVertexShader(Shader value)
 	{
@@ -871,10 +793,7 @@ public class GraphicsDevice implements AutoCloseable
 		_vertexShaderDirty = true;
 	}
 
-	protected Shader getPixelShader()
-	{
-		return _pixelShader;
-	}
+	protected Shader getPixelShader() { return _pixelShader; }
 
 	public void setPixelShader(Shader value)
 	{
@@ -887,7 +806,7 @@ public class GraphicsDevice implements AutoCloseable
 
 	public void setConstantBuffer(ShaderStage stage, int slot, ConstantBuffer buffer)
 	{
-		if (stage == ShaderStage.Vertex)
+		if (stage.equals(ShaderStage.Vertex))
 			_vertexConstantBuffers.setConstantBufferCollection(slot, buffer);
 		else
 			_pixelConstantBuffers.setConstantBufferCollection(slot, buffer);
@@ -939,23 +858,17 @@ public class GraphicsDevice implements AutoCloseable
 			throw new IllegalArgumentException("primitiveCount is out of range");
 
 		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._primitiveCount += (long) primitiveCount;
 
-		// TODO: See other GraphicsDevice files
-		// PlatformDrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
+		platformDrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
 	}
 
-	// where T : struct, IVertexType
-	public <T extends IVertexType> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData,
-			int vertexOffset, int primitiveCount)
+	public <T extends IVertexType> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount)
 	{
-		drawUserPrimitives(primitiveType, vertexData, vertexOffset, primitiveCount,
-				VertexDeclarationCache.getVertexDeclaration());
+		drawUserPrimitives(primitiveType, vertexData, vertexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
 	}
 
-	// where T : struct
-	public <T> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset,
-			int primitiveCount, VertexDeclaration vertexDeclaration)
+	public <T> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
 	{
 		if (vertexData == null)
 			throw new NullPointerException("vertexData is null");
@@ -978,11 +891,9 @@ public class GraphicsDevice implements AutoCloseable
 			throw new NullPointerException("vertexDeclaration is null");
 
 		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._primitiveCount += (long) primitiveCount;
 
-		// TODO: See other GraphicsDevice files
-		// PlatformDrawUserPrimitives(primitiveType, vertexData, vertexOffset, vertexDeclaration,
-		// vertexCount);
+		platformDrawUserPrimitives(primitiveType, vertexData, vertexOffset, vertexDeclaration, vertexCount);
 	}
 
 	public void drawPrimitives(PrimitiveType primitiveType, int vertexStart, int primitiveCount)
@@ -999,26 +910,19 @@ public class GraphicsDevice implements AutoCloseable
 		int vertexCount = getElementCountArray(primitiveType, primitiveCount);
 
 		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._primitiveCount += (long) primitiveCount;
 
-		// TODO: See other GraphicsDevice files
-		// PlatformDrawPrimitives(primitiveType, vertexStart, vertexCount);
+		platformDrawPrimitives(primitiveType, vertexStart, vertexCount);
 	}
 
-	// where T : struct, IVertexType
-	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData,
-			int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount)
+	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount)
 	{
-		drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset,
-				primitiveCount, VertexDeclarationCache.getVertexDeclaration());
+		drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
 	}
 
-	// where T : struct
-	public <T> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset,
-			int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+	public <T> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
 	{
-		// These parameter checks are a duplicate of the checks in the int[] overload of
-		// DrawUserIndexedPrimitives.
+		// These parameter checks are a duplicate of the checks in the int[] overload of DrawUserIndexedPrimitives.
 		// Inlined here for efficiency.
 
 		if (vertexData == null || vertexData.length == 0)
@@ -1049,30 +953,19 @@ public class GraphicsDevice implements AutoCloseable
 			throw new NullPointerException("vertexDeclaration is null");
 
 		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._primitiveCount += (long) primitiveCount;
 
-		// TODO: See other GraphicsDevice files
-		// PlatformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices,
-		// indexData, indexOffset, primitiveCount, vertexDeclaration);
-		platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset,
-				primitiveCount, vertexDeclaration);
+		platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, vertexDeclaration);
 	}
 
-	// where T : struct, IVertexType
-	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData,
-			int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount)
+	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount)
 	{
-		drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset,
-				primitiveCount, VertexDeclarationCache.getVertexDeclaration());
+		drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
 	}
 
-	// where T : struct, IVertexType
-	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData,
-			int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount,
-			VertexDeclaration vertexDeclaration)
+	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
 	{
-		// These parameter checks are a duplicate of the checks in the short[] overload of
-		// DrawUserIndexedPrimitives.
+		// These parameter checks are a duplicate of the checks in the short[] overload of DrawUserIndexedPrimitives.
 		// Inlined here for efficiency.
 
 		if (vertexData == null || vertexData.length == 0)
@@ -1103,11 +996,9 @@ public class GraphicsDevice implements AutoCloseable
 			throw new NullPointerException("vertexDeclaration is null");
 
 		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += primitiveCount;
+		_graphicsMetrics._primitiveCount += (long) primitiveCount;
 
-		// TODO: See other GraphicsDevice files
-		// PlatformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices,
-		// indexData, indexOffset, primitiveCount, vertexDeclaration);
+		platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, vertexDeclaration);
 	}
 
 	private static int getElementCountArray(PrimitiveType primitiveType, int primitiveCount)
@@ -1130,20 +1021,140 @@ public class GraphicsDevice implements AutoCloseable
 
 	public static GraphicsProfile getHighestSupportedGraphicsProfile(GraphicsDevice graphicsDevice)
 	{
-		// return platformGetHighestSupportedGraphicsProfile(graphicsDevice);
-		// TODO: I've put this until OpenGL is implemented. This enables us to run with the software
-		// renderer.
-		return GraphicsProfile.Reach;
+		return platformGetHighestSupportedGraphicsProfile(graphicsDevice);
 	}
 
 //	###################################################################################################################
 // 	#                                             SOFTWARE RENDERER                                                   #
 //	###################################################################################################################
 
-	// where T : struct
-	private <T> void platformDrawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset,
-			int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+	// TODO: I added this for the software renderer, see where this should go.
+	/** The array of pixels to be painted on the screen */
+//	public int[] pixels;
+	
+	/** The object used to draw the image in the frame */
+	private BufferedImage image;
+	/** The BufferStrategy used in this game */
+	private BufferStrategy bufferStrategy;
+	/** The graphic context used to draw onto the component */
+	private Graphics g;
+	/** The array of pixels to be painted on the screen */
+	private int[] pixels;
+	
+	private void platformSetup()
 	{
+		maxTextureSlots = 16;
+		maxVertexTextureSlots = 16;
+	}
+
+	private void platformInitialize()
+	{
+		image = new BufferedImage(getPresentationParameters().getBackBufferWidth(), getPresentationParameters().getBackBufferHeight(), BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+		// Initialize the buffer strategy
+		getPresentationParameters().getDeviceWindowHandle().getGame().createBufferStrategy(3);
+		bufferStrategy = getPresentationParameters().getDeviceWindowHandle().getGame().getBufferStrategy();
+		g = bufferStrategy.getDrawGraphics();
+	}
+
+	private void platformClear(int clearOptions, Vector4 color, float depth, int stencil)
+	{
+		for (int i = 0; i < pixels.length; ++i)
+		{
+			pixels[i] = new Color(color).getPackedValue(); // TODO: check for speed (use the Vector4 and shifts instead ?)
+		}
+	}
+
+	private void platformDispose()
+	{
+		
+	}
+
+	private void platformPresent()
+	{
+//		bufferStrategy = getBufferStrategy();
+//		if (bufferStrategy == null)
+//		{
+//			createBufferStrategy(3);
+//			return;
+//		}
+
+//		for (int i = 0; i < pixels.length; ++i)
+//		{
+//			screenPixels[i] = pixels[i];
+//		}
+
+		g = bufferStrategy.getDrawGraphics();
+		g.drawImage(image, 0, 0, getPresentationParameters().getBackBufferWidth(), getPresentationParameters().getBackBufferHeight(), null);
+		g.dispose();
+		bufferStrategy.show();
+	}
+
+	private void platformSetViewport(final Viewport value)
+	{
+
+    }
+
+	private void platformApplyDefaultRenderTarget()
+	{
+
+	}
+
+	private void platformResolveRenderTargets()
+	{
+		// Resolving MSAA render targets should be done here.
+	}
+
+	private IRenderTarget platformApplyRenderTargets()
+    {
+        for (int i = 0; i < _currentRenderTargetCount; ++i)
+        {
+        	RenderTargetBinding binding = _currentRenderTargetBindings[i];
+        	IRenderTarget target = (IRenderTarget)binding.getRenderTarget();
+//            _currentRenderTargets[i] = target.getRenderTargetView(binding.getArraySlice());
+        }
+
+        // Use the depth from the first target.
+        IRenderTarget renderTarget = (IRenderTarget)_currentRenderTargetBindings[0].getRenderTarget();
+//        _currentDepthStencilView = renderTarget.GetDepthStencilView();
+
+        // Set the targets.
+//        lock (_d3dContext)
+//            _d3dContext.OutputMerger.SetTargets(_currentDepthStencilView, _currentRenderTargets);
+
+        return renderTarget;
+    }
+
+	private void platformBeginApplyState()
+	{
+//		Debug.Assert(_d3dContext != null, "The d3d context is null!");
+	}
+
+	private void platformApplyState(boolean applyShaders)
+	{
+
+	}
+
+	private void platformDrawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	private <T> void platformDrawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, VertexDeclaration vertexDeclaration, int vertexCount)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	private void platformDrawPrimitives(PrimitiveType primitiveType, int vertexStart, int vertexCount)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	private <T> void platformDrawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+	{
+		applyState(true);
+		
 		// Note: For now we only support drawing quads from a triangle PrimitiveType
 		if (primitiveType != PrimitiveType.TriangleList)
 		{
@@ -1185,10 +1196,20 @@ public class GraphicsDevice implements AutoCloseable
 										data[i + 2].position.y - data[i + 0].position.y);
 			
 //			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.pixels, tint);
-			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.pixels, tint);
+			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
 			i += 4;
 		}
 //TimedBlock.endTimedBlock("Draw");
+	}
+
+	private <T> void platformDrawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	private static GraphicsProfile platformGetHighestSupportedGraphicsProfile(GraphicsDevice graphicsDevice)
+	{
+		return GraphicsProfile.Reach;
 	}
 
 	// NOTE: XNA uses premultiplied alpha by default and the color values in

@@ -155,10 +155,12 @@ public class KeyboardState
 				internalSetKey(k);
 	}
 
-	// / <summary>
-	// / Initializes a new instance of the <see cref="KeyboardState"/> class.
-	// / </summary>
-	// / <param name="keys">List of keys to be flagged as pressed on initialization.</param>
+	/**
+	 * Initializes a new instance of the {@code KeyboardState} class.
+	 * 
+	 * @param keys
+	 *        List of keys to be flagged as pressed on initialization.
+	 */
 	public KeyboardState(Keys... keys)
 	{
 		keys0 = 0;
@@ -256,10 +258,11 @@ public class KeyboardState
 		return keys;
 	}
 
-	// / <summary>
-	// / Gets the hash code for <see cref="KeyboardState"/> instance.
-	// / </summary>
-	// / <returns>Hash code of the object.</returns>
+	/**
+	 * Returns the hash code for {@code KeyboardState} instance.
+	 * 
+	 * @return The hash code of this object.
+	 */
 	@Override
 	public int hashCode()
 	{

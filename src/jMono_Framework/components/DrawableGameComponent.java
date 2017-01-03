@@ -6,8 +6,6 @@ import jMono_Framework.dotNet.events.EventArgs;
 import jMono_Framework.graphics.GraphicsDevice;
 import jMono_Framework.time.GameTime;
 
-import java.awt.Graphics;
-
 public class DrawableGameComponent extends GameComponent implements IDrawable
 {
 	private boolean isInitialized;

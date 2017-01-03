@@ -9,31 +9,31 @@ package jMono_Framework.graphics;
 public enum SpriteSortMode
 {
 	/**
-	 * All sprites are drawn when <see cref="SpriteBatch.End"/> invokes, in order of draw call
-	 * sequence. Depth is ignored.
+	 * All sprites are drawn when {@link SpriteBatch#end()} invokes, in order of draw call sequence.
+	 * Depth is ignored.
 	 */
 	Deferred,
 
 	/**
-	 * Each sprite is drawn at individual draw call, instead of <see cref="SpriteBatch.End"/>.
+	 * Each sprite is drawn at individual draw call, instead of {@link SpriteBatch#end()}.
 	 * Depth is ignored.
 	 */
 	Immediate,
 
 	/**
-	 * Same as <see cref="SpriteSortMode.Deferred"/>, except sprites are sorted by texture prior to
-	 * drawing. Depth is ignored.
+	 * Same as {@link SpriteSortMode#Deferred} except sprites are sorted by texture prior to drawing.
+	 * Depth is ignored.
 	 */
 	Texture,
 
 	/**
-	 * Same as <see cref="SpriteSortMode.Deferred"/>, except sprites are sorted by depth in
+	 * Same as {@link SpriteSortMode#Deferred}, except sprites are sorted by depth in
 	 * back-to-front order prior to drawing.
 	 */
 	BackToFront,
 
 	/**
-	 * Same as <see cref="SpriteSortMode.Deferred"/>, except sprites are sorted by depth in
+	 * Same as {@link SpriteSortMode#Deferred}, except sprites are sorted by depth in
 	 * front-to-back order prior to drawing.
 	 */
 	FrontToBack,

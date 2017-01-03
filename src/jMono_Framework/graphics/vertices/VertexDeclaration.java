@@ -18,12 +18,12 @@ public class VertexDeclaration extends GraphicsResource {
 		return _hashKey;
 	}
 
-	// TODO: Do I need an Ellipsis (...) here
+	// TODO: Do I need an Ellipsis (...) here (c# params keyword)
 	public VertexDeclaration(VertexElement[] elements) {
 		this(getVertexStride(elements), elements);
 	}
 
-	// TODO: Do I need an Ellipsis (...) here
+	// TODO: Do I need an Ellipsis (...) here (c# params keyword)
 	public VertexDeclaration(int vertexStride, VertexElement[] elements) {
 		if ((elements == null) || (elements.length == 0))
 			throw new NullPointerException("elements: Elements cannot be empty");

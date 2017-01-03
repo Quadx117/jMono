@@ -65,9 +65,8 @@ public abstract class ContentTypeReader<T>
 	// if (files.Any(s => s == file))
 	// return fileName;
 
-	// FirstOrDefault returns null as the default if the file is not found. This crashed
-	// Path.Combine so check
-	// for it first.
+	// FirstOrDefault returns null as the default if the file is not found.
+	// This crashed Path.Combine so check for it first.
 	// String file2 = files.FirstOrDefault(s => extensions.Any(ext => s.ToLowerInvariant() ==
 	// (file.ToLowerInvariant() + ext)));
 	// if (String.IsNullOrEmpty(file2))

@@ -10,6 +10,7 @@ import jMono_Framework.components.IGameComponent;
 import jMono_Framework.components.IUpdateable;
 import jMono_Framework.content.ContentManager;
 import jMono_Framework.content.ContentTypeReaderManager;
+import jMono_Framework.dotNet.As;
 import jMono_Framework.dotNet.events.Event;
 import jMono_Framework.dotNet.events.EventArgs;
 import jMono_Framework.dotNet.events.EventHandler;
@@ -23,10 +24,6 @@ import jMono_Framework.time.Stopwatch;
 import jMono_Framework.time.TimeSpan;
 
 import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.util.Comparator;
 import java.util.function.BiConsumer;
 
@@ -43,14 +40,13 @@ import java.util.function.BiConsumer;
  */
 public abstract class Game extends Canvas implements Runnable, AutoCloseable
 {
-
 	/** Default serial version UID */
 	private static final long serialVersionUID = 1L;
 
 	private GameComponentCollection _components;
 	private GameServiceContainer _services;
 	private ContentManager _content;
-	protected GamePlatform platform; // not useful since java is crossplatform ?
+	protected GamePlatform platform;
 
 	private SortingFilteringCollection<IDrawable> _drawables =
 			new SortingFilteringCollection<IDrawable>(
@@ -148,7 +144,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	 */
 	private TimeSpan _targetElapsedTime = TimeSpan.fromTicks(166667); // 60fps
 
-	// TODO: I think this is not used anywhere (plus getter and setter)
 	/**
 	 * The time to sleep when the game is inactive.
 	 */
@@ -180,8 +175,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	{
 		_instance = this;
 
-		// TODO: This doesn't seem to be used anywhere
-		// LaunchParameters = new LaunchParameters();
+		// LaunchParameters = new LaunchParameters(); // TODO: This doesn't seem to be used anywhere
 		_services = new GameServiceContainer();
 		_components = new GameComponentCollection();
 		_content = new ContentManager(_services);
@@ -196,12 +190,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 // #endif
 
 		// TODO: This is all added by me.
-		_accumulatedElapsedTime = new TimeSpan(0);
-
-		image = new BufferedImage(GraphicsDeviceManager.DefaultBackBufferWidth,
-				GraphicsDeviceManager.DefaultBackBufferHeight, BufferedImage.TYPE_INT_RGB);
-
-		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
 		// TODO: Check if I want to keep all of this here.
 		// Should probably go in JavaGameWindow
@@ -245,7 +233,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 				// Dispose loaded game components
 				for (int i = 0; i < _components.size(); ++i)
 				{
-					AutoCloseable disposable = (AutoCloseable) _components.get(i);
+					AutoCloseable disposable = As.as(_components.get(i), AutoCloseable.class);
 					if (disposable != null)
 						try
 						{
@@ -284,7 +272,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 				ContentTypeReaderManager.clearTypeCreators();
 
-				 SoundEffect.platformShutdown();
+				SoundEffect.platformShutdown();
 			}
 // #if ANDROID
 			// Activity = null;
@@ -303,15 +291,14 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		}
 	}
 
+// #if ANDROID
+//	public static AndroidGameActivity Activity { get; internal set; }
+// #endif
+
 	private static Game _instance = null;
+	public static Game getInstance() { return Game._instance; }
 
-	public static Game getInstance()
-	{
-		return Game._instance;
-	}
-
-	// TODO: Doesn't seem to be used anywhere.
-	// public LaunchParameters LaunchParameters { get; private set; }
+	// public LaunchParameters LaunchParameters { get; private set; } // TODO: Doesn't seem to be used anywhere.
 
 	public GameComponentCollection getComponents()
 	{
@@ -323,10 +310,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	 * 
 	 * @return The time to sleep when the game is inactive.
 	 */
-	public TimeSpan getInactiveSleepTime()
-	{
-		return _inactiveSleepTime;
-	}
+	public TimeSpan getInactiveSleepTime() { return _inactiveSleepTime; }
 
 	/**
 	 * Sets the time to sleep when the game is inactive.
@@ -345,11 +329,12 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		_inactiveSleepTime = value;
 	}
 
-	/** Returns the maxElapsedTime used by this game */
-	public TimeSpan getMaxElapsedTime()
-	{
-		return _maxElapsedTime;
-	}
+	/**
+	 * Returns the maxElapsedTime used by this game.
+	 * 
+	 * @return The maxElapsedTime used by this game.
+	 */
+	public TimeSpan getMaxElapsedTime() { return _maxElapsedTime; }
 
 	/** Set the maxElapsedTime to the specified value */
 	public void setMaxElapsedTime(TimeSpan value)
@@ -362,20 +347,14 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		_maxElapsedTime = value;
 	}
 
-	public boolean isActive()
-	{
-		return platform.isActive();
-	}
+	public boolean isActive() { return platform.isActive(); }
 
 	/**
 	 * Returns {@code true} if the mouse should be visible in the game.
 	 * 
 	 * @return {@code true} if the mouse cursor should be visible; {@code false} otherwise.
 	 */
-	public boolean isMouseVisible()
-	{
-		return platform.isMouseVisible();
-	}
+	public boolean isMouseVisible() { return platform.isMouseVisible(); }
 
 	/**
 	 * Set isMouseVisible to the specified value.
@@ -383,15 +362,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	 * @param value
 	 *        the new value to be assigned to this variable.
 	 */
-	public void setMouseVisible(boolean value)
-	{
-		platform.setMouseVisible(value);
-	}
+	public void setMouseVisible(boolean value) { platform.setMouseVisible(value); }
 
-	public TimeSpan getTargetElapsedTime()
-	{
-		return _targetElapsedTime;
-	}
+	public TimeSpan getTargetElapsedTime() { return _targetElapsedTime; }
 
 	public void setTargetElapsedTime(TimeSpan value)
 	{
@@ -414,10 +387,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	 * 
 	 * @return {@code true} if this game uses fixed time step; {@code false} otherwise.
 	 */
-	public boolean isFixedTimeStep()
-	{
-		return _isFixedTimeStep;
-	}
+	public boolean isFixedTimeStep() { return _isFixedTimeStep; }
 
 	/**
 	 * Set isFixedTimeStep to the specified value.
@@ -425,20 +395,11 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	 * @param value
 	 *        the new value to be assigned to this variable.
 	 */
-	public void setIsFixedTimeStep(boolean value)
-	{
-		_isFixedTimeStep = value;
-	}
+	public void setIsFixedTimeStep(boolean value) { _isFixedTimeStep = value; }
 
-	public GameServiceContainer getServices()
-	{
-		return _services;
-	}
+	public GameServiceContainer getServices() { return _services; }
 
-	public ContentManager getContent()
-	{
-		return _content;
-	}
+	public ContentManager getContent() { return _content; }
 
 	public void setContent(ContentManager value)
 	{
@@ -461,15 +422,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		return _graphicsDeviceService.getGraphicsDevice();
 	}
 
-	public GameWindow getWindow()
-	{
-		return platform.getWindow();
-	}
+	public GameWindow getWindow() { return platform.getWindow(); }
 
-	public boolean isInitialized()
-	{
-		return _initialized;
-	}
+	public boolean isInitialized() { return _initialized; }
 
 	public Event<EventArgs> activated = new Event<EventArgs>();
 	public Event<EventArgs> deactivated = new Event<EventArgs>();
@@ -587,7 +542,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 
 	/** The accumulated elapsed time between each tick */
-	private TimeSpan _accumulatedElapsedTime;
+	private TimeSpan _accumulatedElapsedTime = new TimeSpan();
 	/** The object used to hold our elapsed and total game time */
 	private GameTime _gameTime = new GameTime();
 	/** The timer used to measure elapsed time */
@@ -636,6 +591,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 			{
 				try
 				{
+					// TODO: Try to get rid of this delta variable (re-validate TimeSpan)
 					delta = TimeSpan.subtract(_targetElapsedTime, _accumulatedElapsedTime);
 				}
 				catch (Exception e1)
@@ -703,8 +659,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 				_gameTime.setIsRunningSlowly(true);
 			}
 
-			// Every time we just do one update and one draw, then we are not running slowly, so
-			// decrease the lag
+			// Every time we just do one update and one draw, then we are not running slowly, so decrease the lag
 			if (stepCount == 1 && _updateFrameLag > 0)
 				--_updateFrameLag;
 
@@ -739,10 +694,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		}
 	}
 
-	protected boolean beginDraw()
-	{
-		return true;
-	}
+	protected boolean beginDraw() { return true; }
 
 	/**
 	 * Disposes of this graphics context and releases any system resources that
@@ -751,14 +703,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	protected void endDraw()
 	{
 		platform.present();
-		// TODO: Added this, but is it in the right place ?
-		// Maybe platform.present() or GraphicsDevice
-		g.dispose();
-		buffStrat.show();
 	}
 
 	protected void beginRun() {}
-
 	protected void endRun() {}
 
 	/**
@@ -774,12 +721,6 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 
 	protected void initialize()
 	{
-		// TODO: This should probably go into JavaGameWindow or GraphicsDevice
-		// Initialize the buffer strategy
-		createBufferStrategy(3);
-		buffStrat = getBufferStrategy();
-		g = buffStrat.getDrawGraphics();
-
 		// TODO: We shouldn't need to do this here.
 		applyChanges(getGraphicsDeviceManager());
 
@@ -891,14 +832,16 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	protected void applyChanges(GraphicsDeviceManager manager)
 	{
 		platform.beginScreenDeviceChange(getGraphicsDevice().getPresentationParameters().isFullScreen());
+
+// #if !(WINDOWS && DIRECTX)
 		if (getGraphicsDevice().getPresentationParameters().isFullScreen())
 			platform.enterFullScreen();
 		else
 			platform.exitFullScreen();
-
+// #endif
 		Viewport viewport = new Viewport(0, 0,
-				getGraphicsDevice().getPresentationParameters().getBackBufferWidth(),
-				getGraphicsDevice().getPresentationParameters().getBackBufferHeight());
+										 getGraphicsDevice().getPresentationParameters().getBackBufferWidth(),
+										 getGraphicsDevice().getPresentationParameters().getBackBufferHeight());
 
 		getGraphicsDevice().setViewport(viewport);
 		platform.endScreenDeviceChange("", viewport.getWidth(), viewport.getHeight());
@@ -927,13 +870,9 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 		// Draw and EndDraw should not be called if BeginDraw returns false.
 		// http://stackoverflow.com/questions/4054936/manual-control-over-when-to-redraw-the-screen/4057180#4057180
 		// http://stackoverflow.com/questions/4235439/xna-3-1-to-4-0-requires-constant-redraw-or-will-display-a-purple-screen
-
 		if (platform.beforeDraw(gameTime) && beginDraw())
 		{
 			draw(gameTime);
-			// TODO: Should this be in the JavaGamePlatform or JavaGameWindow ?
-			// Maybe platform.present()
-			drawImageToScreen();
 			endDraw();
 		}
 	}
@@ -980,9 +919,8 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	private void initializeExistingComponents()
 	{
 		// TODO: Would be nice to get rid of this copy, but since it only
-		// happens once per game, it's fairly low priority.
+		//       happens once per game, it's fairly low priority.
 		IGameComponent[] copy = new IGameComponent[getComponents().size()];
-
 		getComponents().toArray(copy);
 		for (IGameComponent component : copy)
 			component.initialize();
@@ -998,7 +936,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 
 	// FIXME: I am open to a better name for this method. It does the
-	// opposite of CategorizeComponents.
+	//        opposite of CategorizeComponents.
 	private void decategorizeComponents()
 	{
 		_updateables.clear();
@@ -1014,7 +952,7 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 
 	// FIXME: I am open to a better name for this method. It does the
-	// opposite of CategorizeComponent.
+	//        opposite of CategorizeComponent.
 	private void decategorizeComponent(IGameComponent component)
 	{
 		if (component instanceof IUpdateable)
@@ -1030,52 +968,14 @@ public abstract class Game extends Canvas implements Runnable, AutoCloseable
 	}
 
 	// TODO: Stuff that I added. Delete these at some point
-
-	// TODO: Should I use this in JavaGameWindow in the while loop ?
-	/** True if the game is running */
-	// private boolean isRunning;
-
-	// TODO: All this should probably be added to the JavaGameWindow or some sort of
-	// SoftwareRenderedPlatform or GraphicsDevice
-	/** The object used to draw the image in the frame */
-	private BufferedImage image;
-	/** The BufferStrategy used in this game */
-	private BufferStrategy buffStrat;
-	/** The graphic context used to draw onto the component */
-	protected Graphics g;
-	/** The array of pixels to be painted on the screen */
-	private int[] pixels;
-
 	// Holds the delta between targetElapsedTime and accumulatedElapasedTime
 	private TimeSpan delta = new TimeSpan(0);
 
-	/** Draws the image from the buffer to the screen */
-	private void drawImageToScreen()
-	{
-		buffStrat = getBufferStrategy();
-		if (buffStrat == null)
-		{
-			createBufferStrategy(3);
-			return;
-		}
-
-		for (int i = 0; i < pixels.length; ++i)
-		{
-			pixels[i] = getGraphicsDevice().pixels[i];
-		}
-
-		g = buffStrat.getDrawGraphics();
-		g.drawImage(image, 0, 0, getGraphicsDeviceManager().getPreferredBackBufferWidth(), getGraphicsDeviceManager()
-				.getPreferredBackBufferHeight(), null);
-	}
 }
 
 // TODO : Do I keep the SortingFilteringCollection class in its own file ?
 // TODO: validate SortingFilteringCollection
 // TODO: refactor all setIsSomething to setSomething
 
-// TODO: Get rid of getters and setters in some classes (Vectors and others)
-// and make the members public instead. This will make the code easier to use.
-
-// TODO: Finish comments (getters and setters, etc)
+// TODO: Finish comments
 // TODO: Create ArgumentOutOfRangeException ? (See RangeExcpetion and OutOfRangeException)

@@ -8,7 +8,10 @@ import java.nio.ByteBuffer;
  * This class provides the same functionality as it's .NET analog
  * 
  * @see https://msdn.microsoft.com/en-us/library/system.bitconverter%28v=vs.110%29.aspx
- * @see https://raw.githubusercontent.com/peace-maker/lysis-java/master/src/lysis/BitConverter.java
+ * @see https://github.com/dotnet/coreclr/blob/master/src/mscorlib/src/System/BitConverter.cs
+ * @see https://github.com/peace-maker/lysis-java/blob/master/src/lysis/BitConverter.java
+ * @see http://www.se7ensins.com/forums/threads/java-c-s-bitconverter-in-java.486271/
+ * @see http://stackoverflow.com/questions/5865728/bitconverter-for-java
  * @author Eric Perron
  *
  */

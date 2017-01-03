@@ -12,14 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpriteFont
+public final class SpriteFont
 {
 	static class Errors
 	{
-		public static final String TextContainsUnresolvableCharacters = "Text contains characters that cannot be resolved by this SpriteFont.";
+		public static final String TextContainsUnresolvableCharacters =
+				"Text contains characters that cannot be resolved by this SpriteFont.";
 	}
 
-	// NOTE: Moved this into Glyph since Java's Map handle this Differently than .NET's Dictionary.
+	private final Map<Character, Glyph> _glyphs;
+
+	private final Texture2D _texture;
+
+	// NOTE: Don't need this since Java's Map cannot take a specified compare function.
+	//       If it was really needed, we would have to override the equals method of the key class using a wrapper class. 
 //	public class CharComparer // : IEqualityComparer<char>
 //	{
 //		public boolean equals(char x, char y)
@@ -31,13 +37,10 @@ public class SpriteFont
 //		{
 //			return (b | (b << 16));
 //		}
+
+//		public static final CharComparer Default = new CharComparer();
 //	}
 
-	private Map<Character, Glyph> _glyphs;
-
-	private Texture2D _texture;
-
-	// TODO: Do I need to make a wrapper class for Character ?
 	public SpriteFont(Texture2D texture, List<Rectangle> glyphBounds, List<Rectangle> cropping,
 			List<Character> characters, int lineSpacing, float spacing, List<Vector3> kerning,
 			Character defaultCharacter)
@@ -53,7 +56,6 @@ public class SpriteFont
 		for (int i = 0; i < characters.size(); ++i)
 		{
 			Glyph glyph = new Glyph();
-			// TODO: Should I create a copy of the rectangle instead (struct)
 			glyph.boundsInTexture = glyphBounds.get(i);
 			glyph.cropping = cropping.get(i);
 			glyph.character = characters.get(i);
@@ -67,60 +69,64 @@ public class SpriteFont
 		}
 	}
 
-	// / <summary>
-	// / Gets the texture that this SpriteFont draws from.
-	// / </summary>
-	// / <remarks>Can be used to implement custom rendering of a SpriteFont</remarks>
-	public Texture2D getTexture()
-	{
-		return _texture;
-	}
+	/**
+	 * Returns the texture that this SpriteFont draws from.
+	 * 
+	 * <p>
+	 * Can be used to implement custom rendering of a SpriteFont.
+	 * 
+	 * @return The texture that this SpriteFont draws from.
+	 */
+	public Texture2D getTexture() { return _texture; }
 
-	// / <summary>
-	// / Returns a copy of the dictionary containing the glyphs in this SpriteFont.
-	// / </summary>
-	// / <returns>A new Dictionary containing all of the glyphs inthis SpriteFont</returns>
-	// / <remarks>Can be used to calculate character bounds when implementing custom SpriteFont
-	// rendering.</remarks>
+	/**
+	 * Returns a copy of the dictionary containing the glyphs in this SpriteFont.
+	 * 
+	 * <p>
+	 * Can be used to calculate character bounds when implementing custom SpriteFont rendering.
+	 * 
+	 * @return A new Map containing all of the glyphs in this SpriteFont.
+	 */
 	public Map<Character, Glyph> getGlyphs()
 	{
 		return new HashMap<Character, Glyph>(_glyphs);
 	}
 
-	// / <summary>
-	// / Gets a collection of the characters in the font.
-	// / </summary>
 	private List<Character> characters;
 
+	/**
+	 * Returns a collection of the characters in the font.
+	 * 
+	 * @return A collection of the characters in the font.
+	 */
 	public List<Character> getCharacters()
 	{
 		return characters;
 	}
 
-	// / <summary>
-	// / Gets or sets the character that will be substituted when a
-	// / given character is not included in the font.
-	// / </summary>
+	/**
+	 * Gets or sets the character that will be substituted when
+	 * a given character is not included in the font.
+	 */
 	public Character defaultCharacter;
 
-	// / <summary>
-	// / Gets or sets the line spacing (the distance from baseline
-	// / to baseline) of the font.
-	// / </summary>
+	/**
+	 * Gets or sets the line spacing (the distance from baseline to baseline) of the font.
+	 */
 	public int lineSpacing;
 
-	// / <summary>
-	// / Gets or sets the spacing (tracking) between characters in
-	// / the font.
-	// / </summary>
+	/**
+	 * Gets or sets the spacing (tracking) between characters in the font.
+	 */
 	public float spacing;
 
-	// / <summary>
-	// / Returns the size of a string when rendered in this font.
-	// / </summary>
-	// / <param name="text">The text to measure.</param>
-	// / <returns>The size, in pixels, of 'text' when rendered in
-	// / this font.</returns>
+	/**
+	 * Returns the size of a string when rendered in this font.
+	 * 
+	 * @param text
+	 *        The text to measure.
+	 * @return The size, in pixels, of 'text' when rendered in this font.
+	 */
 	public Vector2 measureString(String text)
 	{
 		CharacterSource source = new CharacterSource(text);
@@ -129,13 +135,13 @@ public class SpriteFont
 		return size;
 	}
 
-	// / <summary>
-	// / Returns the size of the contents of a StringBuilder when
-	// / rendered in this font.
-	// / </summary>
-	// / <param name="text">The text to measure.</param>
-	// / <returns>The size, in pixels, of 'text' when rendered in
-	// / this font.</returns>
+	/**
+	 * Returns the size of the contents of a StringBuilder when rendered in this font.
+	 * 
+	 * @param text
+	 *        The text to measure.
+	 * @return The size, in pixels, of 'text' when rendered in this font.
+	 */
 	public Vector2 measureString(StringBuilder text)
 	{
 		CharacterSource source = new CharacterSource(text);
@@ -161,7 +167,7 @@ public class SpriteFont
 		float finalLineHeight = (float) lineSpacing;
 		int fullLineCount = 0;
 		Glyph currentGlyph = new Glyph();
-		Vector2 offset = new Vector2(Vector2.ZERO);
+		Vector2 offset = Vector2.Zero();
 		boolean hasCurrentGlyph = false;
 		boolean firstGlyphOfLine = true;
 
@@ -228,16 +234,13 @@ public class SpriteFont
 		size.y = fullLineCount * lineSpacing + finalLineHeight;
 	}
 
-	// TODO: test to see if it works
 	protected void drawInto(SpriteBatch spriteBatch, final CharacterSource text, Vector2 position, Color color,
-			float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect, float depth)
+							float rotation, Vector2 origin, Vector2 scale, SpriteEffects effect, float depth)
 	{
-		Vector2 flipAdjustment = new Vector2();
+		Vector2 flipAdjustment = Vector2.Zero();
 
-		boolean flippedVert = (effect.getValue() & SpriteEffects.FlipVertically.getValue()) == SpriteEffects.FlipVertically
-				.getValue();
-		boolean flippedHorz = (effect.getValue() & SpriteEffects.FlipHorizontally.getValue()) == SpriteEffects.FlipHorizontally
-				.getValue();
+		boolean flippedVert = (effect.getValue() & SpriteEffects.FlipVertically.getValue()) == SpriteEffects.FlipVertically.getValue();
+		boolean flippedHorz = (effect.getValue() & SpriteEffects.FlipHorizontally.getValue()) == SpriteEffects.FlipHorizontally.getValue();
 
 		if (flippedVert || flippedHorz)
 		{
@@ -278,7 +281,7 @@ public class SpriteFont
 			defaultGlyph = _glyphs.get(defaultCharacter.charValue());
 
 		Glyph currentGlyph = new Glyph();
-		Vector2 offset = new Vector2();
+		Vector2 offset = Vector2.Zero();
 		boolean hasCurrentGlyph = false;
 		boolean firstGlyphOfLine = true;
 
@@ -341,12 +344,12 @@ public class SpriteFont
 			Vector2.transform(p, transformation, p);
 
 			Vector4 destRect = new Vector4(p.x, p.y,
-					currentGlyph.boundsInTexture.width * scale.x,
-					currentGlyph.boundsInTexture.height * scale.y);
+										   currentGlyph.boundsInTexture.width * scale.x,
+										   currentGlyph.boundsInTexture.height * scale.y);
 
 			spriteBatch.drawInternal(
 					_texture, destRect, currentGlyph.boundsInTexture,
-					color, rotation, Vector2.ZERO, effect, depth, false);
+					color, rotation, Vector2.Zero(), effect, depth, false);
 		}
 
 		// We need to flush if we're using Immediate sort mode.
@@ -426,6 +429,11 @@ public class SpriteFont
 		 */
 		public float widthIncludingBearings;
 
+		// TODO: Do I want this static method and make the inner class Static ?
+		//       It only returns a new Glyph()
+//		public static final Glyph getEmpty() { return new Glyph(); }
+
+		// NOTE: I added this but it's not used anywhere
 		@Override
 		public boolean equals(Object obj)
 		{
@@ -440,6 +448,7 @@ public class SpriteFont
 			return (this.character == ((Glyph) obj).character);
 		}
 
+		// NOTE: I added this but it's not used anywhere
 		@Override
 		public int hashCode()
 		{
@@ -449,9 +458,7 @@ public class SpriteFont
 		@Override
 		public String toString()
 		{
-			return "CharacterIndex=" + character + ", Glyph=" + boundsInTexture + ", Cropping=" + cropping
-					+ ", Kerning="
-					+ leftSideBearing + "," + width + "," + rightSideBearing;
+			return "CharacterIndex=" + character + ", Glyph=" + boundsInTexture + ", Cropping=" + cropping + ", Kerning=" + leftSideBearing + "," + width + "," + rightSideBearing;
 		}
 	}
 

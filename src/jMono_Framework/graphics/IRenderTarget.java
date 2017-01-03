@@ -3,7 +3,7 @@ package jMono_Framework.graphics;
 /**
  * Represents a render target.
  * 
- * @author Eric
+ * @author Eric Perron
  *
  */
 public interface IRenderTarget

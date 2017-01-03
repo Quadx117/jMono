@@ -1,11 +1,15 @@
 package jMono_Framework.graphics;
 
 // C# struct
-// http://msdn.microsoft.com/en-us/library/ff434403.aspx
+/**
+ * @see http://msdn.microsoft.com/en-us/library/ff434403.aspx
+ * @author Eric Perron
+ *
+ */
 public class RenderTargetBinding
 {
-	private Texture _renderTarget;
-	private int _arraySlice;
+	private final Texture _renderTarget;
+	private final int _arraySlice;
 
 	public Texture getRenderTarget()
 	{
@@ -24,7 +28,6 @@ public class RenderTargetBinding
 			throw new NullPointerException("renderTarget");
 
 		_renderTarget = renderTarget;
-		// _arraySlice = (int)CubeMapFace.PositiveX;
 		_arraySlice = CubeMapFace.PositiveX.ordinal();
 	}
 
@@ -32,12 +35,11 @@ public class RenderTargetBinding
 	{
 		if (renderTarget == null)
 			throw new NullPointerException("renderTarget");
-		if (cubeMapFace.ordinal() < CubeMapFace.PositiveX.ordinal() ||	//
+		if (cubeMapFace.ordinal() < CubeMapFace.PositiveX.ordinal() ||
 			cubeMapFace.ordinal() > CubeMapFace.NegativeZ.ordinal())
 			throw new IllegalArgumentException("cubeMapFace is out of range");
 
 		_renderTarget = renderTarget;
-		// _arraySlice = (int)cubeMapFace;
 		_arraySlice = cubeMapFace.ordinal();
 	}
 
@@ -80,8 +82,7 @@ public class RenderTargetBinding
 
     /*
 	 * c# implicit operator overloading
-	 * see :
-	 * http://www.codeproject.com/Articles/15191/Understanding-Implicit-Operator-Overloading-in-C
+	 * see : http://www.codeproject.com/Articles/15191/Understanding-Implicit-Operator-Overloading-in-C
 	 * Cannot be done in Java
 	 */
 //    public static implicit operator RenderTargetBinding(RenderTarget2D renderTarget)
