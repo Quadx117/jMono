@@ -98,7 +98,9 @@ public class PauseScreen extends MenuScreen
 					{
 						e.printStackTrace();
 					}
-					--componentIndex;
+					// NOTE: This needs to be commented out so we don't stay in an infinite loop
+					// TODO: Need to find out why the other buttons are still displayed and working
+//					--componentIndex;
 				}
 				else
 				{
