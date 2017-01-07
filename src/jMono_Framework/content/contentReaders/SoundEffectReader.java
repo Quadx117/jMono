@@ -5,10 +5,8 @@ import jMono_Framework.audio.MSADPCMToPCM;
 import jMono_Framework.audio.SoundEffect;
 import jMono_Framework.content.ContentReader;
 import jMono_Framework.content.ContentTypeReader;
-import jMono_Framework.dotNet.BinaryReader;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import jMono_Framework.dotNet.io.BinaryReader;
+import jMono_Framework.dotNet.io.MemoryStream;
 
 public class SoundEffectReader extends ContentTypeReader<SoundEffect>
 {
@@ -89,7 +87,7 @@ public class SoundEffectReader extends ContentTypeReader<SoundEffect>
 		if (header[0] == 2 && header[1] == 0)
 		{
 			// We've found MSADPCM data! Let's decode it here.
-			try (ByteArrayInputStream origDataStream = new ByteArrayInputStream(data))
+			try (MemoryStream origDataStream = new MemoryStream(data))
 			{
 				try (BinaryReader reader = new BinaryReader(origDataStream))
 				{
@@ -101,21 +99,17 @@ public class SoundEffectReader extends ContentTypeReader<SoundEffect>
 					data = newData;
 				}
 			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
 
 			// This is PCM data now!
 			header[0] = 1;
 		}
 
 		int sampleRate = (
-					(header[4]) & 0xff |
-					(header[5] << 8) & 0xff00 |
-					(header[6] << 16) & 0xff0000 |
-					(header[7] << 24) & 0xff000000
-				);
+			(header[4]) & 0xff |
+			(header[5] << 8) & 0xff00 |
+			(header[6] << 16) & 0xff0000 |
+			(header[7] << 24) & 0xff000000
+		);
 
 		AudioChannels channels = (header[2] == 2) ? AudioChannels.Stereo : AudioChannels.Mono;
 		SoundEffect result = new SoundEffect(data, sampleRate, channels);

@@ -76,10 +76,9 @@ public class Texture2DReader extends ContentTypeReader<Texture2D>
 				break;
 		}
 
-		texture = (existingInstance != null) ? existingInstance : new Texture2D(reader.getGraphicsDevice(), width,
-				height, levelCountOutput > 1, convertedFormat);
+		texture = (existingInstance != null) ? existingInstance : new Texture2D(reader.getGraphicsDevice(), width, height, levelCountOutput > 1, convertedFormat);
 
-		for (int level = 0; level < levelCount; level++)
+		for (int level = 0; level < levelCount; ++level)
 		{
 			int levelDataSizeInBytes = reader.readInt32();
 			byte[] levelData = reader.readBytes(levelDataSizeInBytes);

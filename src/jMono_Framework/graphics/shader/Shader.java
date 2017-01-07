@@ -1,7 +1,7 @@
 package jMono_Framework.graphics.shader;
 
 import jMono_Framework.Color;
-import jMono_Framework.dotNet.BinaryReader;
+import jMono_Framework.dotNet.io.BinaryReader;
 import jMono_Framework.graphics.GraphicsDevice;
 import jMono_Framework.graphics.GraphicsResource;
 import jMono_Framework.graphics.states.SamplerState;

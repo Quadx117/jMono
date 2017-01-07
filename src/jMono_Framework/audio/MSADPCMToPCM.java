@@ -1,9 +1,8 @@
 package jMono_Framework.audio;
 
-import jMono_Framework.dotNet.BinaryReader;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FilterOutputStream;
+import jMono_Framework.dotNet.io.BinaryReader;
+import jMono_Framework.dotNet.io.BinaryWriter;
+import jMono_Framework.dotNet.io.MemoryStream;
 
 /**
  * For more on the MSADPCM format, see the MultimediaWiki:
@@ -39,8 +38,8 @@ public class MSADPCMToPCM
 	 */
 	private static void getNibbleBlock(byte block, byte[] nibbleBlock)
 	{
-		nibbleBlock[0] = (byte) (block >> 4); // Upper half
-		nibbleBlock[1] = (byte) (block & 0xF); // Lower half
+		nibbleBlock[0] = (byte) (block >> 4);	// Upper half
+		nibbleBlock[1] = (byte) (block & 0xF);	// Lower half
 	}
 
 	/**
@@ -143,8 +142,8 @@ public class MSADPCMToPCM
 	{
 		// We write to output when reading the PCM data, then we convert
 		// it back to a short array at the end.
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		FilterOutputStream pcmOut = new FilterOutputStream(output);	// BinaryWriter
+		MemoryStream output = new MemoryStream();
+		BinaryWriter pcmOut = new BinaryWriter(output);
 
 		// We'll be using this to get each sample from the blocks.
 		byte[] nibbleBlock = new byte[2];
@@ -253,7 +252,7 @@ public class MSADPCMToPCM
 		output.close();
 
 		// Return the array.
-		return output.toByteArray();
+		return output.toArray();
 	}
 }
 // TODO: Test this class to see if it works properly since C# bytes are unsigned

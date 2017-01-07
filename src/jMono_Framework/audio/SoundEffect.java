@@ -1,8 +1,8 @@
 package jMono_Framework.audio;
 
+import jMono_Framework.dotNet.io.MemoryStream;
+import jMono_Framework.dotNet.io.Stream;
 import jMono_Framework.time.TimeSpan;
-
-import java.util.stream.Stream;
 
 import javax.sound.sampled.AudioFormat;
 
@@ -502,7 +502,7 @@ public class SoundEffect implements AutoCloseable
 //	protected ALFormat Format { get; set; }
 	protected AudioChannels format;
 
-	private void platformLoadAudioStream(Stream s) // TODO: create my own or use FileInputStream or InputStream ? 
+	private void platformLoadAudioStream(Stream s) 
 	{
 // #if OPENAL && !(MONOMAC || IOS)
         
@@ -513,28 +513,28 @@ public class SoundEffect implements AutoCloseable
 
 		Stream stream = s;
 //#if ANDROID
-//		var needsDispose = false;
-//		try
-//		{
+		boolean needsDispose = false;
+		try
+		{
 			// If seek is not supported (usually an indicator of a stream opened into the AssetManager), then copy
 			// into a temporary MemoryStream.
-//			if (!s.CanSeek)
-//			{
-//				needsDispose = true;
-//				stream = new MemoryStream();
-//				 s.CopyTo(stream);
-//				stream.Position = 0;
-//			}
+			if (!s.canSeek())
+			{
+				needsDispose = true;
+				stream = new MemoryStream();
+				 s.copyTo(stream);
+				stream.setPosition(0);
+			}
 //#endif
 //			_data = AudioLoader.Load(stream, out format, out size, out freq);
 //			data = AudioLoader.load(AudioLoader.getAudioInputStream(stream)); // TODO finish this method
 //#if ANDROID
-//		}
-//		finally
-//		{
-//			if (needsDispose)
-//				stream.Dispose();
-//		}
+		}
+		finally
+		{
+			if (needsDispose)
+				stream.dispose();
+		}
 //#endif
 		this.format = format;
 		this.size = size;
@@ -600,7 +600,7 @@ public class SoundEffect implements AutoCloseable
 //        format = (channels == AudioChannels.Stereo) ? ALFormat.Stereo16 : ALFormat.Mono16;
         format = channels;
         
-        // NOTE: Adde this
+        // NOTE: Added this
         _format = new AudioFormat(sampleRate, 16, channels.getValue(), true, false);
         return;
 

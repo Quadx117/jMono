@@ -3,7 +3,8 @@ package jMono_Framework.content;
 import jMono_Framework.BoundingSphere;
 import jMono_Framework.Color;
 import jMono_Framework.dotNet.As;
-import jMono_Framework.dotNet.BinaryReader;
+import jMono_Framework.dotNet.io.BinaryReader;
+import jMono_Framework.dotNet.io.Stream;
 import jMono_Framework.graphics.GraphicsDevice;
 import jMono_Framework.math.Matrix;
 import jMono_Framework.math.Quaternion;
@@ -14,7 +15,6 @@ import jMono_Framework.utilities.FileHelpers;
 import jMono_Framework.utilities.ReflectionHelpers;
 import jMono_Framework.utilities.StringHelpers;
 
-import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ContentReader extends BinaryReader
     	return this.graphicsDevice;
     }
 
-    protected ContentReader(ContentManager manager, InputStream stream, GraphicsDevice graphicsDevice, String assetName, int version, Consumer<AutoCloseable> recordDisposableObject)
+    protected ContentReader(ContentManager manager, Stream stream, GraphicsDevice graphicsDevice, String assetName, int version, Consumer<AutoCloseable> recordDisposableObject)
     {
     	super(stream);
         this.graphicsDevice = graphicsDevice;

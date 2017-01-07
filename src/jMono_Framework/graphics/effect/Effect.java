@@ -1,7 +1,9 @@
 package jMono_Framework.graphics.effect;
 
 import jMono_Framework.Color;
-import jMono_Framework.dotNet.BinaryReader;
+import jMono_Framework.dotNet.BitConverter;
+import jMono_Framework.dotNet.io.BinaryReader;
+import jMono_Framework.dotNet.io.MemoryStream;
 import jMono_Framework.graphics.ColorWriteChannels;
 import jMono_Framework.graphics.GraphicsDevice;
 import jMono_Framework.graphics.GraphicsResource;
@@ -18,24 +20,22 @@ import jMono_Framework.graphics.states.RasterizerState;
 import jMono_Framework.graphics.states.StencilOperation;
 import jMono_Framework.utilities.ByteStreams;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class Effect extends GraphicsResource
 {
-
 	// C# struct
 	class MGFXHeader
 	{
 		/**
 		 * The MonoGame Effect file format header identifier ("MGFX").
 		 */
-		public final int MGFXSignature = (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) ? 0x5846474D
-				: 0x4D474658;
+		public final int MGFXSignature = (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN))
+											? 0x5846474D
+											: 0x4D474658;
 
 		/**
 		 * The current MonoGame Effect file format versions used to detect old packaged content.
@@ -113,12 +113,8 @@ public class Effect extends GraphicsResource
 		Effect cloneSource = graphicsDevice.effectCache.get(header.effectKey);
 		if (!graphicsDevice.effectCache.containsKey(header.effectKey))
 		{
-			// TODO: Should I create my own MemoryStream and class
-			// using (var stream = new MemoryStream(effectCode, header.HeaderSize, effectCode.Length
-			// - header.HeaderSize, false))
-			// TODO: Need to test if this works properly.
-			try (ByteArrayInputStream stream = new ByteArrayInputStream(effectCode, headerSize, effectCode.length
-					- headerSize))
+//			try (ByteArrayInputStream stream = new ByteArrayInputStream(effectCode, headerSize, effectCode.length - headerSize))
+			try (MemoryStream stream = new MemoryStream(effectCode, headerSize, effectCode.length - headerSize))
 			{
 				try (BinaryReader reader = new BinaryReader(stream))
 				{
@@ -129,10 +125,6 @@ public class Effect extends GraphicsResource
 					// Cache the effect for later in its original unmodified state.
 					graphicsDevice.effectCache.put(effectKey, cloneSource);
 				}
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
 			}
 		}
 
@@ -145,23 +137,11 @@ public class Effect extends GraphicsResource
 	{
 		MGFXHeader header = new MGFXHeader();
 		int i = 0;
-		// TODO: Should I use my own BitConverter class ?
-		// see https://github.com/peace-maker/lysis-java/blob/master/src/lysis/BitConverter.java
-		// see
-		// http://stackoverflow.com/questions/10070398/difference-in-outputs-between-c-sharp-and-java
-		// see http://www.se7ensins.com/forums/threads/java-c-s-bitconverter-in-java.486271/
-		// see http://stackoverflow.com/questions/5865728/bitconverter-for-java
-		// original on MSDN
-		// https://github.com/dotnet/coreclr/blob/master/src/mscorlib/src/System/BitConverter.cs
-		// what about endianness ?
-		// header.signature = BitConverter.ToInt32(effectCode, i);
-		ByteBuffer byteBuffer = ByteBuffer.wrap(effectCode);
-		byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-		header.signature = byteBuffer.getInt(i);
+		header.signature = BitConverter.toInt32(effectCode, i);
 		i += 4;
 		header.version = (int) effectCode[i++];
 		header.profile = (int) effectCode[i++];
-		header.effectKey = byteBuffer.getInt(i);
+		header.effectKey = BitConverter.toInt32(effectCode, i);
 		i += 4;
 		header.headerSize = i;
 
@@ -326,12 +306,12 @@ public class Effect extends GraphicsResource
 
 			// TODO: Do I need to close this ?
 			ConstantBuffer buffer = new ConstantBuffer(graphicsDevice,
-					sizeInBytes,
-					parameters,
-					offsets,
-					name);
+													   sizeInBytes,
+													   parameters,
+													   offsets,
+													   name);
 			constantBuffers[c] = buffer;
-			buffer.close();	// TODO: I added this, see if it doesn't create problems / slow code
+			buffer.close();	// TODO: I added this, see if it doesn't create problems
 		}
 
 		// Read in all the shader objects.
@@ -387,7 +367,9 @@ public class Effect extends GraphicsResource
 
 			// Get the vertex shader.
 			Shader vertexShader = null;
-			int shaderIndex = (int) reader.readByte();
+//			int shaderIndex = Byte.toUnsignedInt(reader.readByte());
+			// NOTE: avoid the method call by doing the unsigned cast directly.
+			int shaderIndex = ((int) reader.readByte()) & 0xff;
 			if (shaderIndex != 255)
 				vertexShader = shaders[shaderIndex];
 

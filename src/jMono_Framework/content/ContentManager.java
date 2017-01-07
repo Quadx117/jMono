@@ -3,8 +3,10 @@ package jMono_Framework.content;
 import jMono_Framework.TitleContainer;
 import jMono_Framework.content.contentReaders.SpriteFontReader;
 import jMono_Framework.content.contentReaders.Texture2DReader;
-import jMono_Framework.dotNet.BinaryReader;
 import jMono_Framework.dotNet.IServiceProvider;
+import jMono_Framework.dotNet.io.BinaryReader;
+import jMono_Framework.dotNet.io.MemoryStream;
+import jMono_Framework.dotNet.io.Stream;
 import jMono_Framework.graphics.GraphicsResource;
 import jMono_Framework.graphics.IGraphicsDeviceService;
 import jMono_Framework.graphics.SpriteFont;
@@ -18,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -237,9 +240,10 @@ public class ContentManager implements AutoCloseable
 		return result;
 	}
 
-	protected FileInputStream openStream(String assetName) throws ContentLoadException
+	
+	protected Stream openStream(String assetName) throws ContentLoadException
 	{
-		FileInputStream stream = null;
+		Stream stream = null;
 		try
 		{
 			Path assetPath = Paths.get(_rootDirectory, assetName + ".xnb");
@@ -249,11 +253,26 @@ public class ContentManager implements AutoCloseable
 			// situations, but TitleContainer can ONLY be passed relative paths.
 // #if DESKTOPGL || MONOMAC || WINDOWS
 			if (assetPath.isAbsolute())
-				// stream = Files.newInputStream(assetPath, StandardOpenOption.READ);
-				stream = new FileInputStream(assetPath.toString());
+//				 stream = Files.newInputStream(assetPath, StandardOpenOption.READ);
+//				stream = new FileInputStream(assetPath.toString());
+				stream = new MemoryStream(Files.readAllBytes(assetPath));
 			else
 // #endif
-				stream = TitleContainer.openStream(assetPath.toString().replace('\\', '/'));
+				
+			{
+				// TODO: Should I create my own FileStream extends Stream instead and get rid of this ?
+				// NOTE: Read the whole file into memory in one go.
+				//       This is not well suited if the file is large.
+				FileInputStream fis = TitleContainer.openStream(assetPath.toString().replace('\\', '/'));
+				long size = fis.getChannel().size();
+				if (size > Integer.MAX_VALUE) throw new ContentLoadException("File is to big");
+				byte[] data = new byte[(int) size];
+				int bytesRead = fis.read(data);
+				fis.close();
+				if (bytesRead != size) throw new ContentLoadException("Unable to read the whole file");
+				stream = new MemoryStream(data);
+			}
+			
 // #if ANDROID
 			// Read the asset into memory in one go. This results in a ~50% reduction
 			// in load times on Android due to slow Android asset streams.
@@ -310,10 +329,10 @@ public class ContentManager implements AutoCloseable
 			}
 		}
 		
-		FileInputStream stream = null;
+		Stream stream = null;
 		try
         {
-			//try load it traditionally
+			// Try to load it traditionally
 			stream = openStream(assetName);
 
             // Try to load as XNB file
@@ -324,34 +343,22 @@ public class ContentManager implements AutoCloseable
                     try (ContentReader reader = getContentReaderFromXnb(assetName, stream, xnbReader, recordDisposableObject))
                     {
                         result = reader.readAsset();
-                        // if (result is GraphicsResource)
                         if (result instanceof GraphicsResource)
                             ((GraphicsResource)result).name = originalAssetName;
                     }
                 }
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
             }
             finally
             {
                 if (stream != null)
                 {
-                    try
-					{
-						stream.close();
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
+                    stream.close();
                 }
             }
         }
         catch (ContentLoadException ex)
         {
-			//MonoGame try to load as a non-content file
+			// MonoGame try to load as a non-content file
 
             assetName = TitleContainer.getFilename(Paths.get(_rootDirectory, assetName).toString());
 
@@ -474,8 +481,8 @@ public class ContentManager implements AutoCloseable
         return null;
     }
 
-	private ContentReader getContentReaderFromXnb(String originalAssetName, final InputStream stream,
-			BinaryReader xnbReader, Consumer<AutoCloseable> recordDisposableObject)
+	private ContentReader getContentReaderFromXnb(String originalAssetName, final Stream stream,
+												  BinaryReader xnbReader, Consumer<AutoCloseable> recordDisposableObject)
 	{
 		// The first 4 bytes should be the "XNB" header. i use that to detect an invalid file
 		byte x = xnbReader.readByte();
@@ -658,7 +665,7 @@ public class ContentManager implements AutoCloseable
 			}
 		}
 		
-		InputStream stream = null;
+		Stream stream = null;
 		try
 		{
             //try load it traditionally
@@ -676,23 +683,12 @@ public class ContentManager implements AutoCloseable
                         reader.readSharedResources();
                     }
                 }
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
             }
             finally
             {
                 if (stream != null)
                 {
-                    try
-					{
-						stream.close();
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
+                    stream.close();
                 }
             }
 		}
@@ -715,7 +711,6 @@ public class ContentManager implements AutoCloseable
         {
             try (InputStream assetStream = TitleContainer.openStream(assetName))
             {
-            	// TODO: Can I simply cast it or should I use As.as()
             	Texture2D textureAsset = (Texture2D) asset;
                 textureAsset.reload(assetStream);
             }
