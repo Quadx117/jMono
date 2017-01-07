@@ -398,7 +398,7 @@ public class Matrix // implements IEquatable<Matrix>
 		float num = vector.lengthSquared();
 		if (num < 0.0001f)
 		{
-			vector = cameraForwardVector != null ? Vector3.negate(cameraForwardVector) : Vector3.forward();
+			vector = cameraForwardVector != null ? cameraForwardVector.negate() : Vector3.forward();
 		}
 		else
 		{
@@ -447,7 +447,7 @@ public class Matrix // implements IEquatable<Matrix>
 		float num2 = vector2.lengthSquared();
 		if (num2 < 0.0001f)
 		{
-			vector2 = cameraForwardVector != null ? Vector3.negate(cameraForwardVector) : Vector3.forward();
+			vector2 = cameraForwardVector != null ? cameraForwardVector.negate() : Vector3.forward();
 		}
 		else
 		{
