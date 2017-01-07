@@ -2,6 +2,7 @@ package jMono_Framework.graphics;
 
 import jMono_Framework.DisplayOrientation;
 import jMono_Framework.GraphicsDeviceManager;
+import jMono_Framework.JavaGameWindow;
 import jMono_Framework.Rectangle;
 import jMono_Framework.graphics.states.DepthFormat;
 
@@ -13,7 +14,7 @@ public class PresentationParameters implements AutoCloseable
 	private SurfaceFormat backBufferFormat;
 	private int backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
 	private int backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
-	// private IntPtr deviceWindowHandle;
+	private JavaGameWindow deviceWindowHandle;
 	private int multiSampleCount;
 	private boolean disposed;
 // #if !WINRT || WINDOWS_UAP
@@ -66,11 +67,8 @@ public class PresentationParameters implements AutoCloseable
 		return new Rectangle(0, 0, backBufferWidth, backBufferHeight);
 	}
 
-	// public IntPtr DeviceWindowHandle
-	// {
-	// get { return deviceWindowHandle; }
-	// set { deviceWindowHandle = value; }
-	// }
+	 public JavaGameWindow getDeviceWindowHandle() { return deviceWindowHandle; }
+	 public void setDeviceWindowHandle(JavaGameWindow value) { deviceWindowHandle = value; }
 
 // #if WINDOWS_STOREAPP
 	// [CLSCompliant(false)]
@@ -148,7 +146,7 @@ public class PresentationParameters implements AutoCloseable
 		backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
 		backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
 // #endif
-		// deviceWindowHandle = IntPtr.Zero;
+		deviceWindowHandle = null;
 // #if IOS
 		// isFullScreen = UIApplication.SharedApplication.StatusBarHidden;
 // #else
@@ -167,7 +165,7 @@ public class PresentationParameters implements AutoCloseable
 		clone.backBufferFormat = this.backBufferFormat;
 		clone.backBufferHeight = this.backBufferHeight;
 		clone.backBufferWidth = this.backBufferWidth;
-		// clone.deviceWindowHandle = this.deviceWindowHandle;
+		clone.deviceWindowHandle = this.deviceWindowHandle;
 		clone.disposed = this.disposed;
 		clone.isFullScreen = this.isFullScreen;
 		clone.depthStencilFormat = this.depthStencilFormat;

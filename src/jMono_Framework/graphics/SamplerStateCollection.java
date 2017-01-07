@@ -2,20 +2,20 @@ package jMono_Framework.graphics;
 
 import jMono_Framework.graphics.states.SamplerState;
 
-public class SamplerStateCollection
+public final class SamplerStateCollection
 {
-	private GraphicsDevice _graphicsDevice;
+	private final GraphicsDevice _graphicsDevice;
 
-	private SamplerState _samplerStateAnisotropicClamp;
-	private SamplerState _samplerStateAnisotropicWrap;
-	private SamplerState _samplerStateLinearClamp;
-	private SamplerState _samplerStateLinearWrap;
-	private SamplerState _samplerStatePointClamp;
-	private SamplerState _samplerStatePointWrap;
+	private final SamplerState _samplerStateAnisotropicClamp;
+	private final SamplerState _samplerStateAnisotropicWrap;
+	private final SamplerState _samplerStateLinearClamp;
+	private final SamplerState _samplerStateLinearWrap;
+	private final SamplerState _samplerStatePointClamp;
+	private final SamplerState _samplerStatePointWrap;
 
-	private SamplerState[] _samplers;
-	private SamplerState[] _actualSamplers;
-	private boolean _applyToVertexStage;
+	private final SamplerState[] _samplers;
+	private final SamplerState[] _actualSamplers;
+	private final boolean _applyToVertexStage;
 
 	protected SamplerStateCollection(GraphicsDevice device, int maxSamplers, boolean applyToVertexStage)
 	{
@@ -70,8 +70,7 @@ public class SamplerStateCollection
 
 		_actualSamplers[index] = newSamplerState;
 
-		// TODO: See other SamplerStateCollection files.
-		// platformSetSamplerState(index);
+		platformSetSamplerState(index);
 	}
 
 	protected void clear()
@@ -84,8 +83,7 @@ public class SamplerStateCollection
 			_actualSamplers[i] = _samplerStateLinearWrap;
 		}
 
-		// TODO: See other SamplerStateCollection files.
-		// platformClear();
+		platformClear();
 	}
 
 	/**
@@ -93,8 +91,65 @@ public class SamplerStateCollection
 	 */
 	protected void dirty()
 	{
-		// TODO: See other SamplerStateCollection files.
-		// platformDirty();
+		platformDirty();
 	}
 
+	// ########################################################################
+	// #                        Platform specific code                        #
+	// ########################################################################
+
+	private int _d3dDirty;
+
+	private void platformSetSamplerState(int index)
+	{
+		_d3dDirty |= 1 << index;
+	}
+
+	private void platformClear()
+	{
+		_d3dDirty = Integer.MAX_VALUE;
+	}
+
+	private void platformDirty()
+	{
+		_d3dDirty = Integer.MAX_VALUE;
+	}
+
+	protected void platformSetSamplers(GraphicsDevice device)
+	{
+		if (_applyToVertexStage && !device.getGraphicsCapabilities().supportsVertexTextures())
+			return;
+
+		// Skip out if nothing has changed.
+		if (_d3dDirty == 0)
+			return;
+
+		// NOTE: We make the assumption here that the caller has
+		// locked the d3dContext for us to use.
+//		SharpDX.Direct3D11.CommonShaderStage shaderStage;
+//		if (_applyToVertexStage)
+//			shaderStage = device._d3dContext.VertexShader;
+//		else
+//			shaderStage = device._d3dContext.PixelShader;
+
+		for (int i = 0; i < _actualSamplers.length; ++i)
+		{
+			int mask = 1 << i;
+			if ((_d3dDirty & mask) == 0)
+				continue;
+
+//			var sampler = _actualSamplers[i];
+//			SharpDX.Direct3D11.SamplerState state = null;
+//			if (sampler != null)
+//				state = sampler.GetState(device);
+
+//			shaderStage.SetSampler(i, state);
+
+			_d3dDirty &= ~mask;
+			if (_d3dDirty == 0)
+				break;
+		}
+
+		_d3dDirty = 0;
+	}
 }
