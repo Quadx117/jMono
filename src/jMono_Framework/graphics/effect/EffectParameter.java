@@ -68,44 +68,46 @@ public class EffectParameter
 		// TODO: should look into that again (see As.java and Constantbuffer.java)
 		// NOTE: Equivalent to as Array in C#
 		Object array = null;
-		switch (cloneSource.parameterType)
+		if (cloneSource.data != null)
 		{
-			case Boolean:
-			case Integer:
+			switch (cloneSource.parameterType)
 			{
-				int length = Array.getLength(cloneSource.data);
-				int[] buffer = new int[length];
-				for (int i = 0; i < length; ++i)
+				case Boolean:
+				case Integer:
 				{
-					buffer[i] = (int) Array.get(cloneSource.data, i);
+					int length = Array.getLength(cloneSource.data);
+					int[] buffer = new int[length];
+					for (int i = 0; i < length; ++i)
+					{
+						buffer[i] = (int) Array.get(cloneSource.data, i);
+					}
+					array = buffer;
+					break;
 				}
-				array = buffer;
-				break;
-			}
 
-			case Single:
-			{
-				int length = Array.getLength(cloneSource.data);
-				float[] buffer = new float[length];
-				for (int i = 0; i < length; ++i)
+				case Single:
 				{
-					buffer[i] = (float) Array.get(cloneSource.data, i);
+					int length = Array.getLength(cloneSource.data);
+					float[] buffer = new float[length];
+					for (int i = 0; i < length; ++i)
+					{
+						buffer[i] = (float) Array.get(cloneSource.data, i);
+					}
+					array = buffer;
+					break;
 				}
-				array = buffer;
-				break;
+
+				case String:
+					// TODO: We have not investigated what a string
+					// type should do in the parameter list. Till then
+					// throw to let the user know.
+					throw new UnsupportedOperationException();
+
+				default:
+					// NOTE: We skip over all other types
+					break;
 			}
-
-			case String:
-				// TODO: We have not investigated what a string
-				// type should do in the parameter list. Till then
-				// throw to let the user know.
-				throw new UnsupportedOperationException();
-
-			default:
-				// NOTE: We skip over all other types
-				break;
 		}
-
 		if (array != null)
 			data = array;
 		// Data = Arrays.copyOf(array, array.length);
@@ -849,7 +851,7 @@ public class EffectParameter
 	 * }
 	 */
 
-	public void setValue(Float value)
+	public void setValue(float value)
 	{
 		if (parameterType != EffectParameterType.Single)
 			throw new ClassCastException();
@@ -858,7 +860,7 @@ public class EffectParameter
 		stateKey = ++NextStateKey;
 	}
 
-	public void setValue(Float[] value)
+	public void setValue(float[] value)
 	{
 		for (int i = 0; i < value.length; ++i)
 			elements.getEffectParameter(i).setValue(value[i]);
