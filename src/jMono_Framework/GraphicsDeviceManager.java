@@ -247,7 +247,7 @@ public class GraphicsDeviceManager implements IGraphicsDeviceService, IGraphicsD
 		// hardware feature level.
 		_graphicsDevice.setGraphicsProfile(graphicsProfile);
 
-		// _graphicsDevice.PresentationParameters.DeviceWindowHandle = _game.Window.Handle;
+		_graphicsDevice.getPresentationParameters().setDeviceWindowHandle(_game.getWindow().getHandle());
 
 		// Update the back buffer.
 		// _graphicsDevice.CreateSizeDependentResources();  // NOTE: Thi is in GraphicsDevice.DirectX.cs
@@ -351,7 +351,7 @@ public class GraphicsDeviceManager implements IGraphicsDeviceService, IGraphicsD
 			// presentationParameters.SwapChainBackgroundPanel = null;
 		// }
    // #else
-		// presentationParameters.DeviceWindowHandle = _game.Window.Handle;
+		presentationParameters.setDeviceWindowHandle(_game.getWindow().getHandle());
    // #endif
 
 // #else

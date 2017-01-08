@@ -49,7 +49,8 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		return this.game;
 	}
 
-	// public override IntPtr Handle { get { return _form.Handle; } }
+	@Override
+	public JavaGameWindow getHandle() { return this; }
 
 	public String getScreenDeviceName()
 	{
@@ -98,6 +99,7 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		super.setAllowAltF4(value);
 	}
 
+	@Override
 	public DisplayOrientation getCurrentOrientation()
 	{
 		return DisplayOrientation.Default;
@@ -459,6 +461,14 @@ public class JavaGameWindow extends GameWindow implements AutoCloseable
 		// while (_frame != null && _frame.isDisposed() == false)
 		while (true)
 		{
+			// TODO: Delete when done testing
+//			System.out.println("------------START----------------");
+//			for (Thread t : Thread.getAllStackTraces().keySet())
+//			{
+//				if ("Direct Clip".equals(t.getName()))
+//					System.out.println(t.getName());
+//		    }
+//			System.out.println("------------END----------------");
 			updateWindows();
 			game.tick();
 		}
