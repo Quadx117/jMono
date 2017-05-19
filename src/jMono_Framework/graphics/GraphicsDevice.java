@@ -1049,7 +1049,7 @@ public class GraphicsDevice implements AutoCloseable
 
 	private void platformInitialize()
 	{
-		image = new BufferedImage(getPresentationParameters().getBackBufferWidth(), getPresentationParameters().getBackBufferHeight(), BufferedImage.TYPE_INT_RGB);
+		image = new BufferedImage(getPresentationParameters().getBackBufferWidth(), getPresentationParameters().getBackBufferHeight(), BufferedImage.TYPE_INT_BGR);
 		pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
 		// Initialize the buffer strategy
@@ -1689,6 +1689,7 @@ public class GraphicsDevice implements AutoCloseable
 					// Defaults to BlendState.OPAQUE.
 					col = srcA << 24 | srcR << 16 | srcG << 8 | srcB;
 				}
+
 				pixels[destIndex] = col;
 				++destIndex;
 			}
