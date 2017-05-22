@@ -1397,8 +1397,8 @@ public class GraphicsDevice implements AutoCloseable
 					{
 						// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
 						//       and add the offset for when we use spriteSheets or spriteStrips.
-						int fetchX = x - (int) origin.x + srcStartX;
-						int fetchY = y - (int) origin.y + srcStartY;
+						int fetchX = x - (int) (origin.x+0.5f) + srcStartX;
+						int fetchY = y - (int) (origin.y+0.5f) + srcStartY;
 
 						int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
 						foregroundColor = new Vector4((float) ((texelPtr >>  0) & 0xFF),
