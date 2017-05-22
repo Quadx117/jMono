@@ -549,8 +549,8 @@ public class Vector2 // implements IEquatable<Vector2>
 	public static Vector2 multiply(Vector2 vector1, Vector2 vector2)
 	{
 		Vector2 result = new Vector2(vector1);
-		result.x += vector2.x;
-		result.y += vector2.y;
+		result.x *= vector2.x;
+		result.y *= vector2.y;
 		return result;
 	}
 
