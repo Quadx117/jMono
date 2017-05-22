@@ -1029,8 +1029,6 @@ public class GraphicsDevice implements AutoCloseable
 //	###################################################################################################################
 
 	// TODO: I added this for the software renderer, see where this should go.
-	/** The array of pixels to be painted on the screen */
-//	public int[] pixels;
 	
 	/** The object used to draw the image in the frame */
 	private BufferedImage image;
@@ -1060,9 +1058,10 @@ public class GraphicsDevice implements AutoCloseable
 
 	private void platformClear(int clearOptions, Vector4 color, float depth, int stencil)
 	{
+		int col = new Color(color).getPackedValue();
 		for (int i = 0; i < pixels.length; ++i)
 		{
-			pixels[i] = new Color(color).getPackedValue(); // TODO: check for speed (use the Vector4 and shifts instead ?)
+			pixels[i] = col;
 		}
 	}
 
@@ -1073,18 +1072,6 @@ public class GraphicsDevice implements AutoCloseable
 
 	private void platformPresent()
 	{
-//		bufferStrategy = getBufferStrategy();
-//		if (bufferStrategy == null)
-//		{
-//			createBufferStrategy(3);
-//			return;
-//		}
-
-//		for (int i = 0; i < pixels.length; ++i)
-//		{
-//			screenPixels[i] = pixels[i];
-//		}
-
 		g = bufferStrategy.getDrawGraphics();
 		g.drawImage(image, 0, 0, getPresentationParameters().getBackBufferWidth(), getPresentationParameters().getBackBufferHeight(), null);
 		g.dispose();
@@ -1173,14 +1160,12 @@ public class GraphicsDevice implements AutoCloseable
 //TimedBlock.beginTimedBlock("Draw");
 		while (i < numVertices)
 		{
-			// TODO: rotation is stored in the position so need to use floats here.
-			// TODO: Investigate how to use the positions to treat rotation.
+			// NOTE(Eric): rotation is stored in the position.
 			destStartX = (int) (data[i + 0].position.x);
 			destStartY = (int) (data[i + 0].position.y);
 			destEndX = (int) (data[i + 1].position.x);
 			destEndY = (int) (data[i + 2].position.y);
 			
-			// TODO: Check if using floats is faster here.
 			// NOTE: Add 0.5f so that the cast always return the right value (rounding error).
 			srcStartX = (int) (data[i + 0].textureCoordinate.x * texture.width + 0.5f);
 			srcStartY = (int) (data[i + 0].textureCoordinate.y * texture.height + 0.5f);
@@ -1195,8 +1180,9 @@ public class GraphicsDevice implements AutoCloseable
 			Vector2 yAxis = new Vector2(data[i + 2].position.x - data[i + 0].position.x,
 										data[i + 2].position.y - data[i + 0].position.y);
 			
-//			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
-			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
+			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
+			// TODO: Add rotation handling to this code path since it is faster
+//			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
 			i += 4;
 		}
 //TimedBlock.endTimedBlock("Draw");
@@ -1413,7 +1399,7 @@ public class GraphicsDevice implements AutoCloseable
 						//       and add the offset for when we use spriteSheets or spriteStrips.
 						int fetchX = x - (int) origin.x + srcStartX;
 						int fetchY = y - (int) origin.y + srcStartY;
-			
+
 						int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
 						foregroundColor = new Vector4((float) ((texelPtr >>  0) & 0xFF),
 		 	 					  					  (float) ((texelPtr >>  8) & 0xFF),
@@ -1421,15 +1407,15 @@ public class GraphicsDevice implements AutoCloseable
 		 	 					  					  (float) ((texelPtr >> 24) & 0xFF));
 						foregroundColor = Vector4.divide(foregroundColor, 255);
 					}
-					
+
 					// tint
 					foregroundColor = Vector4.multiply(foregroundColor, tintVec4);
-		
+
 					Vector4 dest = new Vector4((float) ((pixels[x + y * screenWidth] >>  0) & 0xFF),
 										   	   (float) ((pixels[x + y * screenWidth] >>  8) & 0xFF),
 										   	   (float) ((pixels[x + y * screenWidth] >> 16) & 0xFF),
 										   	   (float) ((pixels[x + y * screenWidth] >> 24) & 0xFF));
-		
+
 					// NOTE: Go from sRGB to "linear" brightness space
 //					dest = sRGB255ToLinear1(dest);
 					dest = Vector4.divide(dest, 255);
