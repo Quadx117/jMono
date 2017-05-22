@@ -129,11 +129,12 @@ public class Vector4
 	// / <returns>The result of the vector addition.</returns>
 	public static Vector4 add(Vector4 value1, Vector4 value2)
 	{
-		value1.x += value2.x;
-		value1.y += value2.y;
-		value1.z += value2.z;
-		value1.w += value2.w;
-		return value1;
+		Vector4 result = new Vector4(value1);
+		result.x += value2.x;
+		result.y += value2.y;
+		result.z += value2.z;
+		result.w += value2.w;
+		return result;
 	}
 
 	// / <summary>
@@ -226,21 +227,23 @@ public class Vector4
 
 	public static Vector4 divide(Vector4 value1, Vector4 value2)
 	{
-		value1.w /= value2.w;
-		value1.x /= value2.x;
-		value1.y /= value2.y;
-		value1.z /= value2.z;
-		return value1;
+		Vector4 result = new Vector4(value1);
+		result.w /= value2.w;
+		result.x /= value2.x;
+		result.y /= value2.y;
+		result.z /= value2.z;
+		return result;
 	}
 
 	public static Vector4 divide(Vector4 value1, float divider)
 	{
 		float factor = 1f / divider;
-		value1.w *= factor;
-		value1.x *= factor;
-		value1.y *= factor;
-		value1.z *= factor;
-		return value1;
+		Vector4 result = new Vector4(value1);
+		result.w *= factor;
+		result.x *= factor;
+		result.y *= factor;
+		result.z *= factor;
+		return result;
 	}
 
 	public static void divide(final Vector4 value1, float divider, Vector4 result)
@@ -390,20 +393,22 @@ public class Vector4
 
 	public static Vector4 multiply(Vector4 value1, Vector4 value2)
 	{
-		value1.w *= value2.w;
-		value1.x *= value2.x;
-		value1.y *= value2.y;
-		value1.z *= value2.z;
-		return value1;
+		Vector4 result = new Vector4(value1);
+		result.w *= value2.w;
+		result.x *= value2.x;
+		result.y *= value2.y;
+		result.z *= value2.z;
+		return result;
 	}
 
 	public static Vector4 multiply(Vector4 value1, float scaleFactor)
 	{
-		value1.w *= scaleFactor;
-		value1.x *= scaleFactor;
-		value1.y *= scaleFactor;
-		value1.z *= scaleFactor;
-		return value1;
+		Vector4 result = new Vector4(value1);
+		result.w *= scaleFactor;
+		result.x *= scaleFactor;
+		result.y *= scaleFactor;
+		result.z *= scaleFactor;
+		return result;
 	}
 
 	public static void multiply(final Vector4 value1, float scaleFactor, Vector4 result)
@@ -443,8 +448,8 @@ public class Vector4
 
 	public static Vector4 normalize(Vector4 vector)
 	{
-		normalize(vector, vector);
-		return vector;
+		float val = 1.0f / (float)Math.sqrt((vector.x * vector.x) + (vector.y * vector.y) + (vector.z * vector.z) + (vector.w * vector.w));
+		return new Vector4(vector.x * val, vector.y * val, vector.z * val, vector.w * val);
 	}
 
 	public static void normalize(final Vector4 vector, Vector4 result)
@@ -481,11 +486,12 @@ public class Vector4
 	// / <returns>The result of the vector subtraction.</returns>
 	public static Vector4 subtract(Vector4 value1, Vector4 value2)
 	{
-		value1.w -= value2.w;
-		value1.x -= value2.x;
-		value1.y -= value2.y;
-		value1.z -= value2.z;
-		return value1;
+		Vector4 result = new Vector4(value1);
+		result.w -= value2.w;
+		result.x -= value2.x;
+		result.y -= value2.y;
+		result.z -= value2.z;
+		return result;
 	}
 
 	// / <summary>

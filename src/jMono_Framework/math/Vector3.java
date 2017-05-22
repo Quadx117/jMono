@@ -818,10 +818,11 @@ public class Vector3
 	 */
 	public static Vector3 multiply(Vector3 value1, Vector3 value2)
 	{
-		value1.x *= value2.x;
-		value1.y *= value2.y;
-		value1.z *= value2.z;
-		return value1;
+		Vector3 result = new Vector3(value1);
+		result.x *= value2.x;
+		result.y *= value2.y;
+		result.z *= value2.z;
+		return result;
 	}
 
 	/**
@@ -835,10 +836,11 @@ public class Vector3
 	 */
 	public static Vector3 multiply(Vector3 value1, float scaleFactor)
 	{
-		value1.x *= scaleFactor;
-		value1.y *= scaleFactor;
-		value1.z *= scaleFactor;
-		return value1;
+		Vector3 result = new Vector3(value1);
+		result.x *= scaleFactor;
+		result.y *= scaleFactor;
+		result.z *= scaleFactor;
+		return result;
 	}
 
 	/**
@@ -919,8 +921,8 @@ public class Vector3
 	 */
 	public static Vector3 normalize(Vector3 vector)
 	{
-		normalize(vector, vector);
-		return vector;
+		float val = 1.0f / (float)Math.sqrt((vector.x * vector.x) + (vector.y * vector.y) + (vector.z * vector.z));
+		return new Vector3(vector.x * val, vector.y * val, vector.z * val);
 	}
 
 	/**
@@ -1034,10 +1036,11 @@ public class Vector3
 	 */
 	public static Vector3 subtract(Vector3 value1, Vector3 value2)
 	{
-		value1.x -= value2.x;
-		value1.y -= value2.y;
-		value1.z -= value2.z;
-		return value1;
+		Vector3 result = new Vector3(value1);
+		result.x -= value2.x;
+		result.y -= value2.y;
+		result.z -= value2.z;
+		return result;
 	}
 
 	/**
