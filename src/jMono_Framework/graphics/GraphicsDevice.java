@@ -1195,7 +1195,7 @@ public class GraphicsDevice implements AutoCloseable
 			Vector2 yAxis = new Vector2(data[i + 2].position.x - data[i + 0].position.x,
 										data[i + 2].position.y - data[i + 0].position.y);
 			
-//			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.pixels, tint);
+//			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
 			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
 			i += 4;
 		}
@@ -1310,9 +1310,9 @@ public class GraphicsDevice implements AutoCloseable
 								fetchY = (int) tY + srcStartY;
 					
 								int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
-								foregroundColor = new Vector4((float) ((texelPtr >> 16) & 0xFF),
+								foregroundColor = new Vector4((float) ((texelPtr >>  0) & 0xFF),
 				 					 	 					  (float) ((texelPtr >>  8) & 0xFF),
-				 					 	 					  (float) ((texelPtr >>  0) & 0xFF),
+				 					 	 					  (float) ((texelPtr >> 16) & 0xFF),
 				 					 	 					  (float) ((texelPtr >> 24) & 0xFF));
 								foregroundColor = Vector4.divide(foregroundColor, 255);
 								break;
@@ -1375,21 +1375,21 @@ public class GraphicsDevice implements AutoCloseable
 										break;
 								}
 								
-								Vector4 texelA = new Vector4((float) ((texelPtrA >> 16) & 0xFF),
+								Vector4 texelA = new Vector4((float) ((texelPtrA >>  0) & 0xFF),
 									 					 	 (float) ((texelPtrA >>  8) & 0xFF),
-									 					 	 (float) ((texelPtrA >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrA >> 16) & 0xFF),
 									 					 	 (float) ((texelPtrA >> 24) & 0xFF));
-								Vector4 texelB = new Vector4((float) ((texelPtrB >> 16) & 0xFF),
+								Vector4 texelB = new Vector4((float) ((texelPtrB >>  0) & 0xFF),
 									 					 	 (float) ((texelPtrB >>  8) & 0xFF),
-									 					 	 (float) ((texelPtrB >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrB >> 16) & 0xFF),
 									 					 	 (float) ((texelPtrB >> 24) & 0xFF));
-								Vector4 texelC = new Vector4((float) ((texelPtrC >> 16) & 0xFF),
+								Vector4 texelC = new Vector4((float) ((texelPtrC >>  0) & 0xFF),
 									 					 	 (float) ((texelPtrC >>  8) & 0xFF),
-									 					 	 (float) ((texelPtrC >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrC >> 16) & 0xFF),
 									 					 	 (float) ((texelPtrC >> 24) & 0xFF));
-								Vector4 texelD = new Vector4((float) ((texelPtrD >> 16) & 0xFF),
+								Vector4 texelD = new Vector4((float) ((texelPtrD >>  0) & 0xFF),
 									 					 	 (float) ((texelPtrD >>  8) & 0xFF),
-									 					 	 (float) ((texelPtrD >>  0) & 0xFF),
+									 					 	 (float) ((texelPtrD >> 16) & 0xFF),
 									 					 	 (float) ((texelPtrD >> 24) & 0xFF));
 					
 								// NOTE: Go from sRGB to "linear light" space
@@ -1415,9 +1415,9 @@ public class GraphicsDevice implements AutoCloseable
 						int fetchY = y - (int) origin.y + srcStartY;
 			
 						int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
-						foregroundColor = new Vector4((float) ((texelPtr >> 16) & 0xFF),
+						foregroundColor = new Vector4((float) ((texelPtr >>  0) & 0xFF),
 		 	 					  					  (float) ((texelPtr >>  8) & 0xFF),
-		 	 					  					  (float) ((texelPtr >>  0) & 0xFF),
+		 	 					  					  (float) ((texelPtr >> 16) & 0xFF),
 		 	 					  					  (float) ((texelPtr >> 24) & 0xFF));
 						foregroundColor = Vector4.divide(foregroundColor, 255);
 					}
@@ -1425,9 +1425,9 @@ public class GraphicsDevice implements AutoCloseable
 					// tint
 					foregroundColor = Vector4.multiply(foregroundColor, tintVec4);
 		
-					Vector4 dest = new Vector4((float) ((pixels[x + y * screenWidth] >> 16) & 0xFF),
+					Vector4 dest = new Vector4((float) ((pixels[x + y * screenWidth] >>  0) & 0xFF),
 										   	   (float) ((pixels[x + y * screenWidth] >>  8) & 0xFF),
-										   	   (float) ((pixels[x + y * screenWidth] >>  0) & 0xFF),
+										   	   (float) ((pixels[x + y * screenWidth] >> 16) & 0xFF),
 										   	   (float) ((pixels[x + y * screenWidth] >> 24) & 0xFF));
 		
 					// NOTE: Go from sRGB to "linear" brightness space
@@ -1442,9 +1442,9 @@ public class GraphicsDevice implements AutoCloseable
 					Vector4 blended255 = Vector4.multiply(blended, 255);
 		
 					pixels[destIndex] = ((((int) blended255.w) << 24) & 0xff000000) |
-									  	  ((((int) blended255.x) << 16) & 0xff0000)	|
-									  	  ((((int) blended255.y) << 8) & 0xff00) |
-									  	  ((int) blended255.z);
+									  	((((int) blended255.z) << 16) & 0xff0000)	|
+									  	((((int) blended255.y) << 8) & 0xff00) |
+									  	  ((int) blended255.x);
 				}
 				++destIndex;
 			}
@@ -1530,9 +1530,9 @@ public class GraphicsDevice implements AutoCloseable
 							v = (int) (yRatio * ((y - srcStartY) + 0.5f)) + srcStartY;
 							srcColor = srcPixels[u + v * srcWidth];
 //							foregroundCol = srcPixels[(int) (((xRatio * ((x - srcStartX) + 0.5f))) + srcStartX) + (int) (((yRatio * ((y - srcStartY) + 0.5f))) + srcStartY) * srcWidth];
-							srcR = (srcColor >> 16) & 0xff;
+							srcR = (srcColor) & 0xff;
 							srcG = (srcColor >> 8) & 0xff;
-							srcB = (srcColor) & 0xff;
+							srcB = (srcColor >> 16) & 0xff;
 							srcA = (srcColor >> 24) & 0xff;
 							break;
 
@@ -1599,13 +1599,13 @@ public class GraphicsDevice implements AutoCloseable
 									break;
 							}
 
-							float b = MathHelper.lerp(MathHelper.lerp(texelA & 0xff, texelB & 0xff, x_diff),
+							float r = MathHelper.lerp(MathHelper.lerp(texelA & 0xff, texelB & 0xff, x_diff),
 													  MathHelper.lerp(texelC & 0xff, texelD & 0xff, x_diff),
 													  y_diff);
 							float g = MathHelper.lerp(MathHelper.lerp((texelA >> 8) & 0xff, (texelB >> 8) & 0xff, x_diff),
 													  MathHelper.lerp((texelC >> 8) & 0xff, (texelD >> 8) & 0xff, x_diff),
 													  y_diff);
-							float r = MathHelper.lerp(MathHelper.lerp((texelA >> 16) & 0xff, (texelB >> 16) & 0xff, x_diff),
+							float b = MathHelper.lerp(MathHelper.lerp((texelA >> 16) & 0xff, (texelB >> 16) & 0xff, x_diff),
 													  MathHelper.lerp((texelC >> 16) & 0xff, (texelD >> 16) & 0xff, x_diff),
 													  y_diff);
 							float a = MathHelper.lerp(MathHelper.lerp((texelA >> 24) & 0xff, (texelB >> 24)& 0xff, x_diff),
@@ -1613,12 +1613,12 @@ public class GraphicsDevice implements AutoCloseable
 													  y_diff);
 
 							// NOTE: Add 0.5f before casting so it rounds properly
-							b += 0.5f;
-							g += 0.5f;
 							r += 0.5f;
+							g += 0.5f;
+							b += 0.5f;
 							a += 0.5f;
 
-//							srcColor = ((((int) a) << 24) & 0xff000000) | ((((int) r) << 16) & 0xff0000) | ((((int) g) << 8) & 0xff00) | ((int) b);
+//							srcColor = ((((int) a) << 24) & 0xff000000) | ((((int) b) << 16) & 0xff0000) | ((((int) g) << 8) & 0xff00) | ((int) r);
 							srcR = (int) r;
 							srcG = (int) g;
 							srcB = (int) b;
@@ -1629,9 +1629,9 @@ public class GraphicsDevice implements AutoCloseable
 				else
 				{
 					srcColor = srcPixels[x + y * srcWidth];
-					srcR = (srcColor >> 16) & 0xff;
+					srcR = (srcColor) & 0xff;
 					srcG = (srcColor >> 8) & 0xff;
-					srcB = (srcColor) & 0xff;
+					srcB = (srcColor >> 16) & 0xff;
 					srcA = (srcColor >> 24) & 0xff;
 				}
 
@@ -1658,8 +1658,8 @@ public class GraphicsDevice implements AutoCloseable
 				// If alpha is 255 it completely overrides the existing color.
 				if (srcA == 255 || _blendState == BlendState.Opaque)
 				{
-					col = (srcA << 24 & 0xff000000) | (srcR << 16 & 0x00ff0000) |
-						  (srcG << 8 & 0x0000ff00) | (srcB & 0x000000ff);
+					col = (srcA << 24 & 0xff000000) | (srcB << 16 & 0x00ff0000) |
+						  (srcG << 8 & 0x0000ff00) | (srcR & 0x000000ff);
 				}
 				else if (_blendState == BlendState.AlphaBlend)
 				{
@@ -1667,9 +1667,9 @@ public class GraphicsDevice implements AutoCloseable
 					int backgroundCol = pixels[destIndex];
 					
 					// Do the alpha-blending with the premultiplied alpha source.
-					int backgroundR = (backgroundCol >> 16) & 0xff;
+					int backgroundB = (backgroundCol >> 16) & 0xff;
 					int backgroundG = (backgroundCol >> 8) & 0xff;
-					int backgroundB = (backgroundCol) & 0xff;
+					int backgroundR = (backgroundCol) & 0xff;
 					// Typical over blend formula
 					int r = srcR + (backgroundR * (255 - srcA) / 255);
 					int g = srcG + (backgroundG * (255 - srcA) / 255);
@@ -1681,13 +1681,13 @@ public class GraphicsDevice implements AutoCloseable
 					g = g > 255 ? 255 : g;
 					b = b > 255 ? 255 : b;
 
-					col = r << 16 | g << 8 | b;
+					col = b << 16 | g << 8 | r;
 				}
 				else
 				{
 					// TODO: Should do the other BlendStates
 					// Defaults to BlendState.OPAQUE.
-					col = srcA << 24 | srcR << 16 | srcG << 8 | srcB;
+					col = srcA << 24 | srcB << 16 | srcG << 8 | srcR;
 				}
 
 				pixels[destIndex] = col;

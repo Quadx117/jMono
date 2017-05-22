@@ -563,6 +563,7 @@ public class Texture2D extends Texture
 	// TODO: Should I create all primitives type or send the primitives through
 	// this method as their Wrapper Class counterpart ?
 	// This means creating a bunch of utilities method to do the conversion
+	// NOTE(Eric): The data is expected to be in the RGBA format
 	private void platformSetData(int level, int arraySlice, Rectangle rect, byte[] data, int startIndex, int elementCount)
 	{
 		int elementSize = 4; //_format.getSize();
@@ -570,9 +571,9 @@ public class Texture2D extends Texture
 		for (int i = 0, j = 0; i < elementCount; i += 4, ++j)
 		{
 			this._texture[j] = (data[i + 3] & 0xFF) << 24 |	// A component
-							   (data[i + 0] & 0xFF) << 16 |	// R component
+							   (data[i + 2] & 0xFF) << 16 |	// B component
 							   (data[i + 1] & 0xFF) <<  8 |	// G component
-							   (data[i + 2] & 0xFF);		// B component
+							   (data[i + 0] & 0xFF);		// R component
 		}
 	}
 
