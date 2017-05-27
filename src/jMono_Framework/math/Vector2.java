@@ -25,7 +25,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * The y component of this Vector.
 	 */
 	public float y;
-	
+
 	/**
 	 * Returns a {@code Vector3} with components 0, 0.
 	 * 
@@ -238,8 +238,8 @@ public class Vector2 // implements IEquatable<Vector2>
 	// / <returns>The result of linear interpolation of the specified vectors.</returns>
 	public static Vector2 lerp(Vector2 value1, Vector2 value2, float amount)
 	{
-		return new Vector2(	//
-				MathHelper.lerp(value1.x, value2.x, amount),	//
+		return new Vector2(
+				MathHelper.lerp(value1.x, value2.x, amount),
 				MathHelper.lerp(value1.y, value2.y, amount));
 	}
 
@@ -256,6 +256,44 @@ public class Vector2 // implements IEquatable<Vector2>
 	{
 		result.x = MathHelper.lerp(value1.x, value2.x, amount);
 		result.y = MathHelper.lerp(value1.y, value2.y, amount);
+	}
+
+	// / <summary>
+	// / Creates a new {@link Vector2} that contains linear interpolation of the specified vectors.
+	// / Uses <see cref="MathHelper.LerpPrecise"/> on MathHelper for the interpolation.
+	// / Less efficient but more precise compared to <see cref="Vector2.Lerp(Vector2, Vector2, float)"/>.
+	// / See remarks section of <see cref="MathHelper.LerpPrecise"/> on MathHelper for more info.
+	// / </summary>
+	// / <param name="value1">The first vector.</param>
+	// / <param name="value2">The second vector.</param>
+	// / <param name="amount">Weighting value(between 0.0 and 1.0).</param>
+	// / <returns>The result of linear interpolation of the specified vectors.</returns>
+	public static Vector2 lerpPrecise(Vector2 value1, Vector2 value2, float amount)
+	{
+		return new Vector2(
+				MathHelper.lerpPrecise(value1.x, value2.x, amount),
+				MathHelper.lerpPrecise(value1.y, value2.y, amount));
+	}
+
+	/**
+	 * Creates a new {@link Vector2} that contains linear interpolation of the specified vectors.
+	 * Uses {@link MathHelper#lerpPrecise(float, float)} in MathHelper for the interpolation.
+	 * Less efficient but more precise compared to {@link Vector2#lerp(Vector2, Vector2, float, Vector2)}.
+	 * See remarks section of {@link MathHelper#lerpPrecise(float, float)} in MathHelper for more info.
+	 * 
+	 * @param value1
+	 *        The first {@code vector}.
+	 * @param value2
+	 *        The second {@code vector}.
+	 * @param amount
+	 *        Weighting value(between 0.0 and 1.0).
+	 * @param result
+	 *        The result of linear interpolation of the specified vectors as an output parameter.
+	 */
+	public static void lerpPrecise(final Vector2 value1, final Vector2 value2, float amount, Vector2 result)
+	{
+		result.x = MathHelper.lerpPrecise(value1.x, value2.x, amount);
+		result.y = MathHelper.lerpPrecise(value1.y, value2.y, amount);
 	}
 
 	// / <summary>
@@ -310,6 +348,28 @@ public class Vector2 // implements IEquatable<Vector2>
 		result.y = value1.y < value2.y ? value1.y : value2.y;
 	}
 
+	// / <summary>
+	// / Returns a dot product of two vectors.
+	// / </summary>
+	// / <param name="value1">The first vector.</param>
+	// / <param name="value2">The second vector.</param>
+	// / <returns>The dot product of two vectors.</returns>
+	// public static float dot(Vector2 value1, Vector2 value2)
+	// {
+	// return (value1.x * value2.x) + (value1.y * value2.y);
+	// }
+
+	// / <summary>
+	// / Returns a dot product of two vectors.
+	// / </summary>
+	// / <param name="value1">The first vector.</param>
+	// / <param name="value2">The second vector.</param>
+	// / <param name="result">The dot product of two vectors as an output parameter.</param>
+	// public static void dot(final Vector2 value1, final Vector2 value2, float result)
+	// {
+	// result = (value1.x * value2.x) + (value1.y * value2.y);
+	// }
+
 	public float dotProduct(Vector2 other)
 	{
 		return x * other.getX() + y * other.getY();
@@ -336,9 +396,8 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * Indicates whether some other object is "equal to" this one.
 	 * 
 	 * @param obj
-	 * 		  the reference object with which to compare.
-	 * @return {@code true} if this object is the same as the obj argument;
-     *         {@code false} otherwise.
+	 *        the reference object with which to compare.
+	 * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
 	 */
 	@Override
 	public boolean equals(Object obj)
@@ -371,28 +430,27 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * Indicates whether some other object is "not equal to" this one.
 	 * 
 	 * @param obj
-	 * 		  the reference object with which to compare.
-	 * @return {@code false} if this object is the same as the obj argument;
-     *         {@code true} otherwise.
-     * @see #equals(Object)
+	 *        the reference object with which to compare.
+	 * @return {@code false} if this object is the same as the obj argument; {@code true} otherwise.
+	 * @see #equals(Object)
 	 */
 	public boolean notEquals(Object obj)
 	{
 		return !this.equals(obj);
 	}
-	
-	/// <summary>
-    /// Gets the hash code of this {@link Vector2}.
-    /// </summary>
-    /// <returns>Hash code of this {@link Vector2}.</returns>
+
+	// / <summary>
+	// / Gets the hash code of this {@link Vector2}.
+	// / </summary>
+	// / <returns>Hash code of this {@link Vector2}.</returns>
 	/**
 	 * 
 	 */
 	@Override
-    public int hashCode()
-    {
-        return Float.hashCode(x) + Float.hashCode(y);
-    }
+	public int hashCode()
+	{
+		return (Float.hashCode(x) * 397) ^ Float.hashCode(y);
+	}
 
 	// ++++++++++ Static methods ++++++++++ //
 
@@ -410,16 +468,18 @@ public class Vector2 // implements IEquatable<Vector2>
 
 	/**
 	 * Creates a new {@link Vector2} that contains the specified vector inversion.
+	 * 
 	 * @param value
 	 *        Source {@link Vector2}.
-	 * @param result The result of the vector inversion as an output parameter.
+	 * @param result
+	 *        The result of the vector inversion as an output parameter.
 	 */
 	public static void negate(final Vector2 value, Vector2 result)
 	{
 		result.x = -value.x;
 		result.y = -value.y;
 	}
-    
+
 	/**
 	 * Adds two vectors.
 	 * 
@@ -453,7 +513,7 @@ public class Vector2 // implements IEquatable<Vector2>
 		result.x = value1.x + value2.x;
 		result.y = value1.y + value2.y;
 	}
-	
+
 	/**
 	 * Subtracts a {@link Vector2} from a {@link Vector2}.
 	 * 
@@ -472,7 +532,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	}
 
 	/**
-	 * Creates a new {@link Vector2} that contains subtraction of on <see cref="Vector2"/> from a another.
+	 * Creates a new {@link Vector2} that contains subtraction of on {@link Vector2} from a another.
 	 * 
 	 * @param value1
 	 *        Source {@link Vector2}.
@@ -523,17 +583,17 @@ public class Vector2 // implements IEquatable<Vector2>
 	/**
 	 * Multiplies the components of vector by a scalar.
 	 * 
-	 * @param value
+	 * @param scaleFactor
 	 *        Scalar value on the left of the mul sign.
 	 * @param vector
 	 *        Source {@link Vector2} on the right of the mul sign.
 	 * @return Result of the vector multiplication.
 	 */
-	public static Vector2 multiply(float value, Vector2 vector)
+	public static Vector2 multiply(float scaleFactor, Vector2 vector)
 	{
-		Vector2 result = new Vector2(value);
-		result.x *= value;
-		result.y *= value;
+		Vector2 result = new Vector2(vector);
+		result.x *= scaleFactor;
+		result.y *= scaleFactor;
 		return result;
 	}
 
@@ -556,6 +616,7 @@ public class Vector2 // implements IEquatable<Vector2>
 
 	/**
 	 * Creates a new {@link Vector2} that contains a multiplication of two vectors.
+	 * 
 	 * @param value1
 	 *        Source {@link Vector2}.
 	 * @param value2
@@ -601,21 +662,21 @@ public class Vector2 // implements IEquatable<Vector2>
 		result.x = value1.x / value2.x;
 		result.y = value1.y / value2.y;
 	}
-	
+
 	/**
 	 * Divides the components of a {@link Vector2} by a scalar.
 	 * 
 	 * @param vector
 	 *        Source {@link Vector2} on the left of the div sign.
-	 * @param value
+	 * @param divider
 	 *        Divisor scalar on the right of the div sign.
 	 * @return The result of dividing a vector by a scalar.
 	 */
-	public static Vector2 divide(Vector2 vector, float value)
+	public static Vector2 divide(Vector2 vector, float divider)
 	{
 		Vector2 result = new Vector2(vector);
-		result.x /= value;
-		result.y /= value;
+		result.x /= divider;
+		result.y /= divider;
 		return result;
 	}
 
@@ -632,8 +693,8 @@ public class Vector2 // implements IEquatable<Vector2>
 	public static void divide(final Vector2 vector, float divider, Vector2 result)
 	{
 		float factor = 1 / divider;
-        result.x = vector.x * factor;
-        result.y = vector.y * factor;
+		result.x = vector.x * factor;
+		result.y = vector.y * factor;
 	}
 
 	/**
@@ -830,39 +891,18 @@ public class Vector2 // implements IEquatable<Vector2>
 		result = (v1 * v1) + (v2 * v2);
 	}
 
-	/// <summary>
-	/// Returns a dot product of two vectors.
-	/// </summary>
-	/// <param name="value1">The first vector.</param>
-	/// <param name="value2">The second vector.</param>
-	/// <returns>The dot product of two vectors.</returns>
-//	public static float dot(Vector2 value1, Vector2 value2)
-//	{
-//		return (value1.x * value2.x) + (value1.y * value2.y);
-//	}
-
-	/// <summary>
-	/// Returns a dot product of two vectors.
-	/// </summary>
-	/// <param name="value1">The first vector.</param>
-	/// <param name="value2">The second vector.</param>
-	/// <param name="result">The dot product of two vectors as an output parameter.</param>
-//	public static void dot(final Vector2 value1, final Vector2 value2, float result)
-//	{
-//		result = (value1.x * value2.x) + (value1.y * value2.y);
-//	}
-
 	/**
 	 * Creates a new {@link Vector2} that contains a normalized values from another vector.
+	 * 
 	 * @param value
 	 *        Source {@link Vector2}.
 	 * @return Unit vector.
 	 */
 	public static Vector2 normalize(Vector2 value)
 	{
-		float val = 1.0f / (float)Math.sqrt((value.x * value.x) + (value.y * value.y));
+		float val = 1.0f / (float) Math.sqrt((value.x * value.x) + (value.y * value.y));
 		return new Vector2(value.x * val, value.y * val);
-    }
+	}
 
 	/**
 	 * Creates a new {@link Vector2} that contains a normalized values from another vector.
@@ -874,7 +914,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	 */
 	public static void normalize(final Vector2 value, Vector2 result)
 	{
-		float val = 1.0f / (float)Math.sqrt((value.x * value.x) + (value.y * value.y));
+		float val = 1.0f / (float) Math.sqrt((value.x * value.x) + (value.y * value.y));
 		result.x = value.x * val;
 		result.y = value.y * val;
 	}
@@ -930,7 +970,7 @@ public class Vector2 // implements IEquatable<Vector2>
 		return new Vector2(
 				MathHelper.smoothStep(value1.x, value2.x, amount),
 				MathHelper.smoothStep(value1.y, value2.y, amount));
-    }
+	}
 
 	/**
 	 * Creates a new {@link Vector2} that contains cubic interpolation of the specified vectors.
@@ -1026,7 +1066,7 @@ public class Vector2 // implements IEquatable<Vector2>
 	 */
 	public Point toPoint()
 	{
-		return new Point((int) x,(int) y);
+		return new Point((int) x, (int) y);
 	}
 
 	// / <summary>
@@ -1068,8 +1108,9 @@ public class Vector2 // implements IEquatable<Vector2>
 	// / <returns>Transformed {@link Vector2}.</returns>
 	public static Vector2 transform(Vector2 value, Quaternion rotation)
 	{
-		transform(value, rotation, value);
-		return value;
+		Vector2 result = new Vector2();
+		transform(value, rotation, result);
+		return result;
 	}
 
 	// / <summary>
@@ -1147,7 +1188,6 @@ public class Vector2 // implements IEquatable<Vector2>
 	// / <param name="destinationIndex">The starting index in the destination array, where the first
 	// {@link Vector2} should be written.</param>
 	// / <param name="length">The number of vectors to be transformed.</param>
-	@SuppressWarnings("null")
 	public static void transform(Vector2[] sourceArray,
 								 int sourceIndex,
 								 final Quaternion rotation,
@@ -1169,7 +1209,7 @@ public class Vector2 // implements IEquatable<Vector2>
 			Vector2 position = sourceArray[sourceIndex + x];
 			Vector2 destination = destinationArray[destinationIndex + x];
 
-			Vector2 v = null;
+			Vector2 v = new Vector2();
 			transform(position, rotation, v);
 
 			destination.x = v.x;
@@ -1203,25 +1243,48 @@ public class Vector2 // implements IEquatable<Vector2>
 	{
 		transform(sourceArray, 0, rotation, destinationArray, 0, sourceArray.length);
 	}
-	
-	/// <summary>
-    /// Apply transformation on normals within array of <see cref="Vector2"/> by the specified <see cref="Matrix"/> and places the results in an another array.
-    /// </summary>
-    /// <param name="sourceArray">Source array.</param>
-    /// <param name="sourceIndex">The starting index of transformation in the source array.</param>
-    /// <param name="matrix">The transformation <see cref="Matrix"/>.</param>
-    /// <param name="destinationArray">Destination array.</param>
-    /// <param name="destinationIndex">The starting index in the destination array, where the first <see cref="Vector2"/> should be written.</param>
-    /// <param name="length">The number of normals to be transformed.</param>
-	public static void transformNormal
-		(
-			Vector2[] sourceArray,
-			int sourceIndex,
-			final Matrix matrix,
-			Vector2[] destinationArray,
-			int destinationIndex,
-			int length
-		)
+
+	// / <summary>
+	// / Creates a new <see cref="Vector2"/> that contains a transformation of the specified normal by the specified <see cref="Matrix"/>.
+	// / </summary>
+	// / <param name="normal">Source <see cref="Vector2"/> which represents a normal vector.</param>
+	// / <param name="matrix">The transformation <see cref="Matrix"/>.</param>
+	// / <returns>Transformed normal.</returns>
+	public static Vector2 transformNormal(Vector2 normal, Matrix matrix)
+	{
+		return new Vector2((normal.x * matrix.M11) + (normal.y * matrix.M21),
+				           (normal.x * matrix.M12) + (normal.y * matrix.M22));
+	}
+
+	// / <summary>
+	// / Creates a new <see cref="Vector2"/> that contains a transformation of the specified normal by the specified <see cref="Matrix"/>.
+	// / </summary>
+	// / <param name="normal">Source <see cref="Vector2"/> which represents a normal vector.</param>
+	// / <param name="matrix">The transformation <see cref="Matrix"/>.</param>
+	// / <param name="result">Transformed normal as an output parameter.</param>
+	public static void transformNormal(final Vector2 normal, final Matrix matrix, Vector2 result)
+	{
+		float x = (normal.x * matrix.M11) + (normal.y * matrix.M21);
+		float y = (normal.x * matrix.M12) + (normal.y * matrix.M22);
+		result.x = x;
+		result.y = y;
+	}
+
+	// / <summary>
+	// / Apply transformation on normals within array of {@link Vector2} by the specified <see cref="Matrix"/> and places the results in an another array.
+	// / </summary>
+	// / <param name="sourceArray">Source array.</param>
+	// / <param name="sourceIndex">The starting index of transformation in the source array.</param>
+	// / <param name="matrix">The transformation <see cref="Matrix"/>.</param>
+	// / <param name="destinationArray">Destination array.</param>
+	// / <param name="destinationIndex">The starting index in the destination array, where the first {@link Vector2} should be written.</param>
+	// / <param name="length">The number of normals to be transformed.</param>
+	public static void transformNormal(Vector2[] sourceArray,
+									   int sourceIndex,
+									   final Matrix matrix,
+									   Vector2[] destinationArray,
+									   int destinationIndex,
+									   int length)
 	{
 		if (sourceArray == null)
 			throw new NullPointerException("sourceArray");
@@ -1237,12 +1300,12 @@ public class Vector2 // implements IEquatable<Vector2>
 			Vector2 normal = sourceArray[sourceIndex + i];
 
 			destinationArray[destinationIndex + i] = new Vector2((normal.x * matrix.M11) + (normal.y * matrix.M21),
-                                                                 (normal.x * matrix.M12) + (normal.y * matrix.M22));
-        }
-    }
+					(normal.x * matrix.M12) + (normal.y * matrix.M22));
+		}
+	}
 
 	/**
-	 * Apply transformation on all normals within array of <see cref="Vector2"/> by the specified <see cref="Matrix"/> and places the results in an another array.
+	 * Apply transformation on all normals within array of {@link Vector2} by the specified <see cref="Matrix"/> and places the results in an another array.
 	 * 
 	 * @param sourceArray
 	 *        Source array.
@@ -1251,26 +1314,26 @@ public class Vector2 // implements IEquatable<Vector2>
 	 * @param destinationArray
 	 *        Destination array.
 	 */
-   	public static void transformNormal
-		(
-			Vector2[] sourceArray,
-			final Matrix matrix,
-			Vector2[] destinationArray
-		)
+	public static void transformNormal
+			(
+					Vector2[] sourceArray,
+					final Matrix matrix,
+					Vector2[] destinationArray
+			)
 	{
-    	if (sourceArray == null)
-    		throw new NullPointerException("sourceArray");
-    	if (destinationArray == null)
-    		throw new NullPointerException("destinationArray");
-    	if (destinationArray.length < sourceArray.length)
-    		throw new IllegalArgumentException("Destination array length is lesser than source array length");
+		if (sourceArray == null)
+			throw new NullPointerException("sourceArray");
+		if (destinationArray == null)
+			throw new NullPointerException("destinationArray");
+		if (destinationArray.length < sourceArray.length)
+			throw new IllegalArgumentException("Destination array length is lesser than source array length");
 
-    	for (int i = 0; i < sourceArray.length; i++)
-    	{
-    		Vector2 normal = sourceArray[i];
+		for (int i = 0; i < sourceArray.length; i++)
+		{
+			Vector2 normal = sourceArray[i];
 
-    		destinationArray[i] = new Vector2((normal.x * matrix.M11) + (normal.y * matrix.M21),
-                                              (normal.x * matrix.M12) + (normal.y * matrix.M22));
-    	}
+			destinationArray[i] = new Vector2((normal.x * matrix.M11) + (normal.y * matrix.M21),
+					(normal.x * matrix.M12) + (normal.y * matrix.M22));
+		}
 	}
 }
