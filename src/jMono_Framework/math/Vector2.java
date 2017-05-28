@@ -163,19 +163,15 @@ public class Vector2 // implements IEquatable<Vector2>
 		return this;
 	}
 
-	public Vector2 divide(Vector2 other) throws IllegalArgumentException
+	public Vector2 divide(Vector2 other)
 	{
-		if (other.x == 0 || other.y == 0)
-			throw new IllegalArgumentException("Cannot divide by zero");
 		this.x /= other.x;
 		this.y /= other.y;
 		return this;
 	}
 
-	public Vector2 divide(float value) throws IllegalArgumentException
+	public Vector2 divide(float value)
 	{
-		if (value == 0)
-			throw new IllegalArgumentException("Cannot divide by zero");
 		this.x /= value;
 		this.y /= value;
 		return this;
