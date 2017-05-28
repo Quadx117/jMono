@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="1" total="11" passed="10">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="96" started-at="2017-05-28T16:17:34Z" finished-at="2017-05-28T16:17:34Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="96" started-at="2017-05-28T16:17:34Z" finished-at="2017-05-28T16:17:34Z">
+      <class name="framework.Vector2Test">
+        <test-method status="PASS" signature="add()[pri:0, instance:framework.Vector2Test@6a024a67]" name="add" duration-ms="13" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- add -->
+        <test-method status="PASS" signature="catmullRom()[pri:0, instance:framework.Vector2Test@6a024a67]" name="catmullRom" duration-ms="3" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- catmullRom -->
+        <test-method status="PASS" signature="divide()[pri:0, instance:framework.Vector2Test@6a024a67]" name="divide" duration-ms="3" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- divide -->
+        <test-method status="PASS" signature="hashCodeTest()[pri:0, instance:framework.Vector2Test@6a024a67]" name="hashCodeTest" duration-ms="4" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- hashCodeTest -->
+        <test-method status="PASS" signature="hermite()[pri:0, instance:framework.Vector2Test@6a024a67]" name="hermite" duration-ms="2" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- hermite -->
+        <test-method status="PASS" signature="multiply()[pri:0, instance:framework.Vector2Test@6a024a67]" name="multiply" duration-ms="1" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- multiply -->
+        <test-method status="PASS" signature="subtract()[pri:0, instance:framework.Vector2Test@6a024a67]" name="subtract" duration-ms="1" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- subtract -->
+        <test-method status="PASS" signature="toPoint()[pri:0, instance:framework.Vector2Test@6a024a67]" name="toPoint" duration-ms="2" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- toPoint -->
+        <test-method status="PASS" signature="transform()[pri:0, instance:framework.Vector2Test@6a024a67]" name="transform" duration-ms="8" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- transform -->
+        <test-method status="PASS" signature="transformNormal()[pri:0, instance:framework.Vector2Test@6a024a67]" name="transformNormal" duration-ms="1" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- transformNormal -->
+      </class> <!-- framework.Vector2Test -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
