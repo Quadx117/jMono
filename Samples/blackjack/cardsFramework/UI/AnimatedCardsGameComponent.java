@@ -60,11 +60,11 @@ public class AnimatedCardsGameComponent extends AnimatedGameComponent
 		{
 			if (currentDestination != null)
 			{
-				cardGame.spriteBatch.draw(currentFrame, currentDestination, Color.White);
+				cardGame.spriteBatch.draw(currentFrame, currentDestination, Color.White());
 			}
 			else
 			{
-				cardGame.spriteBatch.draw(currentFrame, currentPosition, Color.White);
+				cardGame.spriteBatch.draw(currentFrame, currentPosition, Color.White());
 			}
 		}
 

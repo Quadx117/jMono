@@ -19,7 +19,7 @@ public class VertexPositionColorTexture implements IVertexType
 		this.textureCoordinate = textureCoordinate;
 	}
 
-	// Note: Added this since it is provided by default for struct in C#
+	// NOTE(Eric): Added this since it is provided by default for struct in C#
 	public VertexPositionColorTexture()
 	{
 		this(new Vector3(), new Color(), new Vector2());

@@ -7,98 +7,123 @@ import jMono_Framework.time.GameTime;
 
 public class GameComponent implements IGameComponent, IUpdateable, Comparable<GameComponent>, AutoCloseable
 {
-	private boolean isEnabled = true;
-	private int updateOrder;
+    private boolean isEnabled = true;
+    private int updateOrder;
 
-	/**
-	 * A reference to the main game object
-	 */
-	public Game getGame() { return this.game; }
-	protected Game game;
+    /**
+     * A reference to the main game object
+     */
+    protected Game game;
 
-	public boolean isEnabled() { return isEnabled; }
+    public Game getGame()
+    {
+        return this.game;
+    }
 
-	public void setEnabled(boolean value)
-	{
-		if (isEnabled != value)
-		{
-			isEnabled = value;
+    public boolean isEnabled()
+    {
+        return isEnabled;
+    }
 
-			if (this.enabledChanged != null)
-				this.enabledChanged.handleEvent(this, EventArgs.Empty);
-			onEnabledChanged(this, null);
-		}
-	}
+    public void setEnabled(boolean value)
+    {
+        if (isEnabled != value)
+        {
+            isEnabled = value;
+            if (this.enabledChanged != null)
+                this.enabledChanged.handleEvent(this, EventArgs.Empty);
+            onEnabledChanged(this, null);
+        }
+    }
 
-	public int getUpdateOrder() { return updateOrder; }
+    public int getUpdateOrder()
+    {
+        return updateOrder;
+    }
 
-	public void setUpdateOrder(int value)
-	{
-		if (updateOrder != value)
-		{
-			updateOrder = value;
+    public void setUpdateOrder(int value)
+    {
+        if (updateOrder != value)
+        {
+            updateOrder = value;
+            if (this.updateOrderChanged != null)
+                this.updateOrderChanged.handleEvent(this, EventArgs.Empty);
+            onUpdateOrderChanged(this, null);
+        }
+    }
 
-			if (this.updateOrderChanged != null)
-				this.updateOrderChanged.handleEvent(this, EventArgs.Empty);
-			onUpdateOrderChanged(this, null);
-		}
-	}
+    public Event<EventArgs> enabledChanged = new Event<EventArgs>();
 
-	public Event<EventArgs> enabledChanged = new Event<EventArgs>();
-	@Override
-	public Event<EventArgs> getEnabledChanged() { return enabledChanged; }
-	
-	public Event<EventArgs> updateOrderChanged = new Event<EventArgs>();
-	@Override
-	public Event<EventArgs> getUpdateOrderChanged() { return updateOrderChanged; }
-	
-	public GameComponent(Game game)
-	{
-		this.game = game;
-	}
+    @Override
+    public Event<EventArgs> getEnabledChanged()
+    {
+        return enabledChanged;
+    }
 
-	@Override
-	public void finalize()
-	{
-		dispose(false);
-	}
+    public Event<EventArgs> updateOrderChanged = new Event<EventArgs>();
 
-	/**
-	 * Initialize the component.
-	 */
-	public void initialize() {}
+    @Override
+    public Event<EventArgs> getUpdateOrderChanged()
+    {
+        return updateOrderChanged;
+    }
 
-	/**
-	 * Updates the component.
-	 * 
-	 * @param gameTime
-	 *        The time which has elapsed since the last call to this method.
-	 */
-	public void update(GameTime gameTime) {}
+    public GameComponent(Game game)
+    {
+        this.game = game;
+    }
 
-	protected void onUpdateOrderChanged(Object sender, EventArgs args) {}
+    @Override
+    public void finalize()
+    {
+        dispose(false);
+    }
 
-	protected void onEnabledChanged(Object sender, EventArgs args) {}
+    /**
+     * Initialize the component.
+     */
+    public void initialize()
+    {}
 
-	/**
-	 * Shuts down the component.
-	 * 
-	 * @param disposing
-	 */
-	protected void dispose(boolean disposing) {}
+    /**
+     * Updates the component.
+     * 
+     * @param gameTime
+     *        The time which has elapsed since the last call to this method.
+     */
+    public void update(GameTime gameTime)
+    {}
 
-	/**
-	 * Shuts down the component.
-	 */
-	@Override
-	public void close()
-	{
-		dispose(true);
-		// GC.SuppressFinalize(this);
-	}
+    protected void onUpdateOrderChanged(Object sender, EventArgs args)
+    {}
 
-	public int compareTo(GameComponent other)
-	{
-		return other.getUpdateOrder() - this.updateOrder;
-	}
+    protected void onEnabledChanged(Object sender, EventArgs args)
+    {}
+
+    /**
+     * Shuts down the component.
+     * 
+     * @param disposing
+     */
+    protected void dispose(boolean disposing)
+    {}
+
+    /**
+     * Shuts down the component.
+     */
+    @Override
+    public void close()
+    {
+        dispose(true);
+        // GC.SuppressFinalize(this);
+    }
+
+    // #region Comparable<GameComponent> Members
+
+    public int compareTo(GameComponent other)
+    {
+        return other.getUpdateOrder() - this.updateOrder;
+    }
+
+    // #endregion
 }

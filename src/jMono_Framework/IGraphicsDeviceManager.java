@@ -1,10 +1,29 @@
 package jMono_Framework;
 
-public interface IGraphicsDeviceManager {
+/**
+ * Used by the platform code to control the graphics device.
+ * 
+ * @author Eric Perron (based on the XNA Framework from Microsoft and MonoGame)
+ *
+ */
+public interface IGraphicsDeviceManager
+{
+    /**
+     * Called at the start of rendering a frame.
+     * 
+     * @return Returns true if the frame should be rendered.
+     */
+    boolean beginDraw();
 
-	boolean beginDraw();
+    /**
+     * Called to create the graphics device.
+     * <p>
+     * Does nothing if the graphics device is already created.
+     */
+    void createDevice();
 
-	void createDevice();
-
-	void endDraw();
+    /**
+     * Called after rendering to present the frame to the screen.
+     */
+    void endDraw();
 }

@@ -4,7 +4,7 @@ import jMono_Framework.utilities.FileHelpers;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,166 +14,134 @@ import java.nio.file.Paths;
 
 public class TitleContainer
 {
-	/**
-	 * Make sure we can't instantiate this class
-	 */
-	private TitleContainer() {}
+    // static partial void PlatformInit();
 
-	static
-	{
+    // NOTE(Eric): Added this since this is a static class in C#
+    /**
+     * Make sure we can't instantiate this class
+     */
+    private TitleContainer() {}
+
+    // NOTE(Eric): This block also include code from TitleContainer.Desktop.cs
+    static
+    {
 // #if WINDOWS || DESKTOPGL
-		// NOTE: In VisualStudio for FrameworkTest :
-		// "C:\\Users\\Eric\\Documents\\Visual Studio 2013\\Projects\\FrameworkTest\\FrameworkTest\\bin\\Windows\\Debug\\"
-		// Location = AppDomain.CurrentDomain.BaseDirectory;
-		Location = getBaseDirectory();
-// #elif WINRT
-		// Location = Windows.ApplicationModel.Package.Current.InstalledLocation.Path;
-// #elif IOS || MONOMAC
-		// Location = NSBundle.MainBundle.ResourcePath;
-// #else
-		// Location = ""; // string.Empty;
+// #if DESKTOPGL
+        // Check for the package Resources Folder first. This is where the assets
+        // will be bundled.
+        // if (CurrentPlatform.OS == OS.MacOSX)
+        // Location = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "..", "Resources");
+        // if (!Directory.Exists (Location))
 // #endif
-
-// #if IOS
-		// SupportRetina = UIScreen.MainScreen.Scale >= 2.0f;
-		// RetinaScale = (int)Math.Round(UIScreen.MainScreen.Scale);
+        // NOTE(Eric): In VisualStudio for FrameworkTest :
+        // "C:\\Users\\Eric\\Documents\\Visual Studio 2013\\Projects\\FrameworkTest\\FrameworkTest\\bin\\Windows\\Debug\\"
+        // Location = AppDomain.CurrentDomain.BaseDirectory;
+        Location = getBaseDirectory();
 // #endif
-	}
+    }
 
-	static private String Location;
-	static public String getLocation() { return Location; }
+    static private String Location;
 
-// #if IOS
-	// static private boolean SupportRetina;
-	// static public boolean supportRetina() { return SupportRetina; }
-	// static private int RetinaScale;
-	// static public int getRetinaScale() { return RetinaScale; }
-// #endif
+    static public String getLocation()
+    {
+        return Location;
+    }
 
-// #if WINRT
+    // NOTE(Eric): This method also include code from TitleContainer.Desktop.cs
+    /**
+     * Returns an open stream to an existing file in the title storage area.
+     * 
+     * @param name
+     *        The filepath relative to the title storage area.
+     * @return A open stream or null if the file is not found.
+     */
+    public static FileInputStream openStream(String name) throws FileNotFoundException
+    {
+        if (name == null || name.isEmpty())
+            throw new NullPointerException("name");
 
-	// private static async Task<Stream> openStreamAsync(String name)
-	// {
-	// var package = Windows.ApplicationModel.Package.Current;
-	//
-	// try
-	// {
-	// var storageFile = await package.InstalledLocation.GetFileAsync(name);
-	// var randomAccessStream = await storageFile.OpenReadAsync();
-	// return randomAccessStream.AsStreamForRead();
-	// }
-	// catch (IOException)
-	// {
-	// // The file must not exist... return a null stream.
-	// return null;
-	// }
-	// }
+        // Normalize the file path.
+        String safeName = normalizeRelativePath(name);
 
-// #endif // WINRT
+        // We do not accept absolute paths here.
+        Path safeNamePath = Paths.get(safeName);
+        if (safeNamePath.isAbsolute())
+            throw new IllegalArgumentException("Invalid filename. TitleContainer.openStream requires a relative path.");
 
-	/**
-	 * Returns an open stream to an exsiting file in the title storage area.
-	 * 
-	 * @param name
-	 *        The filepath relative to the title storage area.
-	 * @return A open stream or null if the file is not found.
-	 */
-	public static FileInputStream openStream(String name)
-	{
-		// Normalize the file path.
-		String safeName = getFilename(name);
-		Path safeNamePath = Paths.get(safeName);
+        Path absolutePath = Paths.get(Location, safeName);
 
-		// We do not accept absolute paths here.
-		if (safeNamePath.isAbsolute())
-			throw new IllegalArgumentException("Invalid filename. TitleContainer.openStream requires a relative path.");
+        // Call the platform code to open the stream. Any errors
+        // at this point should result in a file not found.
+        FileInputStream stream = null;
+        try
+        {
+            // stream = Files.newInputStream(absolutePath, StandardOpenOption.READ);
+            stream = new FileInputStream(absolutePath.toString());
+            // if (stream == null)
+                // throw fileNotFoundException(name, null);
+        }
+        catch (FileNotFoundException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw fileNotFoundException(name, e);
+        }
 
-// #if WINRT
-		// var stream = Task.Run( () => OpenStreamAsync(safeName).Result ).Result;
-		// if (stream == null)
-		// throw new FileNotFoundException(name);
+        return stream;
+    }
 
-		// return stream;
-// #elif ANDROID
-		// return Android.App.Application.Context.Assets.Open(safeName);
-// #elif IOS
-		// var absolutePath = Path.Combine(Location, safeName);
-		// if (SupportRetina)
-		// {
-		// for (var scale = RetinaScale; scale >= 2; scale--)
-		// {
-		// // Insert the @#x immediately prior to the extension. If this file exists
-		// // and we are on a Retina device, return this file instead.
-		// var absolutePathX = Path.Combine(Path.GetDirectoryName(absolutePath),
-		// Path.GetFileNameWithoutExtension(absolutePath)
-		// + "@" + scale + "x" + Path.GetExtension(absolutePath));
-		// if (File.Exists(absolutePathX))
-		// return File.OpenRead(absolutePathX);
-		// }
-		// }
-		// return File.OpenRead(absolutePath);
-// #else
-		Path absolutePath = Paths.get(Location, safeName);
+    private static FileNotFoundException fileNotFoundException(String name, Exception inner)
+    {
+        String msg = "Error loading \"" + name + "\". File not found.";
+        if (inner != null)
+            msg = msg + "\nThe inner exception is:\n" + inner.toString();
+        return new FileNotFoundException(msg);
+    }
 
-		FileInputStream result = null;
-		try
-		{
-			// result = Files.newInputStream(absolutePath, StandardOpenOption.READ);
-			result = new FileInputStream(absolutePath.toString());
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+    public static String normalizeRelativePath(String name)
+    {
+        String path = "";
+        try
+        {
+            URL url = new URL("file:///" + name);
+            URI uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), new String());
+            path = uri.getSchemeSpecificPart().substring(3);
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+        return FileHelpers.normalizeFilePathSeparators(path);
+    }
 
-		return result;
-// #endif
-	}
+    // TODO(Eric): If this is needed elsewhere, put in helper class (Assembly)
+    private static String getBaseDirectory()
+    {
+        // TODO(Eric): Find a better way for this so we don't rely on the location of this class
+        String applicationDir = TitleContainer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 
-	// TODO: This is just path normalization. Remove this
-	// and replace it with a proper utility function. I suspect
-	// this same logic is duplicated all over the code base.
-	public static String getFilename(String name)
-	{
-		String result = "";
-		try
-		{
-			URL url = new URL("file:///" + name);
-			URI a = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), new String());
-			result = a.getSchemeSpecificPart().substring(3);
-		}
-		catch (URISyntaxException e)
-		{
-			e.printStackTrace();
-		}
-		catch (MalformedURLException e)
-		{
-			e.printStackTrace();
-		}
-		return FileHelpers.normalizeFilePathSeparators(result);
-	}
+        // TODO: Can we make it work for .jar files with content packaged in it ?
+        if (applicationDir.endsWith(".exe"))
+        {
+            applicationDir = new File(applicationDir).getParent();
+        }
+        else
+        {
+            // Add the path to the class files
+            applicationDir += TitleContainer.class.getName().replace('.', '/');
 
-	// TODO: If this is needed elsewhere, put in helper class (Assembly)
-	private static String getBaseDirectory()
-	{
-		String applicationDir = TitleContainer.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            // Step two level up as we are only interested in the bin directory
+            // since this is where we want to put our Content folder with the resources.
+            applicationDir = new File(applicationDir).getParentFile().getParent();
+        }
 
-		// TODO: Can we make it work for .jar files with content packaged in it ?
-		if (applicationDir.endsWith(".exe"))
-		{
-			applicationDir = new File(applicationDir).getParent();
-		}
-		else
-		{
-			// Add the path to the class files
-			applicationDir += TitleContainer.class.getName().replace('.', '/');
-
-			// Step two level up as we are only interested in the bin directory
-			// since this is where we want to put our res folder with the content.
-			applicationDir = new File(applicationDir).getParentFile().getParent();
-		}
-
-		return applicationDir;
-	}
+        return applicationDir;
+    }
 
 }

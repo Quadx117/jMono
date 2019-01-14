@@ -6,18 +6,18 @@ import jMono_Framework.time.GameTime;
 
 /**
  * 
- * @author Eric Perron (inspired by XNA framework from Microsoft)
+ * @author Eric Perron (based on the XNA Framework from Microsoft and MonoGame)
  * 
  */
 public interface IUpdateable
 {
-	void update(GameTime gameTime);
+    void update(GameTime gameTime);
 
-	Event<EventArgs> getEnabledChanged();
-	Event<EventArgs> getUpdateOrderChanged();
+    Event<EventArgs> getEnabledChanged();
 
-	boolean isEnabled();
+    Event<EventArgs> getUpdateOrderChanged();
 
-	int getUpdateOrder();
+    boolean isEnabled();
 
+    int getUpdateOrder();
 }

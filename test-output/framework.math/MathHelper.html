@@ -1,0 +1,369 @@
+<html>
+<head>
+<title>TestNG:  MathHelper</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>MathHelper</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>58/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Thu Jun 29 23:03:34 EDT 2017</td>
+</tr>
+<tr><td>Total time:</td><td>0 seconds (350 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='framework.math.MathHelperTest.PiConstantsAreExpectedValues()'><b>PiConstantsAreExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 0.7853982, 0.7853982</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.PiConstantsAreExpectedValues()'><b>PiConstantsAreExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 1.5707964, 1.5707964</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.PiConstantsAreExpectedValues()'><b>PiConstantsAreExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 3.1415927, 3.1415927</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.PiConstantsAreExpectedValues()'><b>PiConstantsAreExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.2831855, 6.2831855</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.clampFloatTest()'><b>clampFloatTest</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.clampIntTest()'><b>clampIntTest</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.distanceTest()'><b>distanceTest</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.lerpPreciseTest()'><b>lerpPreciseTest</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.lerpTest()'><b>lerpTest</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.max()'><b>max</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.min()'><b>min</b><br>Test class: framework.math.MathHelperTest</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 0.0, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 0.7853982, 0.7853982</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -0.7853982, -0.7853982</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 1.5707964, 1.5707964</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -1.5707964, -1.5707964</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 3.1415927, 3.1415927</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -3.1415927, 3.1415927</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.2831855, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -6.2831855, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 10.0, -2.566371</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -10.0, 2.566371</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 3.1415927, 3.1415927</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 3.141593, -3.1415925</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -3.1415925, -3.1415925</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -3.1415927, 3.1415927</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.283185, -4.7683716E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.2831855, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.283186, 4.7683716E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -6.283185, 4.7683716E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -6.2831855, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -6.283186, -4.7683716E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 9.424778, 3.1415925</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 9.424779, -3.141592</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -9.424778, -3.1415925</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -9.424779, 3.141592</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 12.56637, -9.536743E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 12.566371, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 12.566372, 9.536743E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -12.56637, 9.536743E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -12.566371, 0.0</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -12.566372, -9.536743E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 15.707963, 3.141592</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 15.707964, -3.1415925</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -15.707963, -3.141592</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -15.707964, 3.1415925</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 31.415926, -1.4305115E-6</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 31.415928, 4.7683716E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -31.415926, 1.4305115E-6</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -31.415928, -4.7683716E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 62.831852, -2.861023E-6</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 62.831856, 9.536743E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -62.831852, 2.861023E-6</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -62.831856, -9.536743E-7</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.2831852E7, -2.8202515</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: 6.2831856E7, 1.1797485</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -6.2831852E7, 2.8202515</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+<tr>
+<td title='framework.math.MathHelperTest.wrapAngleReturnsExpectedValues()'><b>wrapAngleReturnsExpectedValues</b><br>Test class: framework.math.MathHelperTest<br>Parameters: -6.2831856E7, -1.1797485</td>
+<td></td>
+<td>0</td>
+<td>framework.math.MathHelperTest@4678c730</td></tr>
+</table><p>
+</body>
+</html>

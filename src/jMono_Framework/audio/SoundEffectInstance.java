@@ -37,7 +37,7 @@ public class SoundEffectInstance implements AutoCloseable
 	 * @param value
 	 *        {@code true} if the {@code SoundEffectInstance} should repeat after playback, {@code false otherwise}.
 	 */
-	public void setIsLooped(boolean value) { platformSetIsLooped(value); }
+	public void setLooped(boolean value) { platformSetIsLooped(value); }
 
 	/**
 	 * Returns the pan, or speaker balance.
@@ -284,9 +284,11 @@ public class SoundEffectInstance implements AutoCloseable
 		}
 	}
 
+	// @formatter:off
 	// ########################################################################
 	// #                    SoundEffectInstance.OpenAL.cs                     #
 	// ########################################################################
+	// @formatter:on
 
 //	private SoundState soundState = SoundState.Stopped;
 //	private boolean _looped = false;
@@ -546,9 +548,11 @@ public class SoundEffectInstance implements AutoCloseable
 //        }
 //    }
     
+	// @formatter:off
     // ########################################################################
  	// #                    SoundEffectInstance.XAudio.cs                     #
  	// ########################################################################
+	// @formatter:on
     
 //    internal SourceVoice _voice;
     private SourceVoice _voice;

@@ -105,7 +105,7 @@ public class OptionsMenu extends MenuScreen
 
 		// Draw the background
 		screenManager.getSpriteBatch().draw(background, screenManager.getGraphicsDevice().getViewport().getBounds(),
-				Color.multiply(Color.White, getTransitionAlpha()));
+				Color.multiply(Color.White(), getTransitionAlpha()));
 
 		screenManager.getSpriteBatch().end();
 

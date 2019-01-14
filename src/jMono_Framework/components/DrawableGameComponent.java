@@ -8,98 +8,104 @@ import jMono_Framework.time.GameTime;
 
 public class DrawableGameComponent extends GameComponent implements IDrawable
 {
-	private boolean isInitialized;
-	private int drawOrder;
-	private boolean isVisible = true;
+    private boolean isInitialized;
+    private int drawOrder;
+    private boolean isVisible = true;
 
-	public GraphicsDevice getGraphicsDevice()
-	{
-		return this.getGame().getGraphicsDevice();
-	}
+    public GraphicsDevice getGraphicsDevice()
+    {
+        return this.getGame().getGraphicsDevice();
+    }
 
-	public int getDrawOrder()
-	{
-		return drawOrder;
-	}
+    public int getDrawOrder()
+    {
+        return drawOrder;
+    }
 
-	public void setDrawOrder(int value)
-	{
-		if (drawOrder != value)
-		{
-			drawOrder = value;
+    public void setDrawOrder(int value)
+    {
+        if (drawOrder != value)
+        {
+            drawOrder = value;
+            if (drawOrderChanged != null)
+            {
+                drawOrderChanged.handleEvent(this, null);
+            }
+            onDrawOrderChanged(this, null);
+        }
+    }
 
-			if (drawOrderChanged != null)
-			{
-				drawOrderChanged.handleEvent(this, null);
-			}
-			onDrawOrderChanged(this, null);
-		}
-	}
+    public boolean isVisible()
+    {
+        return isVisible;
+    }
 
-	public boolean isVisible()
-	{
-		return isVisible;
-	}
+    public void setVisible(boolean value)
+    {
+        if (isVisible != value)
+        {
+            isVisible = value;
+            if (visibleChanged != null)
+            {
+                visibleChanged.handleEvent(this, EventArgs.Empty);
+            }
+            onVisibleChanged(this, EventArgs.Empty);
+        }
+    }
 
-	public void setVisible(boolean value)
-	{
-		if (isVisible != value)
-		{
-			isVisible = value;
+    public Event<EventArgs> drawOrderChanged = new Event<EventArgs>();
 
-			if (visibleChanged != null)
-			{
-				visibleChanged.handleEvent(this, EventArgs.Empty);
-			}
-			onVisibleChanged(this, EventArgs.Empty);
-		}
-	}
+    @Override
+    public Event<EventArgs> getDrawOrderChanged()
+    {
+        return drawOrderChanged;
+    }
 
-	public Event<EventArgs> drawOrderChanged = new Event<EventArgs>();
-	@Override
-	public Event<EventArgs> getDrawOrderChanged() { return drawOrderChanged; }
+    public Event<EventArgs> visibleChanged = new Event<EventArgs>();
 
-	public Event<EventArgs> visibleChanged = new Event<EventArgs>();
-	@Override
-	public Event<EventArgs> getVisibleChanged() { return visibleChanged; }
+    @Override
+    public Event<EventArgs> getVisibleChanged()
+    {
+        return visibleChanged;
+    }
 
-	public DrawableGameComponent(Game game)
-	{
-		super(game);
-	}
+    public DrawableGameComponent(Game game)
+    {
+        super(game);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void initialize()
-	{
-		if (!isInitialized)
-		{
-			isInitialized = true;
-			loadContent();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initialize()
+    {
+        if (!isInitialized)
+        {
+            isInitialized = true;
+            loadContent();
+        }
+    }
 
-	/**
-	 * Load component content.
-	 */
-	protected void loadContent() {}
+    /**
+     * Load component content.
+     */
+    protected void loadContent() {}
 
-	/**
-	 * Unload component content.
-	 */
-	protected void unloadContent() {}
+    /**
+     * Unload component content.
+     */
+    protected void unloadContent() {}
 
-	/**
-	 * Draw the component to the screen.
-	 * 
-	 * @param gameTime
-	 *        The time which has elapsed since the last call to this method.
-	 */
-	public void draw(GameTime gameTime) {}
+    /**
+     * Draw the component to the screen.
+     * 
+     * @param gameTime
+     *        The time which has elapsed since the last call to this method.
+     */
+    public void draw(GameTime gameTime) {}
 
-	protected void onVisibleChanged(Object sender, EventArgs args) {}
+    protected void onVisibleChanged(Object sender, EventArgs args) {}
 
-	protected void onDrawOrderChanged(Object sender, EventArgs args) {}
+    protected void onDrawOrderChanged(Object sender, EventArgs args) {}
 }

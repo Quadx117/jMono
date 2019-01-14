@@ -325,7 +325,7 @@ public class BetGameComponent extends DrawableGameComponent
 		// Draws the chips
 		for (int chipIndex = 0; chipIndex < chipsAssets.size(); ++chipIndex)
 		{
-			spriteBatch.draw(chipsAssets.get(assetNames[chipIndex]), positions[chipIndex], Color.White);
+			spriteBatch.draw(chipsAssets.get(assetNames[chipIndex]), positions[chipIndex], Color.White());
 		}
 
 		BlackjackPlayer player;
@@ -339,9 +339,9 @@ public class BetGameComponent extends DrawableGameComponent
 							table.getRingOffset()));
 			player = (BlackjackPlayer) players.get(playerIndex);
 			spriteBatch.drawString(cardGame.font, "$" + String.format("%.0f", player.getBetAmount()),
-					position, Color.White);
+					position, Color.White());
 			spriteBatch.drawString(cardGame.font, "$" + String.format("%.0f", player.balance),
-					Vector2.add(position, new Vector2(0, 30)), Color.White);
+					Vector2.add(position, new Vector2(0, 30)), Color.White());
 		}
 
 		spriteBatch.end();
@@ -559,7 +559,7 @@ public class BetGameComponent extends DrawableGameComponent
 	{
 		// Add chip component
 		AnimatedGameComponent chipComponent = new AnimatedGameComponent(cardGame, blankChip);
-		chipComponent.textColor = Color.Black;
+		chipComponent.textColor = Color.Black();
 		chipComponent.setEnabled(true);
 		chipComponent.setVisible(false);
 

@@ -5,10 +5,13 @@ import jMono_Framework.dotNet.events.EventArgs;
 
 public interface IGraphicsDeviceService
 {
-	GraphicsDevice getGraphicsDevice();
+    GraphicsDevice getGraphicsDevice();
 
-	Event<EventArgs> getDeviceCreated();
-	Event<EventArgs> getDeviceDisposing();
-	Event<EventArgs> getDeviceReset();
-	Event<EventArgs> getDeviceResetting();
+    Event<EventArgs> getDeviceCreated();
+
+    Event<EventArgs> getDeviceDisposing();
+
+    Event<EventArgs> getDeviceReset();
+
+    Event<EventArgs> getDeviceResetting();
 }

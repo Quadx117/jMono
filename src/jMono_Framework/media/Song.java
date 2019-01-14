@@ -196,9 +196,11 @@ public class Song implements AutoCloseable
         return platformGetTrackNumber();
     }
 
+    // @formatter:off
     // ########################################################################
     // #                     Song.Default.cs                                  #
     // ########################################################################
+    // @formatter:on
 
     // NOTE: I added this
     byte[] data;
@@ -362,9 +364,11 @@ public class Song implements AutoCloseable
 //    }
 
     // TODO: Add other methods and fields
+	// @formatter:off
     // ########################################################################
     // #                        Song.WMS.cs                                   #
     // ########################################################################
+	// @formatter:on
     
     private TimeSpan platformGetDuration()
     {

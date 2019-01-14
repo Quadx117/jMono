@@ -9,308 +9,332 @@ import jMono_Framework.time.TimeSpan;
 
 public abstract class GamePlatform implements AutoCloseable
 {
+    // #region Fields
 
-	protected TimeSpan _inactiveSleepTime = TimeSpan.fromMilliseconds(20.0);
-	protected boolean _needsToResetElapsedTime = false;
-	boolean isDisposed;
-	protected boolean _alreadyInFullScreenMode = false;
-    protected boolean _alreadyInWindowedMode = false;
-	protected boolean isDisposed() { return isDisposed; }
+    protected TimeSpan _inactiveSleepTime = TimeSpan.fromMilliseconds(20.0);
+    protected boolean _needsToResetElapsedTime = false;
+    boolean isDisposed;
+    protected boolean inFullScreenMode = false;
 
-	public static GamePlatform create(Game game)
-	{
-		return new JavaGamePlatform(game);
-// #if IOS
-		// return new iOSGamePlatform(game);
-// #elif MONOMAC
-		// return new MacGamePlatform(game);
-// #elif DESKTOPGL || ANGLE
-        // return new OpenTKGamePlatform(game);
-// #elif (WINDOWS && OPENGL) || LINUX || ANGLE
-		// return new OpenTKGamePlatform(game);
-// #elif ANDROID
-		// return new AndroidGamePlatform(game);
-// #elif WINDOWS && DIRECTX
-		// return new MonoGame.Framework.WinFormsGamePlatform(game);
-// #elif WINDOWS_PHONE
-		// return new MonoGame.Framework.WindowsPhone.WindowsPhoneGamePlatform(game);
-// #elif WINDOWS_UAP
-        // return new UAPGamePlatform(game);
-// #elif WINRT
-		// return new MetroGamePlatform(game);
-// #elif WEB
-		// return new WebGamePlatform(game);
-// #endif
-	}
+    protected boolean isDisposed()
+    {
+        return isDisposed;
+    }
 
-	protected GamePlatform(Game game)
-	{
-		if (game == null)
-			throw new NullPointerException("The argument game cannot be null.");
-		this.game = game;
-	}
+    // #endregion
 
-	@Override
-	public void finalize()
-	{
-		dispose(false);
-	}
+    // #region Construction/Destruction
 
-	/**
-	 * When implemented in a derived class, reports the default GameRunBehavior for this platform.
-	 * 
-	 * @return the default GameRunBehavior for this platform.
-	 */
-	public GameRunBehavior getDefaultRunBehavior() { return null; }
+    protected GamePlatform(Game game)
+    {
+        if (game == null)
+            throw new NullPointerException("The argument game cannot be null.");
+        this.game = game;
+    }
 
-	private Game game;
+    @Override
+    public void finalize()
+    {
+        dispose(false);
+    }
 
-	/**
-	 * Gets the Game instance that owns this GamePlatform instance.
-	 * 
-	 * @return The Game instance that owns this GamePlatform instance.
-	 */
-	public Game getGame() { return game; }
+    // #endregion Construction/Destruction
 
-	private boolean _isActive;
-	public boolean isActive() { return _isActive; }
+    // #region Public Properties
 
-	protected void setActive(boolean value)
-	{
-		if (_isActive != value)
-		{
-			_isActive = value;
-			raise(_isActive ? activated : deactivated, EventArgs.Empty);
-		}
-	}
+    /**
+     * When implemented in a derived class, reports the default GameRunBehavior for this platform.
+     * 
+     * @return The default GameRunBehavior for this platform.
+     */
+    public abstract GameRunBehavior getDefaultRunBehavior();
 
-	private boolean _isMouseVisible;
-	public boolean isMouseVisible() { return _isMouseVisible; }
+    private Game game;
 
-	public void setMouseVisible(boolean value)
-	{
-		if (_isMouseVisible != value)
-		{
-			_isMouseVisible = value;
-			onIsMouseVisibleChanged();
-		}
-	}
+    /**
+     * Gets the Game instance that owns this GamePlatform instance.
+     * 
+     * @return The Game instance that owns this GamePlatform instance.
+     */
+    public Game getGame()
+    {
+        return game;
+    }
 
-	/*
-	 * #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
-	 * private ApplicationViewState _viewState;
-	 * public ApplicationViewState ViewState
-	 * {
-	 * get { return _viewState; }
-	 * set
-	 * {
-	 * if (_viewState == value)
-	 * return;
-	 * 
-	 * Raise(ViewStateChanged, new ViewStateChangedEventArgs(value));
-	 * 
-	 * _viewState = value;
-	 * }
-	 * }
-	 * #endif
-	 */
+    private boolean _isActive;
 
-	private GameWindow _window;
-	public GameWindow getWindow() { return _window; }
+    public boolean isActive()
+    {
+        return _isActive;
+    }
 
-	protected void setWindow(GameWindow value)
-	{
-		if (_window == null)
-		{
-			Mouse.PrimaryWindow = value;
-			// TouchPanel.PrimaryWindow = value;
-		}
+    protected void setActive(boolean value)
+    {
+        if (_isActive != value)
+        {
+            _isActive = value;
+            raise(_isActive ? activated : deactivated, EventArgs.Empty);
+        }
+    }
 
-		_window = value;
-	}
+    private boolean _isMouseVisible;
 
-	// ++++++++++ Events ++++++++++
+    public boolean isMouseVisible()
+    {
+        return _isMouseVisible;
+    }
 
-	public Event<EventArgs> asyncRunLoopEnded = new Event<EventArgs>();
-	public Event<EventArgs> activated = new Event<EventArgs>();
-	public Event<EventArgs> deactivated = new Event<EventArgs>();
+    public void setMouseVisible(boolean value)
+    {
+        if (_isMouseVisible != value)
+        {
+            _isMouseVisible = value;
+            onIsMouseVisibleChanged();
+        }
+    }
 
-// #if WINDOWS_STOREAPP && !WINDOWS_PHONE81
-	// public event EventHandler<ViewStateChangedEventArgs> ViewStateChanged;
-// #endif
+    private GameWindow _window;
 
-	private <TEventArgs extends EventArgs> void raise(EventHandler<TEventArgs> handler, TEventArgs e)
-	{
-		if (handler != null)
-			handler.handleEvent(this, e);
-	}
+    public GameWindow getWindow()
+    {
+        return _window;
+    }
 
-	/**
-	 * Raises the AsyncRunLoopEnded event. This method must be called by derived classes when the
-	 * asynchronous run loop they start has stopped running.
-	 */
-	protected void raiseAsyncRunLoopEnded()
-	{
-		raise(asyncRunLoopEnded, EventArgs.Empty);
-	}
+    protected void setWindow(GameWindow value)
+    {
+        if (_window == null)
+        {
+            Mouse.PrimaryWindow = value;
+            // TouchPanel.PrimaryWindow = value;
+        }
 
-	// ++++++++++ METHODS ++++++++++
+        _window = value;
+    }
 
-	/**
-	 * Gives derived classes an opportunity to do work before any components are initialized. Note
-	 * that the base implementation sets IsActive to true, so derived classes should either call the
-	 * base implementation or set IsActive to true by their own means.
-	 */
-	public void beforeInitialize()
-	{
-		setActive(true);
-		if (this.game.getGraphicsDevice() == null)
-		{
-			IGraphicsDeviceManager graphicsDeviceManager = (IGraphicsDeviceManager) game.getServices().getService(
-					IGraphicsDeviceManager.class);
-			graphicsDeviceManager.createDevice();
-		}
-	}
+    // #endregion
 
-	/**
-	 * Gives derived classes an opportunity to do work just before the run loop is begun.
-	 * Implementations may also return false to prevent the run loop from starting.
-	 * 
-	 * @return
-	 */
-	public boolean beforeRun()
-	{
-		return true;
-	}
+    // #region Events
 
-	/**
-	 * When implemented in a derived, ends the active run loop.
-	 */
-	public abstract void exit();
+    public Event<EventArgs> asyncRunLoopEnded = new Event<EventArgs>();
+    public Event<EventArgs> activated = new Event<EventArgs>();
+    public Event<EventArgs> deactivated = new Event<EventArgs>();
 
-	/**
-	 * When implemented in a derived, starts the run loop and blocks until it has ended.
-	 */
-	public abstract void runLoop();
+    private <TEventArgs extends EventArgs> void raise(EventHandler<TEventArgs> handler, TEventArgs e)
+    {
+        if (handler != null)
+            handler.handleEvent(this, e);
+    }
 
-	/**
-	 * When implemented in a derived, starts the run loop and returns immediately.
-	 */
-	public abstract void startRunLoop();
+    /**
+     * Raises the AsyncRunLoopEnded event. This method must be called by derived classes when the
+     * asynchronous run loop they start has stopped running.
+     */
+    protected void raiseAsyncRunLoopEnded()
+    {
+        raise(asyncRunLoopEnded, EventArgs.Empty);
+    }
 
-	/**
-	 * Gives derived classes an opportunity to do work just before Update is called for all
-	 * IUpdatable components. Returning false from this method will result in this round of Update
-	 * calls being skipped.
-	 * 
-	 * @param gameTime
-	 * @return
-	 */
-	public abstract boolean beforeUpdate(GameTime gameTime);
+    // #endregion Events
 
-	/**
-	 * Gives derived classes an opportunity to do work just before Draw is called for all IDrawable
-	 * components. Returning false from this method will result in this round of Draw calls being
-	 * skipped.
-	 * 
-	 * @param gameTime
-	 * @return
-	 */
-	public abstract boolean beforeDraw(GameTime gameTime);
+    // #region Methods
 
-	/**
-	 * When implemented in a derived class, causes the game to enter full-screen mode.
-	 */
-	public abstract void enterFullScreen();
+    /**
+     * Gives derived classes an opportunity to do work before any components are initialized. Note
+     * that the base implementation sets IsActive to true, so derived classes should either call the
+     * base implementation or set IsActive to true by their own means.
+     */
+    public void beforeInitialize()
+    {
+        setActive(true);
+    }
 
-	/**
-	 * When implemented in a derived class, causes the game to exit full-screen mode.
-	 */
-	public abstract void exitFullScreen();
+    /**
+     * Gives derived classes an opportunity to do work just before the run loop is begun.
+     * Implementations may also return false to prevent the run loop from starting.
+     * 
+     * @return
+     */
+    public boolean beforeRun()
+    {
+        return true;
+    }
 
-	/**
-	 * Gives derived classes an opportunity to modify Game.TargetElapsedTime before it is set.
-	 * 
-	 * @param value
-	 *        The proposed new value of TargetElapsedTime.
-	 * @return The new value of TargetElapsedTime that will be set.
-	 */
-	public TimeSpan targetElapsedTimeChanging(TimeSpan value)
-	{
-		return value;
-	}
+    /**
+     * When implemented in a derived, ends the active run loop.
+     */
+    public abstract void exit();
 
-	/**
-	 * Starts a device transition (windowed to full screen or vice versa).
-	 * 
-	 * @param willBeFullScreen
-	 *        Specifies whether the device will be in full-screen mode upon completion of the
-	 *        change.
-	 */
-	public abstract void beginScreenDeviceChange(boolean willBeFullScreen);
+    /**
+     * When implemented in a derived, starts the run loop and blocks until it has ended.
+     */
+    public abstract void runLoop();
 
-	/**
-	 * Completes a device transition.
-	 * 
-	 * @param screenDeviceName
-	 *        Screen device name.
-	 * @param clientWidth
-	 *        The new width of the game's client window.
-	 * @param clientHeight
-	 *        The new height of the game's client window.
-	 */
-	public abstract void endScreenDeviceChange(String screenDeviceName, int clientWidth, int clientHeight);
+    /**
+     * When implemented in a derived, starts the run loop and returns immediately.
+     */
+    public abstract void startRunLoop();
 
-	/**
-	 * Gives derived classes an opportunity to take action after Game.TargetElapsedTime has been
-	 * set.
-	 */
-	public void targetElapsedTimeChanged() {}
+    /**
+     * Gives derived classes an opportunity to do work just before Update is called for all
+     * IUpdatable components. Returning false from this method will result in this round of Update
+     * calls being skipped.
+     * 
+     * @param gameTime
+     * @return
+     */
+    public abstract boolean beforeUpdate(GameTime gameTime);
 
-	/**
-	 * Use this method if your game is recovering from a slow-running state, and ElapsedGameTime is
-	 * too large to be useful.
-	 * 
-	 * <p>
-	 * Frame timing is generally handled by the Game class, but some platforms still handle it
-	 * elsewhere. Once all platforms rely on the Game class's functionality, this method and any
-	 * overrides should be removed.
-	 */
-	public void resetElapsedTime() {}
+    /**
+     * Gives derived classes an opportunity to do work just before Draw is called for all IDrawable
+     * components. Returning false from this method will result in this round of Draw calls being
+     * skipped.
+     * 
+     * @param gameTime
+     * @return
+     */
+    public abstract boolean beforeDraw(GameTime gameTime);
 
-	protected void onIsMouseVisibleChanged() {}
+    /**
+     * When implemented in a derived class, causes the game to enter full-screen mode.
+     */
+    public abstract void enterFullScreen();
 
-	// ++++++++++ IDisposable implementation ++++++++++
+    /**
+     * When implemented in a derived class, causes the game to exit full-screen mode.
+     */
+    public abstract void exitFullScreen();
 
-	/**
-	 * Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-	 * resources.
-	 */
-	@Override
-	public void close()
-	{ // throws Exception {
-		dispose(true);
-		// GC.SuppressFinalize(this);
-	}
+    /**
+     * Gives derived classes an opportunity to modify Game.TargetElapsedTime before it is set.
+     * 
+     * @param value
+     *        The proposed new value of TargetElapsedTime.
+     * @return The new value of TargetElapsedTime that will be set.
+     */
+    public TimeSpan targetElapsedTimeChanging(TimeSpan value)
+    {
+        return value;
+    }
 
-	protected void dispose(boolean disposing)
-	{
-		if (!isDisposed)
-		{
-			Mouse.PrimaryWindow = null;
+    /**
+     * Starts a device transition (windowed to full screen or vice versa).
+     * 
+     * @param willBeFullScreen
+     *        Specifies whether the device will be in full-screen mode upon completion of the
+     *        change.
+     */
+    public abstract void beginScreenDeviceChange(boolean willBeFullScreen);
+
+    /**
+     * Completes a device transition.
+     * 
+     * @param screenDeviceName
+     *        Screen device name.
+     * @param clientWidth
+     *        The new width of the game's client window.
+     * @param clientHeight
+     *        The new height of the game's client window.
+     */
+    public abstract void endScreenDeviceChange(String screenDeviceName, int clientWidth, int clientHeight);
+
+    /**
+     * Gives derived classes an opportunity to take action after Game.TargetElapsedTime has been
+     * set.
+     */
+    public void targetElapsedTimeChanged() {}
+
+    /**
+     * Use this method if your game is recovering from a slow-running state, and ElapsedGameTime is
+     * too large to be useful.
+     * <p>
+     * Frame timing is generally handled by the Game class, but some platforms still handle it
+     * elsewhere. Once all platforms rely on the Game class's functionality, this method and any
+     * overrides should be removed.
+     */
+    public void resetElapsedTime() {}
+
+    public void present() {}
+
+    protected void onIsMouseVisibleChanged() {}
+
+    /**
+     * Used by the GraphicsDeviceManager to update the platform window after the graphics device has
+     * changed the presentation.
+     */
+    protected void onPresentationChanged() {}
+
+    // #endregion Methods
+
+    // #region IDisposable implementation
+
+    /**
+     * Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+     * resources.
+     */
+    @Override
+    public void close()
+    {
+        dispose(true);
+        // GC.SuppressFinalize(this);
+    }
+
+    protected void dispose(boolean disposing)
+    {
+        if (!isDisposed)
+        {
+            Mouse.PrimaryWindow = null;
             // TouchPanel.PrimaryWindow = null;
-            
-			isDisposed = true;
-		}
-	}
 
-	/**
-	 * Log the specified Message.
-	 * 
-	 * @param message
-	 */
-	public void log(String message) {}
+            isDisposed = true;
+        }
+    }
 
-	public void present() {}
+    /**
+     * Log the specified Message.
+     * 
+     * @param message
+     */
+    public void log(String message) {}
+
+    // #endregion
+
+    //
+    // From GamePlatform.Desktop.cs
+    //
+    public static GamePlatform platformCreate(Game game)
+    {
+        return new JavaGamePlatform(game);
+        // #if MONOMAC
+        // return new MacGamePlatform(game);
+        // #elif DESKTOPGL || ANGLE
+        // return new SdlGamePlatform(game);
+        // #elif WINDOWS && DIRECTX
+        // return new MonoGame.Framework.WinFormsGamePlatform(game);
+        // #elif WINDOWS_UAP
+        // return new UAPGamePlatform(game);
+        // #elif WINRT
+        // return new MetroGamePlatform(game);
+        // #endif
+    }
+
+    // #if WINDOWS_STOREAPP
+    // public event EventHandler<ViewStateChangedEventArgs> ViewStateChanged;
+
+    // private ApplicationViewState _viewState;
+    // public ApplicationViewState ViewState
+    // {
+    // get { return _viewState; }
+    // set
+    // {
+    // if (_viewState == value)
+    // return;
+
+    // Raise(ViewStateChanged, new ViewStateChangedEventArgs(value));
+
+    // _viewState = value;
+    // }
+    // }
+    // #endif
+    // }
 
 }

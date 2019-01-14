@@ -113,7 +113,7 @@ public class InstructionScreen extends GameplayScreen
 
 		// Draw Background
 		spriteBatch.draw(background, screenManager.getGraphicsDevice().getViewport().getBounds(),
-				Color.multiply(Color.White, getTransitionAlpha()));
+				Color.multiply(Color.White(), getTransitionAlpha()));
 
 		if (isExit)
 		{
@@ -122,7 +122,7 @@ public class InstructionScreen extends GameplayScreen
 			Vector2 measure = font.measureString(text);
 			Vector2 textPosition = new Vector2(safeArea.getCenter().x - measure.x / 2,
 											   safeArea.getCenter().y - measure.y / 2);
-			spriteBatch.drawString(font, text, textPosition, Color.Black);
+			spriteBatch.drawString(font, text, textPosition, Color.Black());
 		}
 
 		spriteBatch.end();

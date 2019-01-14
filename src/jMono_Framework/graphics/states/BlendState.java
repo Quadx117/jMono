@@ -213,7 +213,7 @@ public class BlendState extends GraphicsResource
 		_targetBlendState[2] = new TargetBlendState(this);
 		_targetBlendState[3] = new TargetBlendState(this);
 
-		_blendFactor = Color.White;
+		_blendFactor = Color.White();
 		_multiSampleMask = Integer.MAX_VALUE;
 		_independentBlendEnable = false;
 	}

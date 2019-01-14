@@ -23,9 +23,11 @@ import java.io.IOException;
  */
 public abstract class Stream implements Closeable, Flushable
 {
+    // @formatter:off
 	// ########################################################################
 	// #                         java.io.InputStream                          #
 	// ########################################################################
+    // @formatter:on
 
 	// MAX_SKIP_BUFFER_SIZE is used to determine the maximum buffer size to use when skipping.
 	private static final int MAX_SKIP_BUFFER_SIZE = 2048;
@@ -372,9 +374,11 @@ public abstract class Stream implements Closeable, Flushable
 		return false;
 	}
 
+	// @formatter:off
 	// ########################################################################
 	// #                         java.io.OutputStream                         #
 	// ########################################################################
+	// @formatter:on
 
 	/**
 	 * Writes the specified byte to this output stream. The general
@@ -495,9 +499,11 @@ public abstract class Stream implements Closeable, Flushable
 	// public void close() throws IOException
 	// {}
 
+	// @formatter:off
 	// ########################################################################
 	// #                           System.IO.Stream                           #
 	// ########################################################################
+	// @formatter:on
 
 	public static final Stream Null = new Stream.NullStream();
 

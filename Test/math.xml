@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="framework.math">
+
+	<test name="Vector2">
+		<classes>
+			<class name="framework.math.Vector2Test" />
+		</classes>
+	</test> <!-- Vector2 -->
+
+	<test name="Vector3">
+		<classes>
+			<class name="framework.math.Vector3Test" />
+		</classes>
+	</test> <!-- Vector3 -->
+
+	<test name="Vector4">
+		<classes>
+			<class name="framework.math.Vector4Test" />
+		</classes>
+	</test> <!-- Vector4 -->
+
+	<test name="Matrix">
+		<classes>
+			<class name="framework.math.MatrixTest" />
+		</classes>
+	</test> <!-- Matrix -->
+
+	<test name="MathHelper">
+		<classes>
+			<class name="framework.math.MathHelperTest" />
+		</classes>
+	</test> <!-- MathHelper -->
+
+	<test name="Quaternion">
+		<classes>
+			<class name="framework.math.QuaternionTest" />
+		</classes>
+	</test> <!-- Quaternion -->
+
+</suite> <!-- framework.math -->

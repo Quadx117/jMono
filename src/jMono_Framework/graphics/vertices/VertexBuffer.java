@@ -3,6 +3,7 @@ package jMono_Framework.graphics.vertices;
 import jMono_Framework.graphics.GraphicsDevice;
 import jMono_Framework.graphics.GraphicsResource;
 import jMono_Framework.graphics.SetDataOptions;
+import jMono_Framework.utilities.ReflectionHelpers;
 
 public class VertexBuffer extends GraphicsResource {
 
@@ -96,16 +97,14 @@ public class VertexBuffer extends GraphicsResource {
 
 	public <T> void getData(T[] data, int startIndex, int elementCount) // where T : struct
 	{
-		// TODO: elementSizeInByte
-		// int elementSizeInByte = Marshal.SizeOf(typeof(T));
-		this.getData(0, data, startIndex, elementCount, 1);
+		int elementSizeInBytes = ReflectionHelpers.sizeOf(data.getClass());
+		this.getData(0, data, startIndex, elementCount, elementSizeInBytes);
 	}
 
 	public <T> void getData(T[] data) // where T : struct
 	{
-		// TODO: elementSizeInByte
-		// byte elementSizeInByte = Marshal.SizeOf(typeof(T));
-		this.getData(0, data, 0, data.length, 1);
+	    int elementSizeInBytes = ReflectionHelpers.sizeOf(data.getClass());
+		this.getData(0, data, 0, data.length, elementSizeInBytes);
 	}
 
 	public <T> void setData(int offsetInBytes, T[] data, int startIndex, int elementCount, int vertexStride) // where T : struct
@@ -138,9 +137,8 @@ public class VertexBuffer extends GraphicsResource {
 			throw new IllegalArgumentException(
 					"One of the following conditions is true:\nThe vertex stride is larger than the vertex buffer.\nThe vertex stride is too small for the type of data requested.");
 
-		// TODO: elementSizeInByte
-		// int elementSizeInBytes = Marshal.SizeOf(typeof(T));
-		platformSetDataInternal(offsetInBytes, data, startIndex, elementCount, vertexStride, options, bufferSize, 1);
+		int elementSizeInBytes = ReflectionHelpers.sizeOf(data.getClass());
+		platformSetDataInternal(offsetInBytes, data, startIndex, elementCount, vertexStride, options, bufferSize, elementSizeInBytes);
 	}
 
 	// TODO: See other VertexBuffer files.

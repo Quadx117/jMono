@@ -6,18 +6,16 @@ import jMono_Framework.time.GameTime;
 
 /**
  * 
- * @author Eric Perron (inspired by XNA framework from Microsoft)
+ * @author Eric Perron (based on the XNA Framework from Microsoft and MonoGame)
  * 
  */
 public interface IDrawable
 {
-	int getDrawOrder();
+    int getDrawOrder();
+    boolean isVisible();
 
-	boolean isVisible();
+    Event<EventArgs> getDrawOrderChanged();
+    Event<EventArgs> getVisibleChanged();
 
-	Event<EventArgs> getDrawOrderChanged();
-	Event<EventArgs> getVisibleChanged();
-
-	void draw(GameTime gameTime);
-
+    void draw(GameTime gameTime);
 }

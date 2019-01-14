@@ -8,191 +8,222 @@ import jMono_Framework.graphics.states.DepthFormat;
 
 public class PresentationParameters implements AutoCloseable
 {
-	public final int DefaultPresentRate = 60;
+    // #region Constants
 
-	private DepthFormat depthStencilFormat;
-	private SurfaceFormat backBufferFormat;
-	private int backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
-	private int backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
-	private JavaGameWindow deviceWindowHandle;
-	private int multiSampleCount;
-	private boolean disposed;
+    public final int DefaultPresentRate = 60;
+
+    // #endregion Constants
+
+    // #region Private Fields
+
+    private DepthFormat depthStencilFormat;
+    private SurfaceFormat backBufferFormat;
+    private int backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
+    private int backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
+    private JavaGameWindow deviceWindowHandle;
+    private int multiSampleCount;
+    private boolean disposed;
 // #if !WINRT || WINDOWS_UAP
-	private boolean isFullScreen;
+    private boolean isFullScreen;
 // #endif
 
-	public PresentationParameters()
-	{
-		clear();
-	}
+    // #endregion Private Fields
 
-	@Override
-	public void finalize()
-	{
-		dispose(false);
-	}
+    // #region Constructors
 
-	public SurfaceFormat getBackBufferFormat()
-	{
-		return backBufferFormat;
-	}
+    public PresentationParameters()
+    {
+        clear();
+    }
 
-	public void setBackBufferFormat(SurfaceFormat value)
-	{
-		backBufferFormat = value;
-	}
+    @Override
+    public void finalize()
+    {
+        dispose(false);
+    }
 
-	public int getBackBufferHeight()
-	{
-		return backBufferHeight;
-	}
+    // #endregion Constructors
 
-	public void setBackBufferHeight(int value)
-	{
-		backBufferHeight = value;
-	}
+    // #region Properties
 
-	public int getBackBufferWidth()
-	{
-		return backBufferWidth;
-	}
+    public SurfaceFormat getBackBufferFormat()
+    {
+        return backBufferFormat;
+    }
 
-	public void setBackBufferWidth(int value)
-	{
-		backBufferWidth = value;
-	}
+    public void setBackBufferFormat(SurfaceFormat value)
+    {
+        backBufferFormat = value;
+    }
 
-	public Rectangle getBounds()
-	{
-		return new Rectangle(0, 0, backBufferWidth, backBufferHeight);
-	}
+    public int getBackBufferHeight()
+    {
+        return backBufferHeight;
+    }
 
-	 public JavaGameWindow getDeviceWindowHandle() { return deviceWindowHandle; }
-	 public void setDeviceWindowHandle(JavaGameWindow value) { deviceWindowHandle = value; }
+    public void setBackBufferHeight(int value)
+    {
+        backBufferHeight = value;
+    }
+
+    public int getBackBufferWidth()
+    {
+        return backBufferWidth;
+    }
+
+    public void setBackBufferWidth(int value)
+    {
+        backBufferWidth = value;
+    }
+
+    public Rectangle getBounds()
+    {
+        return new Rectangle(0, 0, backBufferWidth, backBufferHeight);
+    }
+
+    public JavaGameWindow getDeviceWindowHandle()
+    {
+        return deviceWindowHandle;
+    }
+
+    public void setDeviceWindowHandle(JavaGameWindow value)
+    {
+        deviceWindowHandle = value;
+    }
 
 // #if WINDOWS_STOREAPP
-	// [CLSCompliant(false)]
-	// public SwapChainBackgroundPanel SwapChainBackgroundPanel { get; set; }
+    // [CLSCompliant(false)]
+    // public SwapChainBackgroundPanel SwapChainBackgroundPanel { get; set; }
 // #endif
 
-	public DepthFormat getDepthStencilFormat()
-	{
-		return depthStencilFormat;
-	}
+// #if WINDOWS_UAP
+    // [CLSCompliant(false)]
+    // public SwapChainPanel SwapChainPanel { get; set; }
+// #endif
 
-	public void setDepthStencilFormat(DepthFormat value)
-	{
-		depthStencilFormat = value;
-	}
+    public DepthFormat getDepthStencilFormat()
+    {
+        return depthStencilFormat;
+    }
 
-	public boolean isFullScreen()
-	{
+    public void setDepthStencilFormat(DepthFormat value)
+    {
+        depthStencilFormat = value;
+    }
+
+    public boolean isFullScreen()
+    {
 // #if WINRT && !WINDOWS_UAP
-		// Always return true for Windows 8
-		// return true;
+        // Always return true for Windows 8
+        // return true;
 // #else
-		return isFullScreen;
+        return isFullScreen;
 // #endif
-	}
+    }
 
-	public void setFullScreen(boolean value)
-	{
+    public void setFullScreen(boolean value)
+    {
 // #if !WINRT || WINDOWS_UAP
-		// If we are not on windows 8 set the value otherwise ignore it.
-		isFullScreen = value;
+        // If we are not on windows 8 set the value otherwise ignore it.
+        isFullScreen = value;
 // #endif
-// #if IOS
-		// UIApplication.SharedApplication.StatusBarHidden = isFullScreen;
+// #if IOS && !TVOS
+        // UIApplication.SharedApplication.StatusBarHidden = isFullScreen;
 // #endif
 
-	}
+    }
 
-	public int getMultiSampleCount()
-	{
-		return multiSampleCount;
-	}
+    public int getMultiSampleCount()
+    {
+        return multiSampleCount;
+    }
 
-	public void setMultiSampleCount(int value)
-	{
-		multiSampleCount = value;
-	}
+    public void setMultiSampleCount(int value)
+    {
+        multiSampleCount = value;
+    }
 
-	public PresentInterval presentationInterval;
+    public PresentInterval presentationInterval;
 
-	public DisplayOrientation displayOrientation;
+    public DisplayOrientation displayOrientation;
 
-	public RenderTargetUsage renderTargetUsage;
+    public RenderTargetUsage renderTargetUsage;
 
-	public void clear()
-	{
-		backBufferFormat = SurfaceFormat.Color;
+    // #endregion Properties
+
+    // #region Methods
+
+    public void clear()
+    {
+        backBufferFormat = SurfaceFormat.Color;
 // #if IOS
-		// Mainscreen.Bounds does not account for the device's orientation. it ALWAYS assumes
-		// portrait
-		// var width = (int)(UIScreen.MainScreen.Bounds.Width * UIScreen.MainScreen.Scale);
-		// var height = (int)(UIScreen.MainScreen.Bounds.Height * UIScreen.MainScreen.Scale);
-		//
-		// Flip the dimentions if we need to.
-		// if (TouchPanel.DisplayOrientation == DisplayOrientation.LandscapeLeft ||
-		// TouchPanel.DisplayOrientation == DisplayOrientation.LandscapeRight)
-		// {
-		// width = height;
-		// height = (int)(UIScreen.MainScreen.Bounds.Width * UIScreen.MainScreen.Scale);
-		// }
-		//
-		// backBufferWidth = width;
-		// backBufferHeight = height;
+        // Mainscreen.Bounds does not account for the device's orientation. it ALWAYS assumes
+        // portrait
+        // var width = (int)(UIScreen.MainScreen.Bounds.Width * UIScreen.MainScreen.Scale);
+        // var height = (int)(UIScreen.MainScreen.Bounds.Height * UIScreen.MainScreen.Scale);
+        //
+        // Flip the dimentions if we need to.
+        // if (TouchPanel.DisplayOrientation == DisplayOrientation.LandscapeLeft ||
+        // TouchPanel.DisplayOrientation == DisplayOrientation.LandscapeRight)
+        // {
+        // width = height;
+        // height = (int)(UIScreen.MainScreen.Bounds.Width * UIScreen.MainScreen.Scale);
+        // }
+        //
+        // backBufferWidth = width;
+        // backBufferHeight = height;
 // #else
-		backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
-		backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
+        backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
+        backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
 // #endif
-		deviceWindowHandle = null;
-// #if IOS
-		// isFullScreen = UIApplication.SharedApplication.StatusBarHidden;
+        deviceWindowHandle = null;
+// #if IOS && !TVOS
+        // isFullScreen = UIApplication.SharedApplication.StatusBarHidden;
 // #else
-		isFullScreen = false;
+        // isFullScreen = false;
 // #endif
-		depthStencilFormat = DepthFormat.None;
-		multiSampleCount = 0;
-		presentationInterval = PresentInterval.Default;
-		displayOrientation = DisplayOrientation.Default;
-	}
+        depthStencilFormat = DepthFormat.None;
+        multiSampleCount = 0;
+        presentationInterval = PresentInterval.Default;
+        displayOrientation = DisplayOrientation.Default;
+    }
 
-	@Override
-	public PresentationParameters clone()
-	{
-		PresentationParameters clone = new PresentationParameters();
-		clone.backBufferFormat = this.backBufferFormat;
-		clone.backBufferHeight = this.backBufferHeight;
-		clone.backBufferWidth = this.backBufferWidth;
-		clone.deviceWindowHandle = this.deviceWindowHandle;
-		clone.disposed = this.disposed;
-		clone.isFullScreen = this.isFullScreen;
-		clone.depthStencilFormat = this.depthStencilFormat;
-		clone.multiSampleCount = this.multiSampleCount;
-		clone.presentationInterval = this.presentationInterval;
-		clone.displayOrientation = this.displayOrientation;
-		return clone;
-	}
+    @Override
+    public PresentationParameters clone()
+    {
+        PresentationParameters clone = new PresentationParameters();
+        clone.backBufferFormat = this.backBufferFormat;
+        clone.backBufferHeight = this.backBufferHeight;
+        clone.backBufferWidth = this.backBufferWidth;
+        clone.deviceWindowHandle = this.deviceWindowHandle;
+        clone.disposed = this.disposed;
+        clone.isFullScreen = this.isFullScreen;
+        clone.depthStencilFormat = this.depthStencilFormat;
+        clone.multiSampleCount = this.multiSampleCount;
+        clone.presentationInterval = this.presentationInterval;
+        clone.displayOrientation = this.displayOrientation;
+        return clone;
+    }
 
-	@Override
-	public void close()
-	{
-		dispose(true);
-		// GC.SuppressFinalize(this);
-	}
+    @Override
+    public void close()
+    {
+        dispose(true);
+        // GC.SuppressFinalize(this);
+    }
 
-	protected void dispose(boolean disposing)
-	{
-		if (!disposed)
-		{
-			disposed = true;
-			if (disposing)
-			{
-				// Dispose managed resources
-			}
-			// Dispose unmanaged resources
-		}
-	}
+    protected void dispose(boolean disposing)
+    {
+        if (!disposed)
+        {
+            disposed = true;
+            if (disposing)
+            {
+                // Dispose managed resources
+            }
+            // Dispose unmanaged resources
+        }
+    }
 
+    // #endregion Methods
 }

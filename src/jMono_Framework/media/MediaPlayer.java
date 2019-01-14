@@ -288,9 +288,11 @@ public class MediaPlayer
 		}
 	}
 
+	// @formatter:off
 	// ########################################################################
-	// # MediaPlayer.Default.cs #
+	// #                        MediaPlayer.Default.cs                        #
 	// ########################################################################
+	// @formatter:on
 
 	// #region Properties
 	/*
@@ -426,9 +428,11 @@ public class MediaPlayer
 	}
 	 */
 
+	// @formatter:off
 	// ########################################################################
-	// # MediaPlayer.WMS.cs #
+	// #                          MediaPlayer.WMS.cs                          #
 	// ########################################################################
+	// @formatter:on
 
 	// NOTE: Things I added for Java sound playback
 	// uncompressed, 44100Hz, 16-bit, stereo, signed, little-endian
@@ -672,9 +676,11 @@ public class MediaPlayer
 	// _session.Start(null, startPosition);
 	}
 
-	// ###################################################
-	// # Methods I added
-	// ###################################################
+	// @formatter:off
+	// ########################################################################
+	// #                           Methods I added                            #
+	// ########################################################################
+	// @formatter:off
 	private static void platformStartNewSong(Song song)
 	{
 		// NOTE: Had to create a separate class to add a boolean sine isInterrupted()

@@ -1,53 +1,1791 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="0" ignored="1" total="11" passed="10">
+<testng-results skipped="0" failed="0" ignored="9" total="166" passed="157">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="96" started-at="2017-05-28T16:17:34Z" finished-at="2017-05-28T16:17:34Z">
+  <suite name="framework.math" duration-ms="1429" started-at="2017-06-30T03:03:33Z" finished-at="2017-06-30T03:03:35Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="96" started-at="2017-05-28T16:17:34Z" finished-at="2017-05-28T16:17:34Z">
-      <class name="framework.Vector2Test">
-        <test-method status="PASS" signature="add()[pri:0, instance:framework.Vector2Test@6a024a67]" name="add" duration-ms="13" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+    <test name="Vector2" duration-ms="425" started-at="2017-06-30T03:03:33Z" finished-at="2017-06-30T03:03:34Z">
+      <class name="framework.math.Vector2Test">
+        <test-method status="PASS" signature="add()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="add" duration-ms="53" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- add -->
-        <test-method status="PASS" signature="catmullRom()[pri:0, instance:framework.Vector2Test@6a024a67]" name="catmullRom" duration-ms="3" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="catmullRom()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="catmullRom" duration-ms="47" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- catmullRom -->
-        <test-method status="PASS" signature="divide()[pri:0, instance:framework.Vector2Test@6a024a67]" name="divide" duration-ms="3" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="constructors()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="constructors" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- constructors -->
+        <test-method status="PASS" signature="distanceSquared()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="distanceSquared" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- distanceSquared -->
+        <test-method status="PASS" signature="divide()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="divide" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- divide -->
-        <test-method status="PASS" signature="hashCodeTest()[pri:0, instance:framework.Vector2Test@6a024a67]" name="hashCodeTest" duration-ms="4" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="dotProduct()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="dotProduct" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- dotProduct -->
+        <test-method status="PASS" signature="hashCodeTest()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="hashCodeTest" duration-ms="10" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- hashCodeTest -->
-        <test-method status="PASS" signature="hermite()[pri:0, instance:framework.Vector2Test@6a024a67]" name="hermite" duration-ms="2" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="hermite()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="hermite" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- hermite -->
-        <test-method status="PASS" signature="multiply()[pri:0, instance:framework.Vector2Test@6a024a67]" name="multiply" duration-ms="1" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="length()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="length" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- length -->
+        <test-method status="PASS" signature="lengthSquared()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="lengthSquared" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lengthSquared -->
+        <test-method status="PASS" signature="multiply()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="multiply" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- multiply -->
-        <test-method status="PASS" signature="subtract()[pri:0, instance:framework.Vector2Test@6a024a67]" name="subtract" duration-ms="1" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="normalize()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="normalize" duration-ms="5" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- normalize -->
+        <test-method status="PASS" signature="properties()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="properties" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- properties -->
+        <test-method status="PASS" signature="subtract()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="subtract" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- subtract -->
-        <test-method status="PASS" signature="toPoint()[pri:0, instance:framework.Vector2Test@6a024a67]" name="toPoint" duration-ms="2" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="toPoint()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="toPoint" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- toPoint -->
-        <test-method status="PASS" signature="transform()[pri:0, instance:framework.Vector2Test@6a024a67]" name="transform" duration-ms="8" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="toStringTest()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="toStringTest" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- toStringTest -->
+        <test-method status="PASS" signature="transform()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="transform" duration-ms="26" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- transform -->
-        <test-method status="PASS" signature="transformNormal()[pri:0, instance:framework.Vector2Test@6a024a67]" name="transformNormal" duration-ms="1" started-at="2017-05-28T12:17:34Z" finished-at="2017-05-28T12:17:34Z">
+        <test-method status="PASS" signature="transformNormal()[pri:0, instance:framework.math.Vector2Test@1efbd816]" name="transformNormal" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- transformNormal -->
-      </class> <!-- framework.Vector2Test -->
-    </test> <!-- Default test -->
-  </suite> <!-- Default suite -->
+      </class> <!-- framework.math.Vector2Test -->
+    </test> <!-- Vector2 -->
+    <test name="Vector3" duration-ms="123" started-at="2017-06-30T03:03:34Z" finished-at="2017-06-30T03:03:34Z">
+      <class name="framework.math.Vector3Test">
+        <test-method status="PASS" signature="add()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="add" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- add -->
+        <test-method status="PASS" signature="constructors()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="constructors" duration-ms="40" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- constructors -->
+        <test-method status="PASS" signature="distanceSquared()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="distanceSquared" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- distanceSquared -->
+        <test-method status="PASS" signature="divide()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="divide" duration-ms="8" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- divide -->
+        <test-method status="PASS" signature="dotProduct()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="dotProduct" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- dotProduct -->
+        <test-method status="PASS" signature="hashCodeTest()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="hashCodeTest" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- hashCodeTest -->
+        <test-method status="PASS" signature="length()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="length" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- length -->
+        <test-method status="PASS" signature="lengthSquared()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="lengthSquared" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lengthSquared -->
+        <test-method status="PASS" signature="multiply()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="multiply" duration-ms="0" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- multiply -->
+        <test-method status="PASS" signature="normalize()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="normalize" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- normalize -->
+        <test-method status="PASS" signature="properties()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="properties" duration-ms="5" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- properties -->
+        <test-method status="PASS" signature="subtract()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="subtract" duration-ms="2" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- subtract -->
+        <test-method status="PASS" signature="toStringTest()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="toStringTest" duration-ms="7" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- toStringTest -->
+        <test-method status="PASS" signature="transform()[pri:0, instance:framework.math.Vector3Test@735b5592]" name="transform" duration-ms="6" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- transform -->
+      </class> <!-- framework.math.Vector3Test -->
+    </test> <!-- Vector3 -->
+    <test name="Vector4" duration-ms="127" started-at="2017-06-30T03:03:34Z" finished-at="2017-06-30T03:03:34Z">
+      <class name="framework.math.Vector4Test">
+        <test-method status="PASS" signature="add()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="add" duration-ms="4" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- add -->
+        <test-method status="PASS" signature="constructors()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="constructors" duration-ms="36" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- constructors -->
+        <test-method status="PASS" signature="distanceSquared()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="distanceSquared" duration-ms="5" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- distanceSquared -->
+        <test-method status="PASS" signature="divide()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="divide" duration-ms="4" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- divide -->
+        <test-method status="PASS" signature="dotProduct()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="dotProduct" duration-ms="3" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- dotProduct -->
+        <test-method status="PASS" signature="hashCodeTest()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="hashCodeTest" duration-ms="8" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- hashCodeTest -->
+        <test-method status="PASS" signature="hermite()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="hermite" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- hermite -->
+        <test-method status="PASS" signature="length()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="length" duration-ms="4" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- length -->
+        <test-method status="PASS" signature="lengthSquared()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="lengthSquared" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lengthSquared -->
+        <test-method status="PASS" signature="multiply()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="multiply" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- multiply -->
+        <test-method status="PASS" signature="normalize()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="normalize" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- normalize -->
+        <test-method status="PASS" signature="properties()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="properties" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- properties -->
+        <test-method status="PASS" signature="subtract()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="subtract" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- subtract -->
+        <test-method status="PASS" signature="toStringTest()[pri:0, instance:framework.math.Vector4Test@1753acfe]" name="toStringTest" duration-ms="4" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- toStringTest -->
+      </class> <!-- framework.math.Vector4Test -->
+    </test> <!-- Vector4 -->
+    <test name="Matrix" duration-ms="3" started-at="2017-06-30T03:03:34Z" finished-at="2017-06-30T03:03:34Z">
+      <class name="framework.math.MatrixTest">
+        <test-method status="PASS" signature="add()[pri:0, instance:framework.math.MatrixTest@51565ec2]" name="add" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- add -->
+      </class> <!-- framework.math.MatrixTest -->
+    </test> <!-- Matrix -->
+    <test name="MathHelper" duration-ms="350" started-at="2017-06-30T03:03:34Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.math.MathHelperTest">
+        <test-method status="PASS" signature="PiConstantsAreExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="PiConstantsAreExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="PiConstantsValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[0.7853982]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.7853982]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- PiConstantsAreExpectedValues -->
+        <test-method status="PASS" signature="PiConstantsAreExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="PiConstantsAreExpectedValues" duration-ms="0" started-at="2017-06-29T23:03:34Z" data-provider="PiConstantsValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[1.5707964]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[1.5707964]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- PiConstantsAreExpectedValues -->
+        <test-method status="PASS" signature="PiConstantsAreExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="PiConstantsAreExpectedValues" duration-ms="0" started-at="2017-06-29T23:03:34Z" data-provider="PiConstantsValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- PiConstantsAreExpectedValues -->
+        <test-method status="PASS" signature="PiConstantsAreExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="PiConstantsAreExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="PiConstantsValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.2831855]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[6.2831855]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- PiConstantsAreExpectedValues -->
+        <test-method status="PASS" signature="clampFloatTest()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="clampFloatTest" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- clampFloatTest -->
+        <test-method status="PASS" signature="clampIntTest()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="clampIntTest" duration-ms="0" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- clampIntTest -->
+        <test-method status="PASS" signature="distanceTest()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="distanceTest" duration-ms="0" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- distanceTest -->
+        <test-method status="PASS" signature="lerpPreciseTest()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="lerpPreciseTest" duration-ms="0" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lerpPreciseTest -->
+        <test-method status="PASS" signature="lerpTest()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="lerpTest" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lerpTest -->
+        <test-method status="PASS" signature="max()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="max" duration-ms="0" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- max -->
+        <test-method status="PASS" signature="min()[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="min" duration-ms="1" started-at="2017-06-29T23:03:34Z" finished-at="2017-06-29T23:03:34Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- min -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[0.7853982]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.7853982]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-0.7853982]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-0.7853982]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[1.5707964]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[1.5707964]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-1.5707964]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-1.5707964]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="0" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-3.1415927]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.2831855]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-6.2831855]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[10.0]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-2.566371]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-10.0]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[2.566371]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[3.141593]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-3.1415925]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-3.1415925]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-3.1415925]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-3.1415927]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415927]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="3" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.283185]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-4.7683716E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.2831855]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.283186]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[4.7683716E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-6.283185]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[4.7683716E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-6.2831855]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-6.283186]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-4.7683716E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[9.424778]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415925]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[9.424779]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-3.141592]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-9.424778]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-3.1415925]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-9.424779]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.141592]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[12.56637]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-9.536743E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[12.566371]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[12.566372]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[9.536743E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-12.56637]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[9.536743E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-12.566371]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0.0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="9" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-12.566372]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-9.536743E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[15.707963]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.141592]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="3" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[15.707964]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-3.1415925]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="0" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-15.707963]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-3.141592]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-15.707964]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3.1415925]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[31.415926]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-1.4305115E-6]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[31.415928]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[4.7683716E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="3" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-31.415926]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[1.4305115E-6]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="8" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-31.415928]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-4.7683716E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="19" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[62.831852]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-2.861023E-6]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="3" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[62.831856]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[9.536743E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="3" started-at="2017-06-29T23:03:34Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-62.831852]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[2.861023E-6]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-62.831856]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-9.536743E-7]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="6" started-at="2017-06-29T23:03:35Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.2831852E7]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-2.8202515]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="4" started-at="2017-06-29T23:03:35Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[6.2831856E7]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[1.1797485]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="8" started-at="2017-06-29T23:03:35Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-6.2831852E7]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[2.8202515]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+        <test-method status="PASS" signature="wrapAngleReturnsExpectedValues(float, float)[pri:0, instance:framework.math.MathHelperTest@4678c730]" name="wrapAngleReturnsExpectedValues" duration-ms="2" started-at="2017-06-29T23:03:35Z" data-provider="wrapAngleReturnsExpectedValuesTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[-6.2831856E7]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[-1.1797485]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- wrapAngleReturnsExpectedValues -->
+      </class> <!-- framework.math.MathHelperTest -->
+    </test> <!-- MathHelper -->
+    <test name="Quaternion" duration-ms="144" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.math.QuaternionTest">
+        <test-method status="PASS" signature="Normalize()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="Normalize" duration-ms="29" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- Normalize -->
+        <test-method status="PASS" signature="add()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="add" duration-ms="5" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- add -->
+        <test-method status="PASS" signature="concatenate()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="concatenate" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- concatenate -->
+        <test-method status="PASS" signature="conjugate()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="conjugate" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- conjugate -->
+        <test-method status="PASS" signature="constructors()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="constructors" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- constructors -->
+        <test-method status="PASS" signature="createFromAxisAngle()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="createFromAxisAngle" duration-ms="2" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- createFromAxisAngle -->
+        <test-method status="PASS" signature="createFromRotationMatrix()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="createFromRotationMatrix" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- createFromRotationMatrix -->
+        <test-method status="PASS" signature="createFromYawPitchRoll()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="createFromYawPitchRoll" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- createFromYawPitchRoll -->
+        <test-method status="PASS" signature="divide()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="divide" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- divide -->
+        <test-method status="PASS" signature="length()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="length" duration-ms="39" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- length -->
+        <test-method status="PASS" signature="lengthSquared()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="lengthSquared" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lengthSquared -->
+        <test-method status="PASS" signature="properties()[pri:0, instance:framework.math.QuaternionTest@cb5822]" name="properties" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- properties -->
+      </class> <!-- framework.math.QuaternionTest -->
+    </test> <!-- Quaternion -->
+  </suite> <!-- framework.math -->
+  <suite name="framework" duration-ms="559" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+    <groups>
+    </groups>
+    <test name="BoundingBox" duration-ms="108" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.BoundingBoxTest">
+        <test-method status="PASS" signature="BoundingBoxContainsBoundingSphere()[pri:0, instance:framework.BoundingBoxTest@14acaea5]" name="BoundingBoxContainsBoundingSphere" duration-ms="96" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- BoundingBoxContainsBoundingSphere -->
+        <test-method status="PASS" signature="BoxContainsIdenticalBox()[pri:0, instance:framework.BoundingBoxTest@14acaea5]" name="BoxContainsIdenticalBox" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- BoxContainsIdenticalBox -->
+        <test-method status="PASS" signature="boxContainsVector3Test()[pri:0, instance:framework.BoundingBoxTest@14acaea5]" name="boxContainsVector3Test" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- boxContainsVector3Test -->
+      </class> <!-- framework.BoundingBoxTest -->
+    </test> <!-- BoundingBox -->
+    <test name="BoundingFrustum" duration-ms="145" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.BoundingFrustumTest">
+        <test-method status="PASS" signature="BoundingFrustumToBoundingBoxTests()[pri:0, instance:framework.BoundingFrustumTest@29774679]" name="BoundingFrustumToBoundingBoxTests" duration-ms="78" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- BoundingFrustumToBoundingBoxTests -->
+        <test-method status="PASS" signature="BoundingFrustumToBoundingFrustumTests()[pri:0, instance:framework.BoundingFrustumTest@29774679]" name="BoundingFrustumToBoundingFrustumTests" duration-ms="64" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- BoundingFrustumToBoundingFrustumTests -->
+      </class> <!-- framework.BoundingFrustumTest -->
+    </test> <!-- BoundingFrustum -->
+    <test name="BoundingSphere" duration-ms="106" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.BoundingSphereTest">
+        <test-method status="PASS" signature="BoundingSphereTests()[pri:0, instance:framework.BoundingSphereTest@27efef64]" name="BoundingSphereTests" duration-ms="103" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- BoundingSphereTests -->
+      </class> <!-- framework.BoundingSphereTest -->
+    </test> <!-- BoundingSphere -->
+    <test name="Color" duration-ms="57" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.ColorTest">
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:32}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[32]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:31}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[32]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:32}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[32]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:0 G:0 B:0 A:0}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:255 G:255 B:0 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:64 G:128 B:192 A:32}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[32]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:255 G:255 B:0 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="2" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:63 G:127 B:191 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:255 G:255 B:0 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:63 G:127 B:191 A:31}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[32]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:255 G:255 B:0 A:0}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="0" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:63 G:127 B:191 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="5" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:255 G:255 B:0 A:255}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="1" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:63 G:127 B:191 A:31}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[64]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[128]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[192]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[32]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Explicit(jMono_Framework.Color, int, int, int, int)[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Explicit" duration-ms="2" started-at="2017-06-29T23:03:35Z" data-provider="ctorTestCases" finished-at="2017-06-29T23:03:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[{R:255 G:255 B:0 A:0}]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[255]]>
+              </value>
+            </param>
+            <param index="3">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="4">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Explicit -->
+        <test-method status="PASS" signature="ctor_Packed()[pri:0, instance:framework.ColorTest@3bfdc050]" name="ctor_Packed" duration-ms="2" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- ctor_Packed -->
+        <test-method status="PASS" signature="fromNonPremultiplied_Float()[pri:0, instance:framework.ColorTest@3bfdc050]" name="fromNonPremultiplied_Float" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- fromNonPremultiplied_Float -->
+        <test-method status="PASS" signature="fromNonPremultiplied_Int()[pri:0, instance:framework.ColorTest@3bfdc050]" name="fromNonPremultiplied_Int" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- fromNonPremultiplied_Int -->
+        <test-method status="PASS" signature="lerp()[pri:0, instance:framework.ColorTest@3bfdc050]" name="lerp" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- lerp -->
+        <test-method status="PASS" signature="multiply()[pri:0, instance:framework.ColorTest@3bfdc050]" name="multiply" duration-ms="2" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- multiply -->
+      </class> <!-- framework.ColorTest -->
+    </test> <!-- Color -->
+    <test name="Ray" duration-ms="2" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.RayTest">
+        <test-method status="PASS" signature="boundingBoxIntersects()[pri:0, instance:framework.RayTest@6a41eaa2]" name="boundingBoxIntersects" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- boundingBoxIntersects -->
+      </class> <!-- framework.RayTest -->
+    </test> <!-- Ray -->
+    <test name="Rectangle" duration-ms="28" started-at="2017-06-30T03:03:35Z" finished-at="2017-06-30T03:03:35Z">
+      <class name="framework.RectangleTest">
+        <test-method status="PASS" signature="constructorsAndProperties()[pri:0, instance:framework.RectangleTest@1794d431]" name="constructorsAndProperties" duration-ms="2" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- constructorsAndProperties -->
+        <test-method status="PASS" signature="containsFloats()[pri:0, instance:framework.RectangleTest@1794d431]" name="containsFloats" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- containsFloats -->
+        <test-method status="PASS" signature="containsInts()[pri:0, instance:framework.RectangleTest@1794d431]" name="containsInts" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- containsInts -->
+        <test-method status="PASS" signature="containsPoint()[pri:0, instance:framework.RectangleTest@1794d431]" name="containsPoint" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- containsPoint -->
+        <test-method status="PASS" signature="containsRectangle()[pri:0, instance:framework.RectangleTest@1794d431]" name="containsRectangle" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- containsRectangle -->
+        <test-method status="PASS" signature="containsVector2()[pri:0, instance:framework.RectangleTest@1794d431]" name="containsVector2" duration-ms="2" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- containsVector2 -->
+        <test-method status="PASS" signature="inflate()[pri:0, instance:framework.RectangleTest@1794d431]" name="inflate" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- inflate -->
+        <test-method status="PASS" signature="intersect()[pri:0, instance:framework.RectangleTest@1794d431]" name="intersect" duration-ms="0" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- intersect -->
+        <test-method status="PASS" signature="toStringTest()[pri:0, instance:framework.RectangleTest@1794d431]" name="toStringTest" duration-ms="3" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- toStringTest -->
+        <test-method status="PASS" signature="union()[pri:0, instance:framework.RectangleTest@1794d431]" name="union" duration-ms="1" started-at="2017-06-29T23:03:35Z" finished-at="2017-06-29T23:03:35Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- union -->
+      </class> <!-- framework.RectangleTest -->
+    </test> <!-- Rectangle -->
+  </suite> <!-- framework -->
+  <suite name="All unit tests" duration-ms="0" started-at="2017-06-30T03:03:36Z" finished-at="2017-06-30T03:03:36Z">
+    <groups>
+    </groups>
+  </suite> <!-- All unit tests -->
 </testng-results>

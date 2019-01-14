@@ -278,7 +278,7 @@ public abstract class MenuScreen extends GameScreen
 
 		// start at y = screenHeight / 2; each X value is generated per entry
 		Vector2 position = new Vector2(0.0f,
-									   screenManager.getGame().getWindow().clientBounds.height / 2
+									   screenManager.getGame().getWindow().getClientBounds().height / 2
 									   - (menuEntries.get(0).getHeight(this) +
 										(menuEntryPadding * 2) * menuEntries.size()));
 

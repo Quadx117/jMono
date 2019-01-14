@@ -159,7 +159,7 @@ public class SamplerState extends GraphicsResource
 		setAddressU(TextureAddressMode.Wrap);
 		setAddressV(TextureAddressMode.Wrap);
 		setAddressW(TextureAddressMode.Wrap);
-		setBorderColor(Color.White);
+		setBorderColor(Color.White());
 		setMaxAnisotropy(4);
 		setMaxMipLevel(0);
 		setMipMapLevelOfDetailBias(0.0f);

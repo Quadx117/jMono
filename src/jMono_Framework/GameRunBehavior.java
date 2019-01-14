@@ -1,20 +1,20 @@
 package jMono_Framework;
 
 /**
- * Defines how <see cref="Game"/> should be runned.
+ * Defines how {@link Game} should be run.
  * 
  * @author Eric Perron (inspired by CardsFramework from Microsoft)
  *
  */
 public enum GameRunBehavior
 {
-	/**
-	 * The game loop will be runned asynchronous.
-	 */
-	Asynchronous,
+    /**
+     * The game loop will be run asynchronous.
+     */
+    Asynchronous,
 
-	/**
-	 * The game loop will be runned synchronous.
-	 */
-	Synchronous
+    /**
+     * The game loop will be run synchronous.
+     */
+    Synchronous
 }

@@ -19,12 +19,15 @@ import jMono_Framework.graphics.vertices.IVertexType;
 import jMono_Framework.graphics.vertices.IndexBuffer;
 import jMono_Framework.graphics.vertices.PrimitiveType;
 import jMono_Framework.graphics.vertices.VertexBuffer;
+import jMono_Framework.graphics.vertices.VertexBufferBinding;
+import jMono_Framework.graphics.vertices.VertexBufferBindings;
 import jMono_Framework.graphics.vertices.VertexDeclaration;
 import jMono_Framework.graphics.vertices.VertexDeclarationCache;
 import jMono_Framework.graphics.vertices.VertexPositionColorTexture;
 import jMono_Framework.math.MathHelper;
 import jMono_Framework.math.Vector2;
 import jMono_Framework.math.Vector4;
+import jMono_Framework.utilities.ReflectionHelpers;
 
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -35,1002 +38,1274 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GraphicsDevice implements AutoCloseable
 {
-	private Viewport _viewport;
-	private GraphicsProfile _graphicsProfile;
+    private Viewport _viewport;
+    
+    private boolean _isDisposed;
 
-	private boolean _isDisposed;
+    private Color _blendFactor = Color.White();
+    private boolean _blendFactorDirty;
 
-	private BlendState _blendState;
-	private BlendState _actualBlendState;
-	private boolean _blendStateDirty;
+    private BlendState _blendState;
+    private BlendState _actualBlendState;
+    private boolean _blendStateDirty;
 
-	private BlendState _blendStateAdditive;
-	private BlendState _blendStateAlphaBlend;
-	private BlendState _blendStateNonPremultiplied;
-	private BlendState _blendStateOpaque;
+    private BlendState _blendStateAdditive;
+    private BlendState _blendStateAlphaBlend;
+    private BlendState _blendStateNonPremultiplied;
+    private BlendState _blendStateOpaque;
 
-	private DepthStencilState _depthStencilState;
-	private DepthStencilState _actualDepthStencilState;
-	private boolean _depthStencilStateDirty;
+    private DepthStencilState _depthStencilState;
+    private DepthStencilState _actualDepthStencilState;
+    private boolean _depthStencilStateDirty;
 
-	private DepthStencilState _depthStencilStateDefault;
-	private DepthStencilState _depthStencilStateDepthRead;
-	private DepthStencilState _depthStencilStateNone;
+    private DepthStencilState _depthStencilStateDefault;
+    private DepthStencilState _depthStencilStateDepthRead;
+    private DepthStencilState _depthStencilStateNone;
 
-	private RasterizerState _rasterizerState;
-	private RasterizerState _actualRasterizerState;
-	private boolean _rasterizerStateDirty;
+    private RasterizerState _rasterizerState;
+    private RasterizerState _actualRasterizerState;
+    private boolean _rasterizerStateDirty;
 
-	private RasterizerState _rasterizerStateCullClockwise;
-	private RasterizerState _rasterizerStateCullCounterClockwise;
-	private RasterizerState _rasterizerStateCullNone;
+    private RasterizerState _rasterizerStateCullClockwise;
+    private RasterizerState _rasterizerStateCullCounterClockwise;
+    private RasterizerState _rasterizerStateCullNone;
 
-	private Rectangle _scissorRectangle;
-	private boolean _scissorRectangleDirty;
+    private Rectangle _scissorRectangle;
+    private boolean _scissorRectangleDirty;
 
-	private VertexBuffer _vertexBuffer;
-	private boolean _vertexBufferDirty;
+    private VertexBufferBindings _vertexBuffers;
+    private boolean _vertexBuffersDirty;
 
-	private IndexBuffer _indexBuffer;
-	private boolean _indexBufferDirty;
+    private IndexBuffer _indexBuffer;
+    private boolean _indexBufferDirty;
 
-	private RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
-	private int _currentRenderTargetCount;
+    private final RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
+    private int _currentRenderTargetCount;
+    private final RenderTargetBinding[] _tempRenderTargetBinding = new RenderTargetBinding[1];
 
-	private GraphicsCapabilities graphicsCapabilities;
-	public GraphicsCapabilities getGraphicsCapabilities() { return graphicsCapabilities; }
+    private GraphicsCapabilities _graphicsCapabilities;
+    public GraphicsCapabilities getGraphicsCapabilities() { return _graphicsCapabilities; }
 
-	private TextureCollection vertexTextures;
-	public TextureCollection getVertexTextures() { return vertexTextures; }
+    private TextureCollection _vertexTextures;
+    public TextureCollection getVertexTextures() { return _vertexTextures; }
 
-	private SamplerStateCollection vertexSamplerStates;
-	public SamplerStateCollection getVertexSamplerStates() { return samplerStates; }
+    private SamplerStateCollection _vertexSamplerStates;
+    public SamplerStateCollection getVertexSamplerStates() { return _vertexSamplerStates; }
 
-	private TextureCollection textures;
-	public TextureCollection getTextures() { return textures; }
+    private TextureCollection _textures;
+    public TextureCollection getTextures() { return _textures; }
 
-	private SamplerStateCollection samplerStates;
-	public SamplerStateCollection getSamplerStates() { return samplerStates; }
+    private SamplerStateCollection _samplerStates;
+    public SamplerStateCollection getSamplerStates() { return _samplerStates; }
 
-	// On Intel Integrated graphics, there is a fast hw unit for doing
-	// clears to colors where all components are either 0 or 255.
-	// Despite XNA4 using Purple here, we use black (in Release) to avoid
-	// performance warnings on Intel/Mesa
+    // On Intel Integrated graphics, there is a fast hw unit for doing
+    // clears to colors where all components are either 0 or 255.
+    // Despite XNA4 using Purple here, we use black (in Release) to avoid
+    // performance warnings on Intel/Mesa
 // #if DEBUG
-	private static final Color DiscardColor = new Color(68, 34, 136, 255);
+    private static final Color DiscardColor = new Color(68, 34, 136, 255);
 // #else
-	// private static final Color DiscardColor = new Color(0, 0, 0, 255);
+    // private static final Color DiscardColor = new Color(0, 0, 0, 255);
 // #endif
 
-	/**
-	 * The active vertex shader.
-	 */
-	private Shader _vertexShader;
-	private boolean _vertexShaderDirty;
-	private boolean isVertexShaderDirty()
-	{
-		return _vertexShaderDirty;
-	}
-
-	/**
-	 * The active pixel shader.
-	 */
-	private Shader _pixelShader;
-	private boolean _pixelShaderDirty;
-	private boolean isPixelShaderDirty()
-	{
-		return _pixelShaderDirty;
-	}
-
-	private final ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
-	private final ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
-
-	/**
-	 * The cache of effects from unique byte streams.
-	 */
-	public Map<Integer, Effect> effectCache;
-
-	// Resources may be added to and removed from the list from many threads.
-	private final Object _resourcesLock = new Object();
-
-	// Use WeakReference for the global resources list as we do not know when a resource
-	// may be disposed and collected. We do not want to prevent a resource from being
-	// collected by holding a strong reference to it in this list.
-	private List<WeakReference<?>> _resources = new ArrayList<WeakReference<?>>();
-
-	// NOTE: Already like that in the original code. Guess I don't need to do these than
-	// TODO Graphics Device events need implementing
-	public Event<EventArgs> deviceLost = new Event<EventArgs>();
-	public Event<EventArgs> deviceReset = new Event<EventArgs>();
-	public Event<EventArgs> deviceResetting = new Event<EventArgs>();
-	public Event<ResourceCreatedEventArgs> resourceCreated = new Event<ResourceCreatedEventArgs>();
-	public Event<ResourceDestroyedEventArgs> resourceDestroyed = new Event<ResourceDestroyedEventArgs>();
-	public Event<EventArgs> disposing = new Event<EventArgs>();
-
-	private boolean suppressEventHandlerWarningsUntilEventsAreProperlyImplemented()
-	{
-		return deviceLost != null &&
-				resourceCreated != null &&
-				resourceDestroyed != null &&
-				disposing != null;
-	}
-
-	protected int maxTextureSlots;
-	protected int maxVertexTextureSlots;
-
-	public boolean isDisposed()
-	{
-		return _isDisposed;
-	}
-
-	public boolean isContentLost()
-	{
-		// We will just return IsDisposed for now
-		// as that is the only case I can see for now
-		return _isDisposed;
-	}
-
-	protected boolean isRenderTargetBound()
-	{
-		return _currentRenderTargetCount > 0;
-	}
-
-	private GraphicsAdapter adapter;
-	public GraphicsAdapter getAdapter() { return adapter; }
-
-	protected GraphicsMetrics _graphicsMetrics = new GraphicsMetrics();
-
-	/**
-	 * The rendering information for debugging and profiling.
-	 * The metrics are reset every frame after draw within {@link GraphicsDevice#present()}.
-	 * @return	The rendering information for debugging and profiling.
-	 */
-	public GraphicsMetrics getMetrics() { return _graphicsMetrics; }
-	public void setGraphicsMetrics(GraphicsMetrics value) { _graphicsMetrics = value; }
-
-	protected GraphicsDevice(GraphicsDeviceInformation gdi)
-	{
-		if (gdi.presentationParameters == null)
-			throw new NullPointerException("presentationParameters");
-		presentationParameters = gdi.presentationParameters;
-		setup();
-		this.graphicsCapabilities = new GraphicsCapabilities(this);
-		setGraphicsProfile(gdi.graphicsProfile);
-		initialize();
-	}
-
-	protected GraphicsDevice()
-	{
-		presentationParameters = new PresentationParameters();
-		presentationParameters.setDepthStencilFormat(DepthFormat.Depth24);
-		setup();
-		this.graphicsCapabilities = new GraphicsCapabilities(this);
-		initialize();
-	}
-
-	/**
-	 * Initializes a new instance of the <see cref="GraphicsDevice" /> class.
-	 * 
-	 * @param adapter
-	 *        The graphics adapter.
-	 * @param graphicsProfile
-	 *        The graphics profile.
-	 * @param presentationParameters
-	 *        The presentation options.
-	 * @throws NullPointerException
-	 *         If {@code presentationParameters} is {@code null}.
-	 */
-	public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters)
-	{
-		this.adapter = adapter;
-		if (presentationParameters == null)
-			throw new NullPointerException("presentationParameters");
-		this.presentationParameters = presentationParameters;
-		setup();
-		this.graphicsCapabilities = new GraphicsCapabilities(this);
-		setGraphicsProfile(graphicsProfile);
-		initialize();
-	}
-
-	private void setup()
-	{
-		// Initialize the main viewport
-		_viewport = new Viewport(0, 0, getDisplayMode().getWidth(), getDisplayMode().getHeight());
-		_viewport.setMaxDepth(1.0f);
-
-		platformSetup();
-
-		vertexTextures = new TextureCollection(this, maxVertexTextureSlots, true);
-		vertexSamplerStates = new SamplerStateCollection(this, maxVertexTextureSlots, true);
-
-		textures = new TextureCollection(this, maxTextureSlots, false);
-		samplerStates = new SamplerStateCollection(this, maxTextureSlots, false);
-
-		_blendStateAdditive = BlendState.Additive.clone();
-		_blendStateAlphaBlend = BlendState.AlphaBlend.clone();
-		_blendStateNonPremultiplied = BlendState.NonPremultiplied.clone();
-		_blendStateOpaque = BlendState.Opaque.clone();
-
-		setBlendState(BlendState.Opaque);
-
-		_depthStencilStateDefault = DepthStencilState.Default.clone();
-		_depthStencilStateDepthRead = DepthStencilState.DepthRead.clone();
-		_depthStencilStateNone = DepthStencilState.None.clone();
-
-		setDepthStencilState(DepthStencilState.Default);
-
-		_rasterizerStateCullClockwise = RasterizerState.CullClockwise.clone();
-		_rasterizerStateCullCounterClockwise = RasterizerState.CullCounterClockwise.clone();
-		_rasterizerStateCullNone = RasterizerState.CullNone.clone();
-
-		setRasterizerState(RasterizerState.CullCounterClockwise);
-
-		effectCache = new HashMap<Integer, Effect>();
-	}
-
-	@Override
-	public void finalize()
-	{
-		dispose(false);
-	}
-
-	protected void initialize()
-	{
-		platformInitialize();
-
-		// Force set the default render states.
-		_blendStateDirty = _depthStencilStateDirty = _rasterizerStateDirty = true;
-		setBlendState(BlendState.Opaque);
-		setDepthStencilState(DepthStencilState.Default);
-		setRasterizerState(RasterizerState.CullCounterClockwise);
-
-		// Clear the texture and sampler collections forcing
-		// the state to be reapplied.
-		vertexTextures.clear();
-		vertexSamplerStates.clear();
-		vertexTextures.clear();
-		samplerStates.clear();
-
-		// Clear constant buffers
-		_vertexConstantBuffers.clear();
-		_pixelConstantBuffers.clear();
-
-		// Force set the buffers and shaders on next ApplyState() call
-		_indexBufferDirty = true;
-		_vertexBufferDirty = true;
-		_vertexShaderDirty = true;
-		_pixelShaderDirty = true;
-
-		// Set the default scissor rect.
-		_scissorRectangleDirty = true;
-		_scissorRectangle = _viewport.getBounds();
-
-		// Set the default render target.
-		applyRenderTargets(null);
-	}
-
-	public RasterizerState getRasterizerState()
-	{
-		return _rasterizerState;
-	}
-
-	public void setRasterizerState(RasterizerState value)
-	{
-		if (value == null)
-			throw new NullPointerException("value is null");
-
-		// Don't set the same state twice!
-		if (_rasterizerState == value)
-			return;
-
-		if (!value.getDepthClipEnable() && !getGraphicsCapabilities().supportsDepthClamp())
-			throw new UnsupportedOperationException("Cannot set RasterizerState.DepthClipEnable to false on this graphics device");
-
-		_rasterizerState = value;
-
-		// Static state properties never actually get bound;
-		// instead we use our GraphicsDevice-specific version of them.
-		RasterizerState newRasterizerState = _rasterizerState;
-		if (_rasterizerState == RasterizerState.CullClockwise)
-			newRasterizerState = _rasterizerStateCullClockwise;
-		else if (_rasterizerState == RasterizerState.CullCounterClockwise)
-			newRasterizerState = _rasterizerStateCullCounterClockwise;
-		else if (_rasterizerState == RasterizerState.CullNone)
-			newRasterizerState = _rasterizerStateCullNone;
-
-		newRasterizerState.bindToGraphicsDevice(this);
-
-		_actualRasterizerState = newRasterizerState;
-
-		_rasterizerStateDirty = true;
-	}
-
-	public BlendState getBlendState() { return _blendState; }
-
-	public void setBlendState(BlendState value)
-	{
-		if (value == null)
-			throw new NullPointerException("value");
-
-		// Don't set the same state twice!
-		if (_blendState == value)
-			return;
-
-		_blendState = value;
-
-		// Static state properties never actually get bound;
-		// instead we use our GraphicsDevice-specific version of them.
-		BlendState newBlendState = _blendState;
-		if (_blendState == BlendState.Additive)
-			newBlendState = _blendStateAdditive;
-		else if (_blendState == BlendState.AlphaBlend)
-			newBlendState = _blendStateAlphaBlend;
-		else if (_blendState == BlendState.NonPremultiplied)
-			newBlendState = _blendStateNonPremultiplied;
-		else if (_blendState == BlendState.Opaque)
-			newBlendState = _blendStateOpaque;
-
-		// Blend state is now bound to a device... no one should
-		// be changing the state of the blend state object now!
-		newBlendState.bindToGraphicsDevice(this);
-
-		_actualBlendState = newBlendState;
-
-		_blendStateDirty = true;
-	}
-
-	public DepthStencilState getDepthStencilState() { return _depthStencilState; }
-
-	public void setDepthStencilState(DepthStencilState value)
-	{
-		if (value == null)
-			throw new NullPointerException("value");
-
-		// Don't set the same state twice!
-		if (_depthStencilState == value)
-			return;
-
-		_depthStencilState = value;
-
-		// Static state properties never actually get bound;
-		// instead we use our GraphicsDevice-specific version of them.
-		DepthStencilState newDepthStencilState = _depthStencilState;
-		if (_depthStencilState == DepthStencilState.Default)
-			newDepthStencilState = _depthStencilStateDefault;
-		else if (_depthStencilState == DepthStencilState.DepthRead)
-			newDepthStencilState = _depthStencilStateDepthRead;
-		else if (_depthStencilState == DepthStencilState.None)
-			newDepthStencilState = _depthStencilStateNone;
-
-		newDepthStencilState.bindToGraphicsDevice(this);
-
-		_actualDepthStencilState = newDepthStencilState;
-
-		_depthStencilStateDirty = true;
-	}
-
-	protected void applyState(boolean applyShaders)
-	{
-		platformBeginApplyState();
-
-		if (_blendStateDirty)
-		{
-			// TODO: see other GraphicsDevice files
-//			_actualBlendState.PlatformApplyState(this);
-			_blendStateDirty = false;
-		}
-
-		if (_depthStencilStateDirty)
-		{
-			// TODO: see other GraphicsDevice files
-//			_actualDepthStencilState.PlatformApplyState(this);
-			_depthStencilStateDirty = false;
-		}
-
-		if (_rasterizerStateDirty)
-		{
-			// TODO: see other GraphicsDevice files
-//			_actualRasterizerState.PlatformApplyState(this);
-			_rasterizerStateDirty = false;
-		}
-
-		platformApplyState(applyShaders);
-	}
-
-	public void clear(Color color)
-	{
-		int options = ClearOptions.Target.getValue() |		//
-					  ClearOptions.DepthBuffer.getValue() |	//
-					  ClearOptions.Stencil.getValue();
-		platformClear(options, color.toVector4(), _viewport.getMaxDepth(), 0);
-	}
-
-	public void clear(ClearOptions options, Color color, float depth, int stencil)
-	{
-		platformClear(options.getValue(), color.toVector4(), depth, stencil);
-	}
-
-	public void clear(ClearOptions options, Vector4 color, float depth, int stencil)
-	{
-		platformClear(options.getValue(), color, depth, stencil);
-	}
-
-	@Override
-	public void close()
-	{
-		dispose(true);
-		// GC.SuppressFinalize(this);
-	}
-
-	protected void dispose(boolean disposing)
-	{
-		if (!_isDisposed)
-		{
-			if (disposing)
-			{
-				// Dispose of all remaining graphics resources before disposing of the graphics device
-				synchronized (_resourcesLock)
-				{
-					for (WeakReference<?> resource : _resources)
-					{
-						AutoCloseable target = As.as(resource.get(), AutoCloseable.class);
-						if (target != null)
-							try
-							{
-								target.close();
-							}
-							catch (Exception e)
-							{
-								e.printStackTrace();
-							}
-					}
-					_resources.clear();
-				}
-
-				// Clear the effect cache.
-				effectCache.clear();
-
-				platformDispose();
-			}
-
-			_isDisposed = true;
-		}
-	}
-
-	protected void addResourceReference(WeakReference<?> resourceReference)
-	{
-		synchronized (_resourcesLock)
-		{
-			_resources.add(resourceReference);
-		}
-	}
-
-	protected void removeResourceReference(WeakReference<?> resourceReference)
-	{
-		synchronized (_resourcesLock)
-		{
-			_resources.remove(resourceReference);
-		}
-	}
-
-	public void present()
-	{
-		_graphicsMetrics = new GraphicsMetrics();
-		platformPresent();
-	}
-
-	// NOTE: Already commented out in the original code
-	/*
-	 * public void Present(Rectangle? sourceRectangle, Rectangle? destinationRectangle, IntPtr
-	 * overrideWindowHandle)
-	 * {
-	 * throw new UnsupportedOperationException();
-	 * }
-	 * 
-	 * public void Reset()
-	 * {
-	 * // Manually resetting the device is not currently supported.
-	 * throw new UnsupportedOperationException();
-	 * }
-	 */
-
-// #if WINDOWS && DIRECTX
-	public void reset(PresentationParameters presentationParameters)
-	{
-		this.presentationParameters = presentationParameters;
-
-		// Update the back buffer.
-		// createSizeDependentResources();
-		applyRenderTargets(null);
-	}
+    /**
+     * The active vertex shader.
+     */
+    private Shader _vertexShader;
+    private boolean _vertexShaderDirty;
+    private boolean isVertexShaderDirty()
+    {
+        return _vertexShaderDirty;
+    }
+
+    /**
+     * The active pixel shader.
+     */
+    private Shader _pixelShader;
+    private boolean _pixelShaderDirty;
+    private boolean isPixelShaderDirty()
+    {
+        return _pixelShaderDirty;
+    }
+
+    private final ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
+    private final ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
+
+    /**
+     * The cache of effects from unique byte streams.
+     */
+    public Map<Integer, Effect> effectCache;
+
+    // Resources may be added to and removed from the list from many threads.
+    private final Object _resourcesLock = new Object();
+
+    // Use WeakReference for the global resources list as we do not know when a resource
+    // may be disposed and collected. We do not want to prevent a resource from being
+    // collected by holding a strong reference to it in this list.
+    private List<WeakReference<?>> _resources = new ArrayList<WeakReference<?>>();
+
+    // TODO Graphics Device events need implementing
+    public Event<EventArgs> deviceLost = new Event<EventArgs>();
+    public Event<EventArgs> deviceReset = new Event<EventArgs>();
+    public Event<EventArgs> deviceResetting = new Event<EventArgs>();
+    public Event<ResourceCreatedEventArgs> resourceCreated = new Event<ResourceCreatedEventArgs>();
+    public Event<ResourceDestroyedEventArgs> resourceDestroyed = new Event<ResourceDestroyedEventArgs>();
+    public Event<EventArgs> disposing = new Event<EventArgs>();
+
+    public Event<EventArgs> presentationChanged = new Event<EventArgs>();
+    
+    private int _maxVertexBufferSlots;
+    protected int maxTextureSlots;
+    protected int maxVertexTextureSlots;
+
+    public boolean isDisposed()
+    {
+        return _isDisposed;
+    }
+
+    public boolean isContentLost()
+    {
+        // We will just return IsDisposed for now
+        // as that is the only case I can see for now
+        return _isDisposed;
+    }
+
+    protected boolean isRenderTargetBound()
+    {
+        return _currentRenderTargetCount > 0;
+    }
+
+    protected DepthFormat getActiveDepthFormat()
+    {
+        return isRenderTargetBound()
+            ? _currentRenderTargetBindings[0].getDepthFormat()
+            : getPresentationParameters().getDepthStencilFormat();
+    }
+
+    private GraphicsAdapter _adapter;
+    public GraphicsAdapter getAdapter()
+    {
+        return _adapter;
+    }
+
+    protected GraphicsMetrics _graphicsMetrics = new GraphicsMetrics();
+
+    /**
+     * The rendering information for debugging and profiling.
+     * The metrics are reset every frame after draw within {@link GraphicsDevice#present()}.
+     * @return  The rendering information for debugging and profiling.
+     */
+    public GraphicsMetrics getMetrics() { return _graphicsMetrics; }
+    public void setGraphicsMetrics(GraphicsMetrics value) { _graphicsMetrics = value; }
+
+    public GraphicsDevice(GraphicsDeviceInformation gdi) throws NoSuitableGraphicsDeviceException
+    {
+        this(gdi.adapter, gdi.graphicsProfile, gdi.presentationParameters);
+    }
+
+    protected GraphicsDevice()
+    {
+        _presentationParameters = new PresentationParameters();
+        _presentationParameters.setDepthStencilFormat(DepthFormat.Depth24);
+        setup();
+        this._graphicsCapabilities = new GraphicsCapabilities();
+        this._graphicsCapabilities.initialize(this);
+        initialize();
+        
+        // NOTE(Eric): Added this since apparently it can be null in C#
+        _graphicsProfile = GraphicsProfile.Reach;
+    }
+
+    /**
+     * Initializes a new instance of the {@code GraphicsDevice} class.
+     * 
+     * @param adapter
+     *        The graphics adapter.
+     * @param graphicsProfile
+     *        The graphics profile.
+     * @param presentationParameters
+     *        The presentation options.
+     * @throws NoSuitableGraphicsDeviceException If the specified {@code graphicsProfile} is not supported by the specified {@code adapter}.
+     * @throws NullPointerException
+     *         If {@code presentationParameters} is {@code null}.
+     */
+    public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters) throws NoSuitableGraphicsDeviceException
+    {
+        if (adapter == null)
+            throw new NullPointerException("adapter");
+        if (!adapter.isProfileSupported(graphicsProfile))
+            throw new NoSuitableGraphicsDeviceException(String.format("Adapter %s does not support the %s profile.", adapter.getDescription(), graphicsProfile));
+        if (presentationParameters == null)
+            throw new NullPointerException("presentationParameters");
+        this._adapter = adapter;
+        this._presentationParameters = presentationParameters;
+        _graphicsProfile = graphicsProfile;
+        setup();
+        this._graphicsCapabilities = new GraphicsCapabilities();
+        this._graphicsCapabilities.initialize(this);
+        initialize();
+    }
+
+    private void setup()
+    {
+// #if DEBUG
+        if (getDisplayMode() == null)
+        {
+            throw new RuntimeException(
+                "Unable to determine the current display mode.  This can indicate that the " +
+                "game is not configured to be HiDPI aware under Windows 10 or later.  See " +
+                "https://github.com/MonoGame/MonoGame/issues/5040 for more information.");
+        }
 // #endif
 
-	// NOTE: Already commented out in the original code
-	/*
-	 * public void Reset(PresentationParameters presentationParameters, GraphicsAdapter
-	 * graphicsAdapter)
-	 * {
-	 * throw new UnsupportedOperationException();
-	 * }
-	 */
-
-	/**
-	 * Trigger the DeviceResetting event.
-	 * Currently protected to allow the various platforms to send the event at the appropriate time.
-	 */
-	protected void onDeviceResetting()
-	{
-		if (deviceResetting != null)
-			deviceResetting.handleEvent(this, EventArgs.Empty);
-
-		synchronized (_resourcesLock)
-		{
-			for (WeakReference<?> resource : _resources)
-			{
-				GraphicsResource target = As.as(resource.get(), GraphicsResource.class);
-				if (target != null)
-					target.graphicsDeviceResetting();
-			}
-
-			// Remove references to resources that have been garbage collected.
-			_resources.removeIf(wr -> wr.get() != null);
-		}
-	}
-
-	/**
-	 * Trigger the DeviceReset event to allow games to be notified of a device reset.
-	 * Currently protected to allow the various platforms to send the event at the appropriate time.
-	 */
-	protected void onDeviceReset()
-	{
-		if (deviceReset != null)
-			deviceReset.handleEvent(this, EventArgs.Empty);
-	}
-
-	public DisplayMode getDisplayMode()
-	{
-		return adapter.getCurrentDisplayMode();
-	}
-
-	public GraphicsDeviceStatus getGraphicsDeviceStatus()
-	{
-		return GraphicsDeviceStatus.Normal;
-	}
-
-	private PresentationParameters presentationParameters;
-	public PresentationParameters getPresentationParameters() { return presentationParameters; }
-
-	public Viewport getViewport()
-	{
-		return _viewport;
-	}
-
-	public void setViewport(Viewport value)
-	{
-		_viewport = value;
-		platformSetViewport(value);
-	}
-
-	public GraphicsProfile getGraphicsProfile()
-	{
-		return _graphicsProfile;
-	}
-
-	public void setGraphicsProfile(GraphicsProfile value)
-	{
-		// Check if Profile is supported.
-		// TODO: [DirectX] Recreate the Device using the new
-		// feature level each time the Profile changes.
-		if (value.ordinal() > getHighestSupportedGraphicsProfile(this).ordinal())
-			throw new UnsupportedOperationException(String.format("Could not find a graphics device that supports the %s profile", value.toString()));
-		_graphicsProfile = value;
-		graphicsCapabilities.initialize(this);
-	}
-
-	public Rectangle getScissorRectangle()
-	{
-		return _scissorRectangle;
-	}
-
-	public void setScissorRectangle(Rectangle value)
-	{
-		if (_scissorRectangle.equals(value))
-			return;
-
-		_scissorRectangle = new Rectangle(value);
-		_scissorRectangleDirty = true;
-	}
-
-	public int getRenderTargetCount()
-	{
-		return _currentRenderTargetCount;
-	}
-
-	public void setRenderTarget(RenderTarget2D renderTarget)
-	{
-		if (renderTarget == null)
-			setRenderTargets((RenderTargetBinding[]) null);
-		else
-			setRenderTargets(new RenderTargetBinding(renderTarget));
-	}
-
-	public void setRenderTarget(RenderTargetCube renderTarget, CubeMapFace cubeMapFace)
-	{
-		if (renderTarget == null)
-			setRenderTarget(null);
-		else
-			setRenderTargets(new RenderTargetBinding(renderTarget, cubeMapFace));
-	}
-
-	public void setRenderTargets(RenderTargetBinding... renderTargets)
-	{
-		// Avoid having to check for null and zero length.
-		int renderTargetCount = 0;
-		if (renderTargets != null)
-		{
-			renderTargetCount = renderTargets.length;
-			if (renderTargetCount == 0)
-				renderTargets = null;
-		}
-
-		// Try to early out if the current and new bindings are equal.
-		if (_currentRenderTargetCount == renderTargetCount)
-		{
-			boolean isEqual = true;
-			for (int i = 0; i < _currentRenderTargetCount; ++i)
-			{
-				if (_currentRenderTargetBindings[i].getRenderTarget() != renderTargets[i].getRenderTarget() ||
-					_currentRenderTargetBindings[i].getArraySlice() != renderTargets[i].getArraySlice())
-				{
-					isEqual = false;
-					break;
-				}
-			}
-
-			if (isEqual)
-				return;
-		}
-
-		applyRenderTargets(renderTargets);
-	}
-
-	public void applyRenderTargets(RenderTargetBinding[] renderTargets)
-	{
-		boolean clearTarget = false;
-
-		platformResolveRenderTargets();
-
-		// Clear the current bindings.
-		Arrays.fill(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.length, null);
-
-		int renderTargetWidth;
-		int renderTargetHeight;
-		if (renderTargets == null)
-		{
-			_currentRenderTargetCount = 0;
-
-			platformApplyDefaultRenderTarget();
-			clearTarget = presentationParameters.renderTargetUsage == RenderTargetUsage.DiscardContents;
-
-			renderTargetWidth = presentationParameters.getBackBufferWidth();
-			renderTargetHeight = presentationParameters.getBackBufferHeight();
-		}
-		else
-		{
-			// Copy the new bindings.
-			_currentRenderTargetBindings = Arrays.copyOf(renderTargets, renderTargets.length);
-			_currentRenderTargetCount = renderTargets.length;
-
-			IRenderTarget renderTarget = platformApplyRenderTargets();
-
-			// We clear the render target if asked.
-			clearTarget = renderTarget.getRenderTargetUsage().equals(RenderTargetUsage.DiscardContents);
-
-			renderTargetWidth = renderTarget.getWidth();
-			renderTargetHeight = renderTarget.getHeight();
-		}
-
-		// Set the viewport to the size of the first render target.
-		_viewport = new Viewport(0, 0, renderTargetWidth, renderTargetHeight);
-
-		// Set the scissor rectangle to the size of the first render target.
-		_scissorRectangle = new Rectangle(0, 0, renderTargetWidth, renderTargetHeight);
-
-		// In XNA 4, because of hardware limitations on Xbox, when
-		// a render target doesn't have PreserveContents as its usage
-		// it is cleared before being rendered to.
-		if (clearTarget)
-			clear(DiscardColor);
-	}
-
-	public RenderTargetBinding[] getRenderTargets()
-	{
-		// Return a correctly sized copy our protected array.
-		RenderTargetBinding[] bindings = new RenderTargetBinding[_currentRenderTargetCount];
-		bindings = Arrays.copyOf(_currentRenderTargetBindings, _currentRenderTargetCount);
-		return bindings;
-	}
-
-	public void getRenderTargets(RenderTargetBinding[] outTargets)
-	{
-		assert (outTargets.length == _currentRenderTargetCount) : "Invalid outTargets array length!";
-		outTargets = Arrays.copyOf(_currentRenderTargetBindings, _currentRenderTargetCount);
-	}
-
-	public void setVertexBuffer(VertexBuffer vertexBuffer)
-	{
-		if (_vertexBuffer == vertexBuffer)
-			return;
-
-		_vertexBuffer = vertexBuffer;
-		_vertexBufferDirty = true;
-	}
-
-	private void setIndexBuffer(IndexBuffer indexBuffer)
-	{
-		if (_indexBuffer == indexBuffer)
-			return;
-
-		_indexBuffer = indexBuffer;
-		_indexBufferDirty = true;
-	}
-
-	public IndexBuffer getIndices() { return _indexBuffer; }
-	public void setIndices(IndexBuffer value) { setIndexBuffer(value); }
-
-	protected Shader getVertexShader() { return _vertexShader; }
-
-	public void setVertexShader(Shader value)
-	{
-		if (_vertexShader == value)
-			return;
-
-		_vertexShader = value;
-		_vertexShaderDirty = true;
-	}
-
-	protected Shader getPixelShader() { return _pixelShader; }
-
-	public void setPixelShader(Shader value)
-	{
-		if (_pixelShader == value)
-			return;
-
-		_pixelShader = value;
-		_pixelShaderDirty = true;
-	}
-
-	public void setConstantBuffer(ShaderStage stage, int slot, ConstantBuffer buffer)
-	{
-		if (stage.equals(ShaderStage.Vertex))
-			_vertexConstantBuffers.setConstantBufferCollection(slot, buffer);
-		else
-			_pixelConstantBuffers.setConstantBufferCollection(slot, buffer);
-	}
-
-	public boolean isResourcesLost;
-
-	/**
-	 * Draw geometry by indexing into the vertex buffer.
-	 * 
-	 * <p>
-	 * Note that minVertexIndex and numVertices are unused in MonoGame and will be ignored.
-	 * 
-	 * @param primitiveType
-	 *        The type of primitives in the index buffer.
-	 * @param baseVertex
-	 *        Used to offset the vertex range indexed from the vertex buffer.
-	 * @param minVertexIndex
-	 *        A hint of the lowest vertex indexed relative to baseVertex.
-	 * @param numVertices
-	 *        A hint of the maximum vertex indexed.
-	 * @param startIndex
-	 *        The index within the index buffer to start drawing from.
-	 * @param primitiveCount
-	 *        The number of primitives to render from the index buffer.
-	 * @deprecated Use DrawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int
-	 *             startIndex, int primitiveCount) instead. In future versions this method can be
-	 *             removed.
-	 */
-	@Deprecated
-	public void drawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int minVertexIndex, int numVertices,
-			int startIndex, int primitiveCount)
-	{
-		drawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
-	}
-
-	public void drawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount)
-	{
-		if (_vertexShader == null)
-			throw new UnsupportedOperationException("Vertex shader must be set before calling DrawIndexedPrimitives.");
-
-		if (_vertexBuffer == null)
-			throw new UnsupportedOperationException("Vertex buffer must be set before calling DrawIndexedPrimitives.");
-
-		if (_indexBuffer == null)
-			throw new UnsupportedOperationException("Index buffer must be set before calling DrawIndexedPrimitives.");
-
-		if (primitiveCount <= 0)
-			throw new IllegalArgumentException("primitiveCount is out of range");
-
-		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += (long) primitiveCount;
-
-		platformDrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
-	}
-
-	public <T extends IVertexType> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount)
-	{
-		drawUserPrimitives(primitiveType, vertexData, vertexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
-	}
-
-	public <T> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
-	{
-		if (vertexData == null)
-			throw new NullPointerException("vertexData is null");
-
-		if (vertexData.length == 0)
-			throw new IllegalArgumentException("vertexData == 0");
-
-		if (vertexOffset < 0 || vertexOffset >= vertexData.length)
-			throw new IllegalArgumentException("vertexOffset < 0 or >= vertexData.length");
-
-		if (primitiveCount <= 0)
-			throw new IllegalArgumentException("primitiveCount <= 0");
-
-		int vertexCount = getElementCountArray(primitiveType, primitiveCount);
-
-		if (vertexOffset + vertexCount > vertexData.length)
-			throw new IllegalArgumentException("primitiveCount");
-
-		if (vertexDeclaration == null)
-			throw new NullPointerException("vertexDeclaration is null");
-
-		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += (long) primitiveCount;
-
-		platformDrawUserPrimitives(primitiveType, vertexData, vertexOffset, vertexDeclaration, vertexCount);
-	}
-
-	public void drawPrimitives(PrimitiveType primitiveType, int vertexStart, int primitiveCount)
-	{
-		if (_vertexShader == null)
-			throw new UnsupportedOperationException("Vertex shader must be set before calling DrawPrimitives.");
-
-		if (_vertexBuffer == null)
-			throw new IllegalStateException("Vertex buffer must be set before calling DrawPrimitives.");
-
-		if (primitiveCount <= 0)
-			throw new IllegalArgumentException("primitiveCount <= 0");
-
-		int vertexCount = getElementCountArray(primitiveType, primitiveCount);
-
-		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += (long) primitiveCount;
-
-		platformDrawPrimitives(primitiveType, vertexStart, vertexCount);
-	}
-
-	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount)
-	{
-		drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
-	}
-
-	public <T> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
-	{
-		// These parameter checks are a duplicate of the checks in the int[] overload of DrawUserIndexedPrimitives.
-		// Inlined here for efficiency.
-
-		if (vertexData == null || vertexData.length == 0)
-			throw new NullPointerException("vertexData is null");
-
-		if (vertexOffset < 0 || vertexOffset >= vertexData.length)
-			throw new IllegalArgumentException("vertexOffset is out of range");
-
-		if (numVertices <= 0 || numVertices > vertexData.length)
-			throw new IllegalArgumentException("numVertices is out of range");
-
-		if (vertexOffset + numVertices > vertexData.length)
-			throw new IllegalArgumentException("numVertices is out of range");
-
-		if (indexData == null || indexData.length == 0)
-			throw new NullPointerException("indexData is null");
-
-		if (indexOffset < 0 || indexOffset >= indexData.length)
-			throw new IllegalArgumentException("indexOffsetis is out of range");
-
-		if (primitiveCount <= 0)
-			throw new IllegalArgumentException("primitiveCount");
-
-		if (indexOffset + getElementCountArray(primitiveType, primitiveCount) > indexData.length)
-			throw new IllegalArgumentException("primitiveCount is out of range");
-
-		if (vertexDeclaration == null)
-			throw new NullPointerException("vertexDeclaration is null");
-
-		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += (long) primitiveCount;
-
-		platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, vertexDeclaration);
-	}
-
-	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount)
-	{
-		drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
-	}
-
-	public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
-	{
-		// These parameter checks are a duplicate of the checks in the short[] overload of DrawUserIndexedPrimitives.
-		// Inlined here for efficiency.
-
-		if (vertexData == null || vertexData.length == 0)
-			throw new NullPointerException("vertexData is null");
-
-		if (vertexOffset < 0 || vertexOffset >= vertexData.length)
-			throw new IllegalArgumentException("vertexOffset is out of range");
-
-		if (numVertices <= 0 || numVertices > vertexData.length)
-			throw new IllegalArgumentException("numVertices is out of range");
-
-		if (vertexOffset + numVertices > vertexData.length)
-			throw new IllegalArgumentException("numVertices is out of range");
-
-		if (indexData == null || indexData.length == 0)
-			throw new NullPointerException("indexData is null");
-
-		if (indexOffset < 0 || indexOffset >= indexData.length)
-			throw new IllegalArgumentException("indexOffsetis is out of range");
-
-		if (primitiveCount <= 0)
-			throw new IllegalArgumentException("primitiveCount");
-
-		if (indexOffset + getElementCountArray(primitiveType, primitiveCount) > indexData.length)
-			throw new IllegalArgumentException("primitiveCount is out of range");
-
-		if (vertexDeclaration == null)
-			throw new NullPointerException("vertexDeclaration is null");
-
-		_graphicsMetrics._drawCount++;
-		_graphicsMetrics._primitiveCount += (long) primitiveCount;
-
-		platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, vertexDeclaration);
-	}
-
-	private static int getElementCountArray(PrimitiveType primitiveType, int primitiveCount)
-	{
-		switch (primitiveType)
-		{
-			case LineList:
-				return primitiveCount * 2;
-			case LineStrip:
-				return primitiveCount + 1;
-			case TriangleList:
-				return primitiveCount * 3;
-			case TriangleStrip:
-				return primitiveCount + 2;
-			default:
-				throw new UnsupportedOperationException("The " + primitiveType + "is not supported");
-		}
-
-	}
-
-	public static GraphicsProfile getHighestSupportedGraphicsProfile(GraphicsDevice graphicsDevice)
-	{
-		return platformGetHighestSupportedGraphicsProfile(graphicsDevice);
-	}
-
-//	###################################################################################################################
-// 	#                                             SOFTWARE RENDERER                                                   #
-//	###################################################################################################################
-
-	// TODO: I added this for the software renderer, see where this should go.
+        // Initialize the main viewport
+        _viewport = new Viewport(0, 0,
+                                 getDisplayMode().getWidth(), getDisplayMode().getHeight());
+        _viewport.setMaxDepth(1.0f);
+
+        platformSetup();
+
+        _vertexTextures = new TextureCollection(this, maxVertexTextureSlots, true);
+        _vertexSamplerStates = new SamplerStateCollection(this, maxVertexTextureSlots, true);
+
+        _textures = new TextureCollection(this, maxTextureSlots, false);
+        _samplerStates = new SamplerStateCollection(this, maxTextureSlots, false);
+
+        _blendStateAdditive = BlendState.Additive.clone();
+        _blendStateAlphaBlend = BlendState.AlphaBlend.clone();
+        _blendStateNonPremultiplied = BlendState.NonPremultiplied.clone();
+        _blendStateOpaque = BlendState.Opaque.clone();
+
+        setBlendState(BlendState.Opaque);
+
+        _depthStencilStateDefault = DepthStencilState.Default.clone();
+        _depthStencilStateDepthRead = DepthStencilState.DepthRead.clone();
+        _depthStencilStateNone = DepthStencilState.None.clone();
+
+        setDepthStencilState(DepthStencilState.Default);
+
+        _rasterizerStateCullClockwise = RasterizerState.CullClockwise.clone();
+        _rasterizerStateCullCounterClockwise = RasterizerState.CullCounterClockwise.clone();
+        _rasterizerStateCullNone = RasterizerState.CullNone.clone();
+
+        setRasterizerState(RasterizerState.CullCounterClockwise);
+
+        effectCache = new HashMap<Integer, Effect>();
+    }
+
+    @Override
+    public void finalize()
+    {
+        dispose(false);
+    }
+
+    protected void initialize()
+    {
+        platformInitialize();
+        _graphicsCapabilities.initializeAfterResources(this);
+
+        // Force set the default render states.
+        _blendStateDirty = _depthStencilStateDirty = _rasterizerStateDirty = true;
+        setBlendState(BlendState.Opaque);
+        setDepthStencilState(DepthStencilState.Default);
+        setRasterizerState(RasterizerState.CullCounterClockwise);
+
+        // Clear the texture and sampler collections forcing
+        // the state to be re-applied.
+        _vertexTextures.clear();
+        _vertexSamplerStates.clear();
+        _textures.clear();
+        _samplerStates.clear();
+
+        // Clear constant buffers
+        _vertexConstantBuffers.clear();
+        _pixelConstantBuffers.clear();
+
+        // Force set the buffers and shaders on next ApplyState() call
+        _vertexBuffers = new VertexBufferBindings(_maxVertexBufferSlots);
+        _vertexBuffersDirty = true;
+        _indexBufferDirty = true;
+        _vertexShaderDirty = true;
+        _pixelShaderDirty = true;
+
+        // Set the default scissor rectangle.
+        _scissorRectangleDirty = true;
+        _scissorRectangle = _viewport.getBounds();
+
+        // Set the default render target.
+        applyRenderTargets(null);
+    }
+
+    public RasterizerState getRasterizerState()
+    {
+        return _rasterizerState;
+    }
+
+    public void setRasterizerState(RasterizerState value)
+    {
+        if (value == null)
+            throw new NullPointerException("value is null");
+
+        // Don't set the same state twice!
+        if (_rasterizerState == value)
+            return;
+
+        if (!value.getDepthClipEnable() && !getGraphicsCapabilities().supportsDepthClamp())
+            throw new UnsupportedOperationException("Cannot set RasterizerState.DepthClipEnable to false on this graphics device");
+
+        _rasterizerState = value;
+
+        // Static state properties never actually get bound;
+        // instead we use our GraphicsDevice-specific version of them.
+        RasterizerState newRasterizerState = _rasterizerState;
+        if (_rasterizerState == RasterizerState.CullClockwise)
+            newRasterizerState = _rasterizerStateCullClockwise;
+        else if (_rasterizerState == RasterizerState.CullCounterClockwise)
+            newRasterizerState = _rasterizerStateCullCounterClockwise;
+        else if (_rasterizerState == RasterizerState.CullNone)
+            newRasterizerState = _rasterizerStateCullNone;
+
+        newRasterizerState.bindToGraphicsDevice(this);
+
+        _actualRasterizerState = newRasterizerState;
+
+        _rasterizerStateDirty = true;
+    }
+
+    /**
+     * Returns the color used as blend factor when alpha blending.
+     * <p>
+     * When only changing BlendFactor, use this rather than {@link jMono_Framework.graphics.states.BlendState#getBlendFactor()} to only update BlendFactor so the whole BlendState does not have to be updated.
+     * @return The color used as blend factor when alpha blending.
+     */
+    public Color getBlendFactor()
+    {
+        return _blendFactor;
+    }
+
+    public void setBlendFactor(Color value)
+    {
+        if (_blendFactor.equals(value))
+            return;
+        _blendFactor = value;
+        _blendFactorDirty = true;
+    }
+        
+    public BlendState getBlendState() { return _blendState; }
+
+    public void setBlendState(BlendState value)
+    {
+        if (value == null)
+            throw new NullPointerException("value");
+
+        // Don't set the same state twice!
+        if (_blendState != null && _blendState.equals(value))
+            return;
+
+        _blendState = value;
+
+        // Static state properties never actually get bound;
+        // instead we use our GraphicsDevice-specific version of them.
+        BlendState newBlendState = _blendState;
+        if (_blendState == BlendState.Additive)
+            newBlendState = _blendStateAdditive;
+        else if (_blendState == BlendState.AlphaBlend)
+            newBlendState = _blendStateAlphaBlend;
+        else if (_blendState == BlendState.NonPremultiplied)
+            newBlendState = _blendStateNonPremultiplied;
+        else if (_blendState == BlendState.Opaque)
+            newBlendState = _blendStateOpaque;
+
+        // Blend state is now bound to a device... no one should
+        // be changing the state of the blend state object now!
+        newBlendState.bindToGraphicsDevice(this);
+
+        _actualBlendState = newBlendState;
+
+        setBlendFactor(_actualBlendState.getBlendFactor());
+        
+        _blendStateDirty = true;
+    }
+
+    public DepthStencilState getDepthStencilState() { return _depthStencilState; }
+
+    public void setDepthStencilState(DepthStencilState value)
+    {
+        if (value == null)
+            throw new NullPointerException("value");
+
+        // Don't set the same state twice!
+        if (_depthStencilState != null && _depthStencilState.equals(value))
+            return;
+
+        _depthStencilState = value;
+
+        // Static state properties never actually get bound;
+        // instead we use our GraphicsDevice-specific version of them.
+        DepthStencilState newDepthStencilState = _depthStencilState;
+        if (_depthStencilState == DepthStencilState.Default)
+            newDepthStencilState = _depthStencilStateDefault;
+        else if (_depthStencilState == DepthStencilState.DepthRead)
+            newDepthStencilState = _depthStencilStateDepthRead;
+        else if (_depthStencilState == DepthStencilState.None)
+            newDepthStencilState = _depthStencilStateNone;
+
+        newDepthStencilState.bindToGraphicsDevice(this);
+
+        _actualDepthStencilState = newDepthStencilState;
+
+        _depthStencilStateDirty = true;
+    }
+
+    protected void applyState(boolean applyShaders)
+    {
+        platformBeginApplyState();
+
+        platformApplyBlend();
+
+        if (_depthStencilStateDirty)
+        {
+            _actualDepthStencilState.platformApplyState(this);
+            _depthStencilStateDirty = false;
+        }
+
+        if (_rasterizerStateDirty)
+        {
+            //_actualRasterizerState.platformApplyState(this);
+            _rasterizerStateDirty = false;
+        }
+
+        platformApplyState(applyShaders);
+    }
+
+    public void clear(Color color)
+    {
+        int options = ClearOptions.Target.getValue() |
+                      ClearOptions.DepthBuffer.getValue() |
+                      ClearOptions.Stencil.getValue();
+        platformClear(options, color.toVector4(), _viewport.getMaxDepth(), 0);
+        
+        _graphicsMetrics._clearCount++;
+    }
+
+    public void clear(ClearOptions options, Color color, float depth, int stencil)
+    {
+        platformClear(options.getValue(), color.toVector4(), depth, stencil);
+        
+        _graphicsMetrics._clearCount++;
+    }
+
+    public void clear(ClearOptions options, Vector4 color, float depth, int stencil)
+    {
+        platformClear(options.getValue(), color, depth, stencil);
+        
+        _graphicsMetrics._clearCount++;
+    }
+
+    @Override
+    public void close()
+    {
+        dispose(true);
+        // GC.SuppressFinalize(this);
+    }
+
+    protected void dispose(boolean disposing)
+    {
+        if (!_isDisposed)
+        {
+            if (disposing)
+            {
+                // Dispose of all remaining graphics resources before disposing of the graphics device
+                synchronized (_resourcesLock)
+                {
+                    for (WeakReference<?> resource : _resources)
+                    {
+                        AutoCloseable target = As.as(resource.get(), AutoCloseable.class);
+                        if (target != null)
+                            try
+                            {
+                                target.close();
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                    }
+                    _resources.clear();
+                }
+
+                // Clear the effect cache.
+                effectCache.clear();
+
+                platformDispose();
+            }
+
+            _isDisposed = true;
+            
+            if (this.disposing != null)
+                this.disposing.handleEvent(this, EventArgs.Empty);
+        }
+    }
+
+    protected void addResourceReference(WeakReference<?> resourceReference)
+    {
+        synchronized (_resourcesLock)
+        {
+            _resources.add(resourceReference);
+        }
+    }
+
+    protected void removeResourceReference(WeakReference<?> resourceReference)
+    {
+        synchronized (_resourcesLock)
+        {
+            _resources.remove(resourceReference);
+        }
+    }
+
+    public void present()
+    {
+        // We cannot present with a RT set on the device.
+        if (_currentRenderTargetCount != 0)
+            throw new IllegalStateException("Cannot call present when a render target is active.");
+
+        _graphicsMetrics = new GraphicsMetrics();
+        platformPresent();
+    }
+
+    // NOTE(Eric): Already commented out in the original code
+    /*
+     * public void Present(Rectangle sourceRectangle, Rectangle? destinationRectangle, IntPtr
+     * overrideWindowHandle)
+     * {
+     * throw new UnsupportedOperationException();
+     * }
+     */
+
+    // NOTE(Eric): Need to implement this method for each renderer path
+    // partial void platformValidatePresentationParameters(PresentationParameters presentationParameters);
+
+    public void reset()
+    {
+        platformValidatePresentationParameters(getPresentationParameters());
+
+        if (deviceResetting != null)
+            deviceResetting.handleEvent(this, EventArgs.Empty);
+
+        // Update the back buffer.
+        onPresentationChanged();
+
+        if (presentationChanged != null)
+            presentationChanged.handleEvent(this, EventArgs.Empty);
+        if (deviceReset != null)
+            deviceReset.handleEvent(this, EventArgs.Empty);
+    }
+        
+    public void reset(PresentationParameters presentationParameters)
+    {
+        if (presentationParameters == null)
+            throw new NullPointerException("presentationParameters");
+
+        this._presentationParameters = presentationParameters;
+        reset();
+    }
+
+    /**
+     * Trigger the DeviceResetting event.
+     * Currently protected to allow the various platforms to send the event at the appropriate time.
+     */
+    protected void onDeviceResetting()
+    {
+        if (deviceResetting != null)
+            deviceResetting.handleEvent(this, EventArgs.Empty);
+
+        synchronized (_resourcesLock)
+        {
+            for (WeakReference<?> resource : _resources)
+            {
+                GraphicsResource target = As.as(resource.get(), GraphicsResource.class);
+                if (target != null)
+                    target.graphicsDeviceResetting();
+            }
+
+            // Remove references to resources that have been garbage collected.
+            _resources.removeIf(wr -> wr.get() != null);
+        }
+    }
+
+    /**
+     * Trigger the DeviceReset event to allow games to be notified of a device reset.
+     * Currently protected to allow the various platforms to send the event at the appropriate time.
+     */
+    protected void onDeviceReset()
+    {
+        if (deviceReset != null)
+            deviceReset.handleEvent(this, EventArgs.Empty);
+    }
+
+    public DisplayMode getDisplayMode()
+    {
+        return _adapter.getCurrentDisplayMode();
+    }
+
+    public GraphicsDeviceStatus getGraphicsDeviceStatus()
+    {
+        return GraphicsDeviceStatus.Normal;
+    }
+
+    private PresentationParameters _presentationParameters;
+    public PresentationParameters getPresentationParameters() { return _presentationParameters; }
+
+    public Viewport getViewport()
+    {
+        return _viewport;
+    }
+
+    public void setViewport(Viewport value)
+    {
+        _viewport = value;
+        platformSetViewport(value);
+    }
+
+    private final GraphicsProfile _graphicsProfile;
+    public GraphicsProfile getGraphicsProfile()
+    {
+        return _graphicsProfile;
+    }
+
+    public Rectangle getScissorRectangle()
+    {
+        return _scissorRectangle;
+    }
+
+    public void setScissorRectangle(Rectangle value)
+    {
+        if (_scissorRectangle.equals(value))
+            return;
+
+        _scissorRectangle = new Rectangle(value);
+        _scissorRectangleDirty = true;
+    }
+
+    public int getRenderTargetCount()
+    {
+        return _currentRenderTargetCount;
+    }
+
+    public void setRenderTarget(RenderTarget2D renderTarget)
+    {
+        if (renderTarget == null)
+        {
+            setRenderTargets((RenderTargetBinding[]) null);
+        }
+        else
+        {
+            _tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget);
+            setRenderTargets(_tempRenderTargetBinding);
+        }
+    }
+
+    public void setRenderTarget(RenderTargetCube renderTarget, CubeMapFace cubeMapFace)
+    {
+        if (renderTarget == null)
+        {
+            setRenderTarget(null);
+        }
+        else
+        {
+            _tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget, cubeMapFace);
+            setRenderTargets(_tempRenderTargetBinding);
+        }
+    }
+
+    // TODO(Eric): Do we need the ellipsis here or can we simply use an array ?
+    public void setRenderTargets(RenderTargetBinding... renderTargets)
+    {
+        // Avoid having to check for null and zero length.
+        int renderTargetCount = 0;
+        if (renderTargets != null)
+        {
+            renderTargetCount = renderTargets.length;
+            if (renderTargetCount == 0)
+            {
+                renderTargets = null;
+            }
+        }
+
+        // Try to early out if the current and new bindings are equal.
+        if (_currentRenderTargetCount == renderTargetCount)
+        {
+            boolean isEqual = true;
+            for (int i = 0; i < _currentRenderTargetCount; ++i)
+            {
+                if (_currentRenderTargetBindings[i].getRenderTarget() != renderTargets[i].getRenderTarget() ||
+                    _currentRenderTargetBindings[i].getArraySlice() != renderTargets[i].getArraySlice())
+                {
+                    isEqual = false;
+                    break;
+                }
+            }
+
+            if (isEqual)
+                return;
+        }
+
+        applyRenderTargets(renderTargets);
+        
+        if (renderTargetCount == 0)
+        {
+            _graphicsMetrics._targetCount++;
+        }
+        else
+        {
+            _graphicsMetrics._targetCount += renderTargetCount;
+        }
+    }
+
+    public void applyRenderTargets(RenderTargetBinding[] renderTargets)
+    {
+        boolean clearTarget = false;
+
+        platformResolveRenderTargets();
+
+        // Clear the current bindings.
+        Arrays.fill(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.length, null);
+
+        int renderTargetWidth;
+        int renderTargetHeight;
+        if (renderTargets == null)
+        {
+            _currentRenderTargetCount = 0;
+
+            platformApplyDefaultRenderTarget();
+            clearTarget = _presentationParameters.renderTargetUsage == RenderTargetUsage.DiscardContents;
+
+            renderTargetWidth = _presentationParameters.getBackBufferWidth();
+            renderTargetHeight = _presentationParameters.getBackBufferHeight();
+        }
+        else
+        {
+            // Copy the new bindings.
+            System.arraycopy(renderTargets, 0, _currentRenderTargetBindings, 0, renderTargets.length);
+            _currentRenderTargetCount = renderTargets.length;
+            IRenderTarget renderTarget = platformApplyRenderTargets();
+
+            // We clear the render target if asked.
+            clearTarget = renderTarget.getRenderTargetUsage().equals(RenderTargetUsage.DiscardContents);
+
+            renderTargetWidth = renderTarget.getWidth();
+            renderTargetHeight = renderTarget.getHeight();
+        }
+
+        // Set the viewport to the size of the first render target.
+        _viewport = new Viewport(0, 0, renderTargetWidth, renderTargetHeight);
+
+        // Set the scissor rectangle to the size of the first render target.
+        _scissorRectangle = new Rectangle(0, 0, renderTargetWidth, renderTargetHeight);
+
+        // In XNA 4, because of hardware limitations on Xbox, when
+        // a render target doesn't have PreserveContents as its usage
+        // it is cleared before being rendered to.
+        if (clearTarget)
+            clear(DiscardColor);
+    }
+
+    public RenderTargetBinding[] getRenderTargets()
+    {
+        // Return a correctly sized copy our protected array.
+        RenderTargetBinding[] bindings = new RenderTargetBinding[_currentRenderTargetCount];
+        bindings = Arrays.copyOf(_currentRenderTargetBindings, _currentRenderTargetCount);
+        return bindings;
+    }
+
+    public void getRenderTargets(RenderTargetBinding[] outTargets)
+    {
+        assert (outTargets.length == _currentRenderTargetCount) : "Invalid outTargets array length!";
+        outTargets = Arrays.copyOf(_currentRenderTargetBindings, _currentRenderTargetCount);
+    }
+
+    public void setVertexBuffer(VertexBuffer vertexBuffer)
+    {
+        _vertexBuffersDirty |= (vertexBuffer == null) ?
+                               _vertexBuffers.clear() :
+                               _vertexBuffers.set(vertexBuffer, 0);
+    }
+
+    public void setVertexBuffer(VertexBuffer vertexBuffer, int vertexOffset)
+    {
+        // Validate vertexOffset.
+        if (vertexOffset < 0 ||
+            vertexBuffer == null && vertexOffset != 0 ||
+            vertexBuffer != null && vertexOffset >= vertexBuffer.getVertexCount())
+        {
+            throw new IllegalArgumentException("vertexOffset");
+        }
+
+        _vertexBuffersDirty |= (vertexBuffer == null) ?
+                               _vertexBuffers.clear() :
+                               _vertexBuffers.set(vertexBuffer, vertexOffset);
+    }
+
+    // TODO(Eric): Do we need the ellipsis here or can we simply use an array ?
+    public void setVertexBuffers(VertexBufferBinding... vertexBuffers)
+    {
+        if (vertexBuffers == null || vertexBuffers.length == 0)
+        {
+            _vertexBuffersDirty |= _vertexBuffers.clear();
+        }
+        else
+        {
+            if (vertexBuffers.length > _maxVertexBufferSlots)
+            {
+                String message = String.format(Locale.ROOT, "Max number of vertex buffers is %s.", _maxVertexBufferSlots);
+                throw new IllegalArgumentException("vertexBuffers: " + message);
+            }
+
+            _vertexBuffersDirty |= _vertexBuffers.set(vertexBuffers);
+        }
+    }
+    
+    private void setIndexBuffer(IndexBuffer indexBuffer)
+    {
+        if (_indexBuffer == indexBuffer)
+            return;
+
+        _indexBuffer = indexBuffer;
+        _indexBufferDirty = true;
+    }
+
+    public IndexBuffer getIndices() { return _indexBuffer; }
+    public void setIndices(IndexBuffer value) { setIndexBuffer(value); }
+
+    protected Shader getVertexShader() { return _vertexShader; }
+
+    public void setVertexShader(Shader value)
+    {
+        if (_vertexShader == value)
+            return;
+
+        _vertexShader = value;
+        _vertexConstantBuffers.clear();
+        _vertexShaderDirty = true;
+    }
+
+    protected Shader getPixelShader() { return _pixelShader; }
+
+    public void setPixelShader(Shader value)
+    {
+        if (_pixelShader == value)
+            return;
+
+        _pixelShader = value;
+        _pixelConstantBuffers.clear();
+        _pixelShaderDirty = true;
+    }
+
+    public void setConstantBuffer(ShaderStage stage, int slot, ConstantBuffer buffer)
+    {
+        if (stage.equals(ShaderStage.Vertex))
+            _vertexConstantBuffers.setConstantBufferCollection(slot, buffer);
+        else
+            _pixelConstantBuffers.setConstantBufferCollection(slot, buffer);
+    }
+
+    public boolean isResourcesLost;
+
+    /**
+     * Draw geometry by indexing into the vertex buffer.
+     * 
+     * <p>
+     * Note that minVertexIndex and numVertices are unused in MonoGame and will be ignored.
+     * 
+     * @param primitiveType
+     *        The type of primitives in the index buffer.
+     * @param baseVertex
+     *        Used to offset the vertex range indexed from the vertex buffer.
+     * @param minVertexIndex
+     *        A hint of the lowest vertex indexed relative to baseVertex.
+     * @param numVertices
+     *        A hint of the maximum vertex indexed.
+     * @param startIndex
+     *        The index within the index buffer to start drawing from.
+     * @param primitiveCount
+     *        The number of primitives to render from the index buffer.
+     * @deprecated Use {@link #drawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount)} instead. In future versions this method can be
+     *             removed.
+     */
+    @Deprecated
+    public void drawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int minVertexIndex, int numVertices, int startIndex, int primitiveCount)
+    {
+        drawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
+    }
+
+    /**
+     * Draw geometry by indexing into the vertex buffer.
+     * @param primitiveType The type of primitives in the index buffer.
+     * @param baseVertex Used to offset the vertex range indexed from the vertex buffer.
+     * @param startIndex The index within the index buffer to start drawing from.
+     * @param primitiveCount The number of primitives to render from the index buffer.
+     */
+    public void drawIndexedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount)
+    {
+        if (_vertexShader == null)
+            throw new UnsupportedOperationException("Vertex shader must be set before calling DrawIndexedPrimitives.");
+
+        if (_vertexBuffers == null)
+            throw new UnsupportedOperationException("Vertex buffer must be set before calling DrawIndexedPrimitives.");
+
+        if (_indexBuffer == null)
+            throw new UnsupportedOperationException("Index buffer must be set before calling DrawIndexedPrimitives.");
+
+        if (primitiveCount <= 0)
+            throw new IllegalArgumentException("primitiveCount is out of range");
+
+        platformDrawIndexedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount);
+        
+        _graphicsMetrics._drawCount++;
+        _graphicsMetrics._primitiveCount += (long) primitiveCount;
+    }
+
+    /**
+     * Draw primitives of the specified type from the data in an array of vertices without indexing.
+     * <p>
+     * The {@link VertexDeclaration} will be found by getting {@link IVertexType#getVertexDeclaration()} from an instance of <typeparamref name="T} and cached for subsequent calls.
+     * @param <T> The type of the vertices.
+     * @param primitiveType The type of primitives to draw with the vertices.
+     * @param vertexData An array of vertices to draw.
+     * @param vertexOffset The index in the array of the first vertex that should be rendered.
+     * @param primitiveCount The number of primitives to draw.
+     */
+    public <T extends IVertexType> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount)
+    {
+        drawUserPrimitives(primitiveType, vertexData, vertexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
+    }
+
+    /**
+     * Draw primitives of the specified type from the data in the given array of vertices without indexing.
+     * @param <T> The type of the vertices.
+     * @param primitiveType The type of primitives to draw with the vertices.
+     * @param vertexData An array of vertices to draw.
+     * @param vertexOffset The index in the array of the first vertex that should be rendered.
+     * @param primitiveCount The number of primitives to draw.
+     * @param vertexDeclaration The layout of the vertices.
+     */
+    public <T> void drawUserPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+    {
+        if (vertexData == null)
+            throw new NullPointerException("vertexData is null");
+
+        if (vertexData.length == 0)
+            throw new IllegalArgumentException("vertexData == 0");
+
+        if (vertexOffset < 0 || vertexOffset >= vertexData.length)
+            throw new IllegalArgumentException("vertexOffset < 0 or >= vertexData.length");
+
+        if (primitiveCount <= 0)
+            throw new IllegalArgumentException("primitiveCount <= 0");
+
+        int vertexCount = getElementCountArray(primitiveType, primitiveCount);
+
+        if (vertexOffset + vertexCount > vertexData.length)
+            throw new IllegalArgumentException("primitiveCount");
+
+        if (vertexDeclaration == null)
+            throw new NullPointerException("vertexDeclaration is null");
+
+        platformDrawUserPrimitives(primitiveType, vertexData, vertexOffset, vertexDeclaration, vertexCount);
+        
+        _graphicsMetrics._drawCount++;
+        _graphicsMetrics._primitiveCount += (long) primitiveCount;
+    }
+
+    /**
+     * Draw primitives of the specified type from the currently bound vertexbuffers without indexing.
+     * @param primitiveType The type of primitives to draw.
+     * @param vertexStart Index of the vertex to start at.
+     * @param primitiveCount The number of primitives to draw.
+     */
+    public void drawPrimitives(PrimitiveType primitiveType, int vertexStart, int primitiveCount)
+    {
+        if (_vertexShader == null)
+            throw new UnsupportedOperationException("Vertex shader must be set before calling DrawPrimitives.");
+
+        if (_vertexBuffers.getCount() == 0)
+            throw new IllegalStateException("Vertex buffer must be set before calling DrawPrimitives.");
+
+        if (primitiveCount <= 0)
+            throw new IllegalArgumentException("primitiveCount <= 0");
+
+        int vertexCount = getElementCountArray(primitiveType, primitiveCount);
+
+        platformDrawPrimitives(primitiveType, vertexStart, vertexCount);
+        
+        _graphicsMetrics._drawCount++;
+        _graphicsMetrics._primitiveCount += (long) primitiveCount;
+    }
+
+    /**
+     * Draw primitives of the specified type by indexing into the given array of vertices with 16-bit indices.
+     * <p>
+     * The {@link VertexDeclaration} will be found by getting {@link IVertexType#getVertexDeclaration()} from an instance of {@code T} and cached for subsequent calls.
+     * <p>
+     * All indices in the vertex buffer are interpreted relative to the specified {@code vertexOffset}. For example a value of zero in the array of indices points to the vertex at index {@code vertexOffset} in the array of vertices.
+     * @param primitiveType The type of primitives to draw with the vertices.
+     * @param vertexData An array of vertices to draw.
+     * @param vertexOffset The index in the array of the first vertex to draw.
+     * @param numVertices The number of vertices to draw.
+     * @param indexData The index data.
+     * @param indexOffset The index in the array of indices of the first index to use.
+     * @param primitiveCount The number of primitives to draw.
+     */
+    public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount)
+    {
+        drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
+    }
+
+    /**
+     * Draw primitives of the specified type by indexing into the given array of vertices with 16-bit indices.
+     * <p>
+     * All indices in the vertex buffer are interpreted relative to the specified {@code vertexOffset}. For example a value of zero in the array of indices points to the vertex at index {@code vertexOffset} in the array of vertices.
+     * @param <T> The type of the vertices.
+     * @param primitiveType The type of primitives to draw with the vertices.
+     * @param vertexData An array of vertices to draw.
+     * @param vertexOffset The index in the array of the first vertex to draw.
+     * @param numVertices The number of vertices to draw.
+     * @param indexData The index data.
+     * @param indexOffset The index in the array of indices of the first index to use.
+     * @param primitiveCount The number of primitives to draw.
+     * @param vertexDeclaration The layout of the vertices.
+     */
+    public <T> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, short[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+    {
+        // These parameter checks are a duplicate of the checks in the int[] overload of DrawUserIndexedPrimitives.
+        // Inlined here for efficiency.
+
+        if (vertexData == null || vertexData.length == 0)
+            throw new NullPointerException("vertexData is null");
+
+        if (vertexOffset < 0 || vertexOffset >= vertexData.length)
+            throw new IllegalArgumentException("vertexOffset is out of range");
+
+        if (numVertices <= 0 || numVertices > vertexData.length)
+            throw new IllegalArgumentException("numVertices is out of range");
+
+        if (vertexOffset + numVertices > vertexData.length)
+            throw new IllegalArgumentException("numVertices is out of range");
+
+        if (indexData == null || indexData.length == 0)
+            throw new NullPointerException("indexData is null");
+
+        if (indexOffset < 0 || indexOffset >= indexData.length)
+            throw new IllegalArgumentException("indexOffsetis is out of range");
+
+        if (primitiveCount <= 0)
+            throw new IllegalArgumentException("primitiveCount");
+
+        if (indexOffset + getElementCountArray(primitiveType, primitiveCount) > indexData.length)
+            throw new IllegalArgumentException("primitiveCount is out of range");
+
+        if (vertexDeclaration == null)
+            throw new NullPointerException("vertexDeclaration is null");
+
+        if (vertexDeclaration.getVertexStride() < ReflectionHelpers.sizeOf(vertexData.getClass()))
+            throw new IllegalArgumentException("vertexDeclaration: Vertex stride of vertexDeclaration should be at least as big as the stride of the actual vertices.");
+
+        platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, vertexDeclaration);
+        
+        _graphicsMetrics._drawCount++;
+        _graphicsMetrics._primitiveCount += (long) primitiveCount;
+    }
+
+    /**
+     * Draw primitives of the specified type by indexing into the given array of vertices with 32-bit indices.
+     * <p>
+     * The {@link VertexDeclaration} will be found by getting {@link IVertexType#getVertexDeclaration()} from an instance of <typeparamref name="T} and cached for subsequent calls.
+     * <p>
+     * All indices in the vertex buffer are interpreted relative to the specified {@code vertexOffset}. For example a value of zero in the array of indices points to the vertex at index {@code vertexOffset} in the array of vertices.
+     * @param primitiveType The type of primitives to draw with the vertices.
+     * @param vertexData An array of vertices to draw.
+     * @param vertexOffset The index in the array of the first vertex to draw.
+     * @param numVertices The number of vertices to draw.
+     * @param indexData The index data.
+     * @param indexOffset The index in the array of indices of the first index to use.
+     * @param primitiveCount The number of primitives to draw.
+     */
+    public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount)
+    {
+        drawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, VertexDeclarationCache.getVertexDeclaration());
+    }
+
+    /**
+     * Draw primitives of the specified type by indexing into the given array of vertices with 32-bit indices.
+     * <p>
+     * All indices in the vertex buffer are interpreted relative to the specified {@code vertexOffset}. For example value of zero in the array of indices points to the vertex at index {@code vertexOffset} in the array of vertices.
+     * @param primitiveType The type of primitives to draw with the vertices.
+     * @param vertexData An array of vertices to draw.
+     * @param vertexOffset The index in the array of the first vertex to draw.
+     * @param numVertices The number of vertices to draw.
+     * @param indexData The index data.
+     * @param indexOffset The index in the array of indices of the first index to use.
+     * @param primitiveCount The number of primitives to draw.
+     * @param vertexDeclaration The layout of the vertices.
+     */
+    public <T extends IVertexType> void drawUserIndexedPrimitives(PrimitiveType primitiveType, T[] vertexData, int vertexOffset, int numVertices, int[] indexData, int indexOffset, int primitiveCount, VertexDeclaration vertexDeclaration)
+    {
+        // These parameter checks are a duplicate of the checks in the short[] overload of DrawUserIndexedPrimitives.
+        // Inlined here for efficiency.
+
+        if (vertexData == null || vertexData.length == 0)
+            throw new NullPointerException("vertexData is null");
+
+        if (vertexOffset < 0 || vertexOffset >= vertexData.length)
+            throw new IllegalArgumentException("vertexOffset is out of range");
+
+        if (numVertices <= 0 || numVertices > vertexData.length)
+            throw new IllegalArgumentException("numVertices is out of range");
+
+        if (vertexOffset + numVertices > vertexData.length)
+            throw new IllegalArgumentException("numVertices is out of range");
+
+        if (indexData == null || indexData.length == 0)
+            throw new NullPointerException("indexData is null");
+
+        if (indexOffset < 0 || indexOffset >= indexData.length)
+            throw new IllegalArgumentException("indexOffsetis is out of range");
+
+        if (primitiveCount <= 0)
+            throw new IllegalArgumentException("primitiveCount");
+
+        if (indexOffset + getElementCountArray(primitiveType, primitiveCount) > indexData.length)
+            throw new IllegalArgumentException("primitiveCount is out of range");
+
+        if (vertexDeclaration == null)
+            throw new NullPointerException("vertexDeclaration is null");
+
+        if (vertexDeclaration.getVertexStride() < ReflectionHelpers.sizeOf(vertexData.getClass()))
+            throw new IllegalArgumentException("vertexDeclaration: Vertex stride of vertexDeclaration should be at least as big as the stride of the actual vertices.");
+
+        platformDrawUserIndexedPrimitives(primitiveType, vertexData, vertexOffset, numVertices, indexData, indexOffset, primitiveCount, vertexDeclaration);
+        
+        _graphicsMetrics._drawCount++;
+        _graphicsMetrics._primitiveCount += (long) primitiveCount;
+    }
+
+    /**
+     * Draw instanced geometry from the bound vertex buffers and index buffer.
+     * <p>
+     * Note that minVertexIndex and numVertices are unused in MonoGame and will be ignored.
+     * @param primitiveType The type of primitives in the index buffer.
+     * @param baseVertex Used to offset the vertex range indexed from the vertex buffer.
+     * @param minVertexIndex This is unused and remains here only for XNA API compatibility.
+     * @param numVertices This is unused and remains here only for XNA API compatibility.
+     * @param startIndex The index within the index buffer to start drawing from.
+     * @param primitiveCount The number of primitives in a single instance.
+     * @param instanceCount The number of instances to render.
+     * @deprecated Use {@link #drawInstancedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount, int instanceCount)} instead. In future versions this method can be removed.
+     */
+    @Deprecated
+    public void drawInstancedPrimitives(PrimitiveType primitiveType, int baseVertex, int minVertexIndex,
+                                        int numVertices, int startIndex, int primitiveCount, int instanceCount)
+    {
+        drawInstancedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount, instanceCount);
+    }
+
+    /**
+     * Draw instanced geometry from the bound vertex buffers and index buffer.
+     * <p>
+     * Draw geometry with data from multiple bound vertex streams at different frequencies.
+     * @param primitiveType The type of primitives in the index buffer.
+     * @param baseVertex Used to offset the vertex range indexed from the vertex buffer.
+     * @param startIndex The index within the index buffer to start drawing from.
+     * @param primitiveCount The number of primitives in a single instance.
+     * @param instanceCount The number of instances to render.
+     */
+    public void drawInstancedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount, int instanceCount)
+    {
+        if (_vertexShader == null)
+            throw new IllegalStateException("Vertex shader must be set before calling DrawInstancedPrimitives.");
+
+        if (_vertexBuffers.getCount() == 0)
+            throw new IllegalStateException("Vertex buffer must be set before calling DrawInstancedPrimitives.");
+
+        if (_indexBuffer == null)
+            throw new IllegalStateException("Index buffer must be set before calling DrawInstancedPrimitives.");
+
+        if (primitiveCount <= 0)
+            throw new IllegalArgumentException("primitiveCount");
+
+        platformDrawInstancedPrimitives(primitiveType, baseVertex, startIndex, primitiveCount, instanceCount);
+
+        _graphicsMetrics._drawCount++;
+        _graphicsMetrics._primitiveCount += (primitiveCount * instanceCount);
+    }
+
+    private static int getElementCountArray(PrimitiveType primitiveType, int primitiveCount)
+    {
+        switch (primitiveType)
+        {
+            case LineList:
+                return primitiveCount * 2;
+            case LineStrip:
+                return primitiveCount + 1;
+            case TriangleList:
+                return primitiveCount * 3;
+            case TriangleStrip:
+                return primitiveCount + 2;
+            default:
+                throw new UnsupportedOperationException("The " + primitiveType + "is not supported");
+        }
+
+    }
+
+    protected static GraphicsProfile getHighestSupportedGraphicsProfile(GraphicsDevice graphicsDevice)
+    {
+        return platformGetHighestSupportedGraphicsProfile(graphicsDevice);
+    }
+    
+    // uniformly scales down the given rectangle by 10%
+    protected static Rectangle getDefaultTitleSafeArea(int x, int y, int width, int height)
+    {
+        float marginX = (width + 19) / 20;
+        float marginY = (height + 19) / 20;
+        x += marginX;
+        y += marginY;
+
+        width -= marginX * 2;
+        height -= marginY * 2;
+        return new Rectangle(x, y, width, height);
+    }
+
+    protected static Rectangle getTitleSafeArea(int x, int y, int width, int height)
+    {
+        return platformGetTitleSafeArea(x, y, width, height);
+    }
+
+    // @formatter:off
+    //  #######################################################################
+    //  #                      GraphicsDevice.DirectX.cs                      #
+    //  #######################################################################
+    // @formatter:on
+    
+    protected void onPresentationChanged()
+    {
+        // createSizeDependentResources();
+        applyRenderTargets(null);
+    }
+
+    // @formatter:off
+    //	#######################################################################
+    // 	#                          SOFTWARE RENDERER                          #
+    //	#######################################################################
+    // @formatter:on
+
+	// TODO(Eric): I added this for the software renderer, see where this should go.
 	
-	/** The object used to draw the image in the frame */
+    /** The object used to draw the image in the frame */
 	private BufferedImage image;
 	/** The BufferStrategy used in this game */
 	private BufferStrategy bufferStrategy;
@@ -1039,6 +1314,26 @@ public class GraphicsDevice implements AutoCloseable
 	/** The array of pixels to be painted on the screen */
 	private int[] pixels;
 	
+    private void platformApplyBlend()
+    {
+        // TODO Auto-generated method stub
+    }
+
+    private static Rectangle platformGetTitleSafeArea(int x, int y, int width, int height)
+    {
+        return new Rectangle(x, y, width, height);
+    }
+
+    private void platformValidatePresentationParameters(PresentationParameters presentationParameters)
+    {
+        // TODO Auto-generated method stub
+    }
+    
+    private void platformDrawInstancedPrimitives(PrimitiveType primitiveType, int baseVertex, int startIndex, int primitiveCount, int instanceCount)
+    {
+        // TODO Auto-generated method stub
+    }
+
 	private void platformSetup()
 	{
 		maxTextureSlots = 16;
@@ -1142,14 +1437,14 @@ public class GraphicsDevice implements AutoCloseable
 	{
 		applyState(true);
 		
-		// Note: For now we only support drawing quads from a triangle PrimitiveType
+		// NOTE(Eric): For now we only support drawing quads from a triangle PrimitiveType
 		if (primitiveType != PrimitiveType.TriangleList)
 		{
 			throw new UnsupportedOperationException("We currently only support PrimitiveType.TriangleList");
 		}
 
-		// TODO: add test code to make sure all 4 color information are the same ?.
-		// TODO: check if not a quad ?
+		// TODO(Eric): add test code to make sure all 4 color information are the same ?.
+		// TODO(Eric): check if not a quad ?
 		VertexPositionColorTexture[] data = As.as(vertexData, VertexPositionColorTexture[].class);
 
 		int destStartX, destStartY, destEndX, destEndY;
@@ -1166,7 +1461,7 @@ public class GraphicsDevice implements AutoCloseable
 			destEndX = (int) (data[i + 1].position.x);
 			destEndY = (int) (data[i + 2].position.y);
 			
-			// NOTE: Add 0.5f so that the cast always return the right value (rounding error).
+			// NOTE(Eric): Add 0.5f so that the cast always return the right value (rounding error).
 			srcStartX = (int) (data[i + 0].textureCoordinate.x * texture.width + 0.5f);
 			srcStartY = (int) (data[i + 0].textureCoordinate.y * texture.height + 0.5f);
 			srcEndX = (int) (data[i + 1].textureCoordinate.x * texture.width + 0.5f);
@@ -1179,9 +1474,9 @@ public class GraphicsDevice implements AutoCloseable
 										data[i + 1].position.y - data[i + 0].position.y);
 			Vector2 yAxis = new Vector2(data[i + 2].position.x - data[i + 0].position.x,
 										data[i + 2].position.y - data[i + 0].position.y);
-			
+
 			drawQuad(origin, xAxis, yAxis, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
-			// TODO: Add rotation handling to this code path since it is faster
+			// TODO(Eric): Add rotation handling to this code path since it is faster
 //			drawQuad2(destStartX, destStartY, destEndX, destEndY, srcStartX, srcStartY, srcEndX, srcEndY, texture.width, texture.height, texture.getTexture(), tint);
 			i += 4;
 		}
@@ -1198,20 +1493,20 @@ public class GraphicsDevice implements AutoCloseable
 		return GraphicsProfile.Reach;
 	}
 
-	// NOTE: XNA uses premultiplied alpha by default and the color values in
-	//		 the xnb files are premultiplied by the alpha channel.
+	// NOTE(Eric): XNA uses premultiplied alpha by default and the color values in
+	//		      the xnb files are premultiplied by the alpha channel.
 	private void drawQuad(Vector2 origin, Vector2 xAxis, Vector2 yAxis,
 						  int srcStartX, int srcStartY, int srcEndX, int srcEndY,
 						  int srcWidth, int srcHeight, int[] srcPixels, Color tint)
 	{
-		// Note: Premultiply tint up front
+		// NOTE(Eric): Premultiply tint up front
 		//Vector4 tintVec4 = Color.fromNonPremultiplied(tint.getRed(), tint.getGreen(), tint.getBlue(), tint.getAlpha()).toVector4();
 		Vector4 tintVec4 = tint.toVector4();
 
 		int oldWidth  = srcEndX - srcStartX;
 		int oldHeight = srcEndY - srcStartY;
 
-		// NOTE: Can't use the inv because of numerical imprecision which makes us fetch the wrong pixel
+		// NOTE(Eric): Can't use the inv because of numerical imprecision which makes us fetch the wrong pixel
 		//       sometimes for some ratio
 //		float invXAxislengthSq = 1.0f / xAxis.lengthSquared();
 //		float invYAxislengthSq = 1.0f / yAxis.lengthSquared();
@@ -1261,34 +1556,34 @@ public class GraphicsDevice implements AutoCloseable
 				Vector2 pixelPos = new Vector2(x + 0.5f, y + 0.5f);
 				Vector2 d = Vector2.subtract(pixelPos, origin);
 				
-				float edge0 = d.dotProduct(Vector2.negate(perp(xAxis)));
-				float edge1 = Vector2.subtract(d, xAxis).dotProduct(Vector2.negate(perp(yAxis)));
-				float edge2 = Vector2.subtract(d, xAxis).subtract(yAxis).dotProduct(perp(xAxis));
-				float edge3 = Vector2.subtract(d, yAxis).dotProduct(perp(yAxis));
+				float edge0 = d.dot(Vector2.negate(perp(xAxis)));
+				float edge1 = Vector2.subtract(d, xAxis).dot(Vector2.negate(perp(yAxis)));
+				float edge2 = Vector2.subtract(d, xAxis).subtract(yAxis).dot(perp(xAxis));
+				float edge3 = Vector2.subtract(d, yAxis).dot(perp(yAxis));
 
-				if ((edge0 <= 0) &&
-					(edge1 <= 0) &&
-					(edge2 <= 0) &&
-					(edge3 <= 0))
+				if ((edge0 < 0) &&
+					(edge1 < 0) &&
+					(edge2 < 0) &&
+					(edge3 < 0))
 				{
 					Vector4 foregroundColor;
 					if (oldWidth != xAxis.x || oldHeight != yAxis.y)
 					{
-						// NOTE: Can't use the inv because of numerical imprecision which makes us fetch the wrong pixel
+						// NOTE(Eric): Can't use the inv because of numerical imprecision which makes us fetch the wrong pixel
 						//       sometimes for some ratio
 //						float u = invXAxislengthSq * d.dotProduct(xAxis);
 //						float v = invYAxislengthSq * d.dotProduct(yAxis);
-						// NOTE: u and v ranges from 0 to 1 into the source texture
-						float u = d.dotProduct(xAxis) / xAxislengthSq;
-						float v = d.dotProduct(yAxis) / yAxislengthSq;
+						// NOTE(Eric): u and v ranges from 0 to 1 into the source texture
+						float u = d.dot(xAxis) / xAxislengthSq;
+						float v = d.dot(yAxis) / yAxislengthSq;
 						
 						float tX, tY;
 						int fetchX, fetchY;
-						// TODO: Add other resizing methods (see TextureFilter.java)
-						switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
+						// TODO(Eric): Add other resizing methods (see TextureFilter.java)
+						switch (_samplerStates.getSamplerStateCollection(0).getFilter())
 						{
 							case Point:
-								// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
+								// NOTE(Eric): Re-base our texture x to the [0-width] range and y to the [0-height] range
 								tX = u * (float) (oldWidth);
 								tY = v * (float) (oldHeight);
 	
@@ -1305,7 +1600,7 @@ public class GraphicsDevice implements AutoCloseable
 								
 							case Linear:
 							default:
-								// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
+								// NOTE(Eric): Re-base our texture x to the [0-width] range and y to the [0-height] range
 								tX = u * (float) (oldWidth) - 0.5f;
 								tY = v * (float) (oldHeight) - 0.5f;
 	
@@ -1315,15 +1610,15 @@ public class GraphicsDevice implements AutoCloseable
 								float xDiff = tX - (float) fetchX;
 								float yDiff = tY - (float) fetchY;
 					
-								// NOTE: Need to adjust the u and v here for when we use spriteSheets or spriteStrips
+								// NOTE(Eric): Need to adjust the u and v here for when we use spriteSheets or spriteStrips
 								fetchX += srcStartX;
 								fetchY += srcStartY;
 								
 								int texelPtrA, texelPtrB, texelPtrC, texelPtrD;
 								
-								// TODO: Validate if it is possible to have different values for u, v and w
+								// TODO(Eric): Validate if it is possible to have different values for u, v and w
 								//       and treat them separately if so.
-								switch (this.samplerStates.getSamplerStateCollection(0).getAddressU())
+								switch (_samplerStates.getSamplerStateCollection(0).getAddressU())
 								{
 									case Wrap:
 										int nextU = 1;
@@ -1343,18 +1638,22 @@ public class GraphicsDevice implements AutoCloseable
 										texelPtrC = srcPixels[fetchX + (((fetchY + nextV + srcHeight) % srcHeight) * srcWidth)];
 										texelPtrD = srcPixels[((fetchX + nextU + srcWidth) % srcWidth) + (((fetchY + nextV + srcHeight) % srcHeight) * srcWidth)];
 										break;
-									// NOTE: When using spriteSheets, MonoGame allows blending of the last row or column of pixel in the current sprite
-									//		 with the first row or column of the next sprite in the sheet.  This doesn't seem to be a good idea if the
-									//		 sprites are tightly packed (i.e.: no fully translucent pixels on the boundary) so we don't allow it in our
-									//		 software renderer.
-									// TODO: Validate the note compared to OpenGL when we implement it. We probably want this to be the same on both renderer.
+									// NOTE(Eric): When using spriteSheets, MonoGame allows blending of the last row or column of pixel in the current sprite
+									//		       with the first row or column of the next sprite in the sheet.  This doesn't seem to be a good idea if the
+									//		       sprites are tightly packed (i.e.: no fully translucent pixels on the boundary) so we don't allow it in our
+									//		       software renderer.
+									// TODO(Eric): Validate the note compared to OpenGL when we implement it. We probably want this to be the same on both renderer.
 									case Clamp:
 									default:
 										if (xDiff < 0) xDiff = 0;
 										if (yDiff < 0) yDiff = 0;
 										int srcIndex = (fetchX + fetchY * srcWidth);
+if (srcIndex >= srcPixels.length || srcIndex < 0 || oldWidth == 0 || oldHeight == 0) {
+	int breakHere = 1;
+	breakHere++;
+}
 										texelPtrA = srcPixels[srcIndex];
-										// NOTE: Need to MOD u by oldWidth and v by oldHeight to adjust the the boundary for when we use spriteSheets or spriteStrips
+										// NOTE(Eric): Need to MOD u by oldWidth and v by oldHeight to adjust the the boundary for when we use spriteSheets or spriteStrips
 										texelPtrB = srcPixels[srcIndex + (((fetchX % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
 										texelPtrC = srcPixels[srcIndex + (((fetchY % oldHeight) == (oldHeight -1)) ? 0 : srcWidth)];
 										texelPtrD = srcPixels[srcIndex + (((fetchY % oldHeight) == (oldHeight -1)) ? 0 : srcWidth) + (((fetchX % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
@@ -1378,7 +1677,7 @@ public class GraphicsDevice implements AutoCloseable
 									 					 	 (float) ((texelPtrD >> 16) & 0xFF),
 									 					 	 (float) ((texelPtrD >> 24) & 0xFF));
 					
-								// NOTE: Go from sRGB to "linear light" space
+								// NOTE(Eric): Go from sRGB to "linear light" space
 //								texelA = sRGB255ToLinear1(texelA);
 //								texelB = sRGB255ToLinear1(texelB);
 //								texelC = sRGB255ToLinear1(texelC);
@@ -1395,11 +1694,33 @@ public class GraphicsDevice implements AutoCloseable
 					}
 					else
 					{
-						// NOTE: Re-base our texture x to the [0-width] range and y to the [0-height] range
+						// NOTE(Eric): Re-base our texture x to the [0-width] range and y to the [0-height] range
 						//       and add the offset for when we use spriteSheets or spriteStrips.
-						int fetchX = x - (int) (origin.x+0.5f) + srcStartX;
-						int fetchY = y - (int) (origin.y+0.5f) + srcStartY;
+						int fetchX = x - (int) (origin.x) + srcStartX;
+						int fetchY = y - (int) (origin.y) + srcStartY;
+						
+						float u = d.dot(xAxis) / xAxislengthSq;
+						float v = d.dot(yAxis) / yAxislengthSq;
+						float tX = u * (float) (oldWidth);
+						float tY = v * (float) (oldHeight);
 
+						int fetchX2 = (int) tX + srcStartX;
+						int fetchY2 = (int) tY + srcStartY;
+if (fetchX < 0) {
+	int breakHere =1;
+	breakHere++;
+	fetchX = 0;
+}
+if (fetchY < 0) {
+	int breakHere =1;
+	breakHere++;
+	fetchY = 0;
+}
+if ((fetchX + fetchY * srcWidth) >= srcPixels.length) {
+	int breakHere =1;
+	breakHere++;
+	continue;
+}
 						int texelPtr = srcPixels[fetchX + fetchY * srcWidth];
 						foregroundColor = new Vector4((float) ((texelPtr >>  0) & 0xFF),
 		 	 					  					  (float) ((texelPtr >>  8) & 0xFF),
@@ -1416,14 +1737,14 @@ public class GraphicsDevice implements AutoCloseable
 										   	   (float) ((pixels[x + y * screenWidth] >> 16) & 0xFF),
 										   	   (float) ((pixels[x + y * screenWidth] >> 24) & 0xFF));
 
-					// NOTE: Go from sRGB to "linear" brightness space
+					// NOTE(Eric): Go from sRGB to "linear" brightness space
 //					dest = sRGB255ToLinear1(dest);
 					dest = Vector4.divide(dest, 255);
 		
 					Vector4 blended = Vector4.add(Vector4.multiply(dest, (1.0f - foregroundColor.w)), foregroundColor);
-					blended = Vector4.clamp(blended, Vector4.zero(), Vector4.one());
+					blended = Vector4.clamp(blended, Vector4.Zero(), Vector4.One());
 
-					// NOTE: Go from "linear light" to sRGB space
+					// NOTE(Eric): Go from "linear light" to sRGB space
 //					Vector4 blended255 = linear1ToSRGB255(blended);
 					Vector4 blended255 = Vector4.multiply(blended, 255);
 		
@@ -1439,7 +1760,7 @@ public class GraphicsDevice implements AutoCloseable
 //TimedBlock.endTimedBlock_Counted("ProcessPixel", (maxX - minX + 1) * (maxY - minY + 1));;
 	}
 
-	// TODO: This method is faster but I need to add rotation handling to it
+	// TODO(Eric): This method is faster but I need to add rotation handling to it
 	private void drawQuad2(int destStartX, int destStartY, int destEndX, int destEndY,
 			  			   int srcStartX, int srcStartY, int srcEndX, int srcEndY,
 			  			   int srcWidth, int srcHeight, int[] srcPixels, Color tint)
@@ -1505,8 +1826,8 @@ public class GraphicsDevice implements AutoCloseable
 				if (oldWidth != newWidth || oldHeight != newHeight)
 				{
 					int u, v;
-					// TODO: Add other resizing methods (see TextureFilter.java)
-					switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
+					// TODO(Eric): Add other resizing methods (see TextureFilter.java)
+					switch (_samplerStates.getSamplerStateCollection(0).getFilter())
 					{
 						case Point:
 							if (newWidth < 0 || newHeight < 0)
@@ -1532,7 +1853,7 @@ public class GraphicsDevice implements AutoCloseable
 							int texelA, texelB, texelC, texelD, srcIndex;
 							float x_diff, y_diff;
 
-							// NOTE: this formula was found by reverse engineering what MonoGame does
+							// NOTE(Eric): this formula was found by reverse engineering what MonoGame does
 							//       so I can get the exact same result.
 							float rU = -0.5f + (xRatio * ((x - srcStartX) + 0.5f));
 							float rV = -0.5f + (yRatio * ((y - srcStartY) + 0.5f));
@@ -1541,13 +1862,13 @@ public class GraphicsDevice implements AutoCloseable
 							x_diff = rU - u;
 							y_diff = rV - v;
 
-							// NOTE: Need to adjust the u and v here for when we use spriteSheets or spriteStrips
+							// NOTE(Eric): Need to adjust the u and v here for when we use spriteSheets or spriteStrips
 							u += srcStartX;
 							v += srcStartY;
 
-							// TODO: Validate if it is possible to have different values for u, v and w
-							//       and treat them separately if so.
-							switch (this.samplerStates.getSamplerStateCollection(0).getAddressU())
+							// TODO(Eric): Validate if it is possible to have different values for u, v and w
+							//             and treat them separately if so.
+							switch (_samplerStates.getSamplerStateCollection(0).getAddressU())
 							{
 								case Wrap:
 									int nextU = 1;
@@ -1567,18 +1888,18 @@ public class GraphicsDevice implements AutoCloseable
 									texelC = srcPixels[u + (((v + nextV + srcHeight) % srcHeight) * srcWidth)];
 									texelD = srcPixels[((u + nextU + srcWidth) % srcWidth) + (((v + nextV + srcHeight) % srcHeight) * srcWidth)];
 									break;
-								// NOTE: When using spriteSheets, MonoGame allows blending of the last row or column of pixel in the current sprite
+								// NOTE(Eric): When using spriteSheets, MonoGame allows blending of the last row or column of pixel in the current sprite
 								//		 with the first row or column of the next sprite in the sheet.  This doesn't seem to be a good idea if the
 								//		 sprites are tightly packed (i.e.: no fully translucent pixels on the boundary) so we don't allow it in our
 								//		 software renderer.
-								// TODO: Validate the note compared to OpenGL when we implement it. We probably want this to be the same on both renderer.
+								// TODO(Eric): Validate the note compared to OpenGL when we implement it. We probably want this to be the same on both renderer.
 								case Clamp:
 								default:
 									if (x_diff < 0) x_diff = 0;
 									if (y_diff < 0) y_diff = 0;
 									srcIndex = (u + v * srcWidth);
 									texelA = srcPixels[srcIndex];
-									// NOTE: Need to MOD u by oldWidth and v by oldHeight to adjust the the boundary for when we use spriteSheets or spriteStrips
+									// NOTE(Eric): Need to MOD u by oldWidth and v by oldHeight to adjust the the boundary for when we use spriteSheets or spriteStrips
 									texelB = srcPixels[srcIndex + (((u % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
 									texelC = srcPixels[srcIndex + (((v % oldHeight) == (oldHeight -1)) ? 0 : srcWidth)];
 									texelD = srcPixels[srcIndex + (((v % oldHeight) == (oldHeight -1)) ? 0 : srcWidth) + (((u % oldWidth) == (oldWidth - 1)) ? 0 : 1)];
@@ -1598,7 +1919,7 @@ public class GraphicsDevice implements AutoCloseable
 													  MathHelper.lerp((texelC >> 24)& 0xff, (texelD >> 24)& 0xff, x_diff),
 													  y_diff);
 
-							// NOTE: Add 0.5f before casting so it rounds properly
+							// NOTE(Eric): Add 0.5f before casting so it rounds properly
 							r += 0.5f;
 							g += 0.5f;
 							b += 0.5f;
@@ -1628,7 +1949,7 @@ public class GraphicsDevice implements AutoCloseable
 //				srcA = (srcColor >> 24) & 0xff;
 	
 				// Using Color.WHITE would have no effect so skip this
-				if (!tint.equals(Color.White))
+				if (!tint.equals(Color.White()))
 				{
 					// Typical tint formula -> original component * tint / 255
 					// also works with premultiplied alpha
@@ -1661,7 +1982,7 @@ public class GraphicsDevice implements AutoCloseable
 					int g = srcG + (backgroundG * (255 - srcA) / 255);
 					int b = srcB + (backgroundB * (255 - srcA) / 255);
 		
-					// NOTE: since this can produce a value greater than 255 for a single
+					// NOTE(Eric): since this can produce a value greater than 255 for a single
 					// channel we need to clamp those values.
 					r = r > 255 ? 255 : r;
 					g = g > 255 ? 255 : g;
@@ -1671,7 +1992,7 @@ public class GraphicsDevice implements AutoCloseable
 				}
 				else
 				{
-					// TODO: Should do the other BlendStates
+					// TODO(Eric): Should do the other BlendStates
 					// Defaults to BlendState.OPAQUE.
 					col = srcA << 24 | srcB << 16 | srcG << 8 | srcR;
 				}
@@ -1688,7 +2009,7 @@ public class GraphicsDevice implements AutoCloseable
 	  					  int srcStartX, int srcStartY, int srcEndX, int srcEndY,
 	  					  int srcWidth, int srcHeight, int[] srcPixels, Color tint)
 	{
-		// Note: Premultiply tint up front
+		// NOTE(Eric): Premultiply tint up front
 		//Vector4 tintVec4 = Color.fromNonPremultiplied(tint.getRed(), tint.getGreen(), tint.getBlue(), tint.getAlpha()).toVector4();
 		Vector4 tintVec4 = tint.toVector4();
 
@@ -1770,7 +2091,7 @@ public class GraphicsDevice implements AutoCloseable
 					float u = (pixelPx * nXAxis.x) + PynX;
 					float v = (pixelPx * nYAxis.x) + PynY;
 
-//TODO: rendu ici dans drawRectangleQuickly
+//TODO(Eric): rendu ici dans drawRectangleQuickly
 					float tX = u * (float) (texture.width);
 					float tY = v * (float) (texture.height);
 
@@ -1780,7 +2101,7 @@ public class GraphicsDevice implements AutoCloseable
 					float fX = tX - (float)xx;
 					float fY = tY - (float)yy;
 
-					// TODO: Delete these assert
+					// TODO(Eric): Delete these assert
 					assert((xx >= 0) && (xx < texture.width));
 					assert((yy >= 0) && (yy < texture.height));
 
@@ -1807,7 +2128,7 @@ public class GraphicsDevice implements AutoCloseable
 							 					 (float) ((texelPtrD >>  0) & 0xFF),
 							 					 (float) ((texelPtrD >> 24) & 0xFF));
 
-					// NOTE: Go from sRGB to "linear light" space
+					// NOTE(Eric): Go from sRGB to "linear light" space
 //					texelA = sRGB255ToLinear1(texelA);
 //					texelB = sRGB255ToLinear1(texelB);
 //					texelC = sRGB255ToLinear1(texelC);
@@ -1818,7 +2139,7 @@ public class GraphicsDevice implements AutoCloseable
 					texelD = Vector4.divide(texelD, 255);
 
 					Vector4 texel;
-					// TODO: Add other resizing methods (see TextureFilter.java)
+					// TODO(Eric): Add other resizing methods (see TextureFilter.java)
 					switch (this.samplerStates.getSamplerStateCollection(0).getFilter())
 					{
 						case Linear:
@@ -1843,13 +2164,13 @@ public class GraphicsDevice implements AutoCloseable
 											   (float) ((pixels[x + y * screenWidth] >>  0) & 0xFF),
 											   (float) ((pixels[x + y * screenWidth] >> 24) & 0xFF));
 
-					// NOTE: Go from sRGB to "linear" brightness space
+					// NOTE(Eric): Go from sRGB to "linear" brightness space
 //					dest = sRGB255ToLinear1(dest);
 					dest = Vector4.divide(dest, 255);
 
 					Vector4 blended = Vector4.add(Vector4.multiply(dest, (1.0f - texel.w)), texel);
 
-					// NOTE: Go from "linear light" to sRGB space
+					// NOTE(Eric): Go from "linear light" to sRGB space
 //					Vector4 blended255 = linear1ToSRGB255(blended);
 					Vector4 blended255 = Vector4.multiply(blended, 255);
 
@@ -1891,7 +2212,7 @@ public class GraphicsDevice implements AutoCloseable
 		return result;
 	}
 
-	// TODO: should add this to the Vector class
+	// TODO(Eric): should add this to the Vector class
 	private Vector2 perp(Vector2 a)
 	{
 		return new Vector2(-a.y, a.x);

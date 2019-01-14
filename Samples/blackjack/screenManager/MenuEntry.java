@@ -153,8 +153,8 @@ public class MenuEntry
 	 */
 	public void draw(MenuScreen screen, boolean isSelected, GameTime gameTime)
 	{
-		Color textColor = isSelected ? Color.White : Color.Black;
-		Color tintColor = isSelected ? Color.White : Color.Gray;
+		Color textColor = isSelected ? Color.White() : Color.Black();
+		Color tintColor = isSelected ? Color.White() : Color.Gray();
 
 // #if WINDOWS_PHONE
 		// there is no such thing as a selected item on Windows Phone, so we always

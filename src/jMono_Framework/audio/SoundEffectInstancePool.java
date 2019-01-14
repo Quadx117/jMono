@@ -111,7 +111,7 @@ public class SoundEffectInstancePool
 			inst.setVolume(1.0f);
 			inst.setPan(0.0f);
 			inst.setPitch(0.0f);
-			inst.setIsLooped(false);
+			inst.setLooped(false);
 		}
 		else
 		{

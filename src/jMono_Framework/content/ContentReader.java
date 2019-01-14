@@ -128,22 +128,22 @@ public class ContentReader extends BinaryReader
     public Matrix readMatrix()
     {
         Matrix result = new Matrix();
-        result.M11 = readSingle();
-        result.M12 = readSingle();
-        result.M13 = readSingle();
-        result.M14 = readSingle(); 
-        result.M21 = readSingle();
-        result.M22 = readSingle();
-        result.M23 = readSingle();
-        result.M24 = readSingle();
-        result.M31 = readSingle();
-        result.M32 = readSingle();
-        result.M33 = readSingle();
-        result.M34 = readSingle();
-        result.M41 = readSingle();
-        result.M42 = readSingle();
-        result.M43 = readSingle();
-        result.M44 = readSingle();
+        result.m11 = readSingle();
+        result.m12 = readSingle();
+        result.m13 = readSingle();
+        result.m14 = readSingle(); 
+        result.m21 = readSingle();
+        result.m22 = readSingle();
+        result.m23 = readSingle();
+        result.m24 = readSingle();
+        result.m31 = readSingle();
+        result.m32 = readSingle();
+        result.m33 = readSingle();
+        result.m34 = readSingle();
+        result.m41 = readSingle();
+        result.m42 = readSingle();
+        result.m43 = readSingle();
+        result.m44 = readSingle();
         return result;
     }
 

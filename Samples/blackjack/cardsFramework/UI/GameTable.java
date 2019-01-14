@@ -106,7 +106,7 @@ public class GameTable extends DrawableGameComponent
 		spriteBatch.begin();
 		
 		// Draw the table texture
-		spriteBatch.draw(tableTexture, tableBounds, Color.White);
+		spriteBatch.draw(tableTexture, tableBounds, Color.White());
 		
 		spriteBatch.end();
 

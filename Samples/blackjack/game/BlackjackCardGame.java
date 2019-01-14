@@ -394,9 +394,9 @@ public class BlackjackCardGame extends CardsGame
 		spriteBatch.draw(screenManager.getBlankTexture(),
 						new Rectangle((int) position.x - 4, (int) position.y,
 								(int) measure.x + 8, (int) measure.y),
-						Color.Black);
+						Color.Black());
 
-        spriteBatch.drawString(font, dealerValue, position, Color.White);
+        spriteBatch.drawString(font, dealerValue, position, Color.White());
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class BlackjackCardGame extends CardsGame
 	 */
 	private void showPlayerValues()
 	{
-		Color color = Color.Black;
+		Color color = Color.Black();
 		Player currentPlayer = getCurrentPlayer();
 
 		for (int playerIndex = 0; playerIndex < players.size(); ++playerIndex)
@@ -414,11 +414,11 @@ public class BlackjackCardGame extends CardsGame
 			// prompt for who the active player is
 			if (player == currentPlayer)
 			{
-				color = Color.Red;
+				color = Color.Red();
 			}
 			else
 			{
-				color = Color.White;
+				color = Color.White();
 			}
 
 			// Calculate the values to draw
@@ -488,7 +488,7 @@ public class BlackjackCardGame extends CardsGame
 				// If the player has performed a split, mark the active hand
 				// alone with a red value
 				color = player.getCurrentHandType() == HandTypes.First && player == currentPlayer ?
-						Color.Red : Color.White;
+						Color.Red() : Color.White();
 
 				if (playerHandValueText != null)
 				{
@@ -496,7 +496,7 @@ public class BlackjackCardGame extends CardsGame
 				}
 
 				color = player.getCurrentHandType() == HandTypes.Second && player == currentPlayer ?
-						Color.Red : Color.White;
+						Color.Red() : Color.White();
 
 				if (playerSecondHandValueText != null)
 				{
@@ -542,7 +542,7 @@ public class BlackjackCardGame extends CardsGame
 		spriteBatch.draw(screenManager.getBlankTexture(),
                 		new Rectangle((int) position.x - 4, (int) position.y,
                 				(int) measure.x + 8, (int) measure.y),
-                		Color.Black);
+                		Color.Black());
 		spriteBatch.drawString(font, value, position, valueColor);
 
 	}

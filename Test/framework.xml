@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="framework">
+
+	<test name="BoundingBox">
+		<classes>
+			<class name="framework.BoundingBoxTest" />
+		</classes>
+	</test> <!-- BoundingBox -->
+
+	<test name="BoundingFrustum">
+		<classes>
+			<class name="framework.BoundingFrustumTest" />
+		</classes>
+	</test> <!-- BoundingFrustum -->
+
+	<test name="BoundingSphere">
+		<classes>
+			<class name="framework.BoundingSphereTest" />
+		</classes>
+	</test> <!-- BoundingSphere -->
+
+	<test name="Color">
+		<classes>
+			<class name="framework.ColorTest" />
+		</classes>
+	</test> <!-- Color -->
+
+	<test name="Ray">
+		<classes>
+			<class name="framework.RayTest" />
+		</classes>
+	</test> <!-- Ray -->
+
+	<test name="Rectangle">
+		<classes>
+			<class name="framework.RectangleTest" />
+		</classes>
+	</test> <!-- Rectangle -->
+
+</suite> <!-- framework -->

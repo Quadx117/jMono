@@ -51,7 +51,7 @@ public class BlackJackTable extends GameTable
 
 		for (int placeIndex = 0; placeIndex < getPlaces(); ++placeIndex)
 		{
-			spriteBatch.draw(ringTexture, getPlaceOrder().apply(placeIndex).add(ringOffset), Color.White);
+			spriteBatch.draw(ringTexture, getPlaceOrder().apply(placeIndex).add(ringOffset), Color.White());
 		}
 
 		spriteBatch.end();

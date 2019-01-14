@@ -11,9 +11,11 @@ import sun.nio.ch.FileChannelImpl;
 
 public class FileStream extends Stream
 {
+    // @formatter:off
 	// ########################################################################
-	// # java.io.FileInputStream #
+	// #                       java.io.FileInputStream                        #
 	// ########################################################################
+    // @formatter:on
 
 	/* File Descriptor - handle to the open file */
 	private final FileDescriptor fd;

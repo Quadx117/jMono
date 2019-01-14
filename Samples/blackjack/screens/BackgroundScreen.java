@@ -62,7 +62,7 @@ public class BackgroundScreen extends GameScreen
 
 		screenManager.getSpriteBatch().draw(background,
 											screenManager.getGraphicsDevice().getViewport().getBounds(),
-											Color.multiply(Color.White, getTransitionAlpha()));
+											Color.multiply(Color.White(), getTransitionAlpha()));
 
 		screenManager.getSpriteBatch().end();
 

@@ -59,7 +59,7 @@ public class AnimatedGameComponent extends DrawableGameComponent
 	public AnimatedGameComponent(Game game)
 	{
 		super(game);
-		textColor = Color.Black;
+		textColor = Color.Black();
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class AnimatedGameComponent extends DrawableGameComponent
 		{
 			if (currentFrame != null)
 			{
-				spriteBatch.draw(currentFrame, currentDestination, currentSegment, Color.White);
+				spriteBatch.draw(currentFrame, currentDestination, currentSegment, Color.White());
 				if (text != null)
 				{
 					Vector2 size = cardGame.font.measureString(text);
@@ -157,7 +157,7 @@ public class AnimatedGameComponent extends DrawableGameComponent
 		{
 			if (currentFrame != null)
 			{
-				spriteBatch.draw(currentFrame, currentPosition, currentSegment, Color.White);
+				spriteBatch.draw(currentFrame, currentPosition, currentSegment, Color.White());
 				if (text != null)
 				{
 					Vector2 size = cardGame.font.measureString(text);

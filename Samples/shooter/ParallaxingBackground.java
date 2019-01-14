@@ -72,7 +72,7 @@ public class ParallaxingBackground
     {
         for (int i = 0; i < positions.length; ++i)
         {
-            spriteBatch.draw(texture, positions[i], Color.White);
+            spriteBatch.draw(texture, positions[i], Color.White());
         }
     }
 }

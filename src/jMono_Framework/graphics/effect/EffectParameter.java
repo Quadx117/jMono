@@ -522,92 +522,92 @@ public class EffectParameter
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M21;
-			fData[2] = value.M31;
-			fData[3] = value.M41;
+			fData[0] = value.m11;
+			fData[1] = value.m21;
+			fData[2] = value.m31;
+			fData[3] = value.m41;
 
-			fData[4] = value.M12;
-			fData[5] = value.M22;
-			fData[6] = value.M32;
-			fData[7] = value.M42;
+			fData[4] = value.m12;
+			fData[5] = value.m22;
+			fData[6] = value.m32;
+			fData[7] = value.m42;
 
-			fData[8] = value.M13;
-			fData[9] = value.M23;
-			fData[10] = value.M33;
-			fData[11] = value.M43;
+			fData[8] = value.m13;
+			fData[9] = value.m23;
+			fData[10] = value.m33;
+			fData[11] = value.m43;
 
-			fData[12] = value.M14;
-			fData[13] = value.M24;
-			fData[14] = value.M34;
-			fData[15] = value.M44;
+			fData[12] = value.m14;
+			fData[13] = value.m24;
+			fData[14] = value.m34;
+			fData[15] = value.m44;
 		}
 		else if (rowCount == 4 && columnCount == 3)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M21;
-			fData[2] = value.M31;
-			fData[3] = value.M41;
+			fData[0] = value.m11;
+			fData[1] = value.m21;
+			fData[2] = value.m31;
+			fData[3] = value.m41;
 
-			fData[4] = value.M12;
-			fData[5] = value.M22;
-			fData[6] = value.M32;
-			fData[7] = value.M42;
+			fData[4] = value.m12;
+			fData[5] = value.m22;
+			fData[6] = value.m32;
+			fData[7] = value.m42;
 
-			fData[8] = value.M13;
-			fData[9] = value.M23;
-			fData[10] = value.M33;
-			fData[11] = value.M43;
+			fData[8] = value.m13;
+			fData[9] = value.m23;
+			fData[10] = value.m33;
+			fData[11] = value.m43;
 		}
 		else if (rowCount == 3 && columnCount == 4)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M21;
-			fData[2] = value.M31;
+			fData[0] = value.m11;
+			fData[1] = value.m21;
+			fData[2] = value.m31;
 
-			fData[3] = value.M12;
-			fData[4] = value.M22;
-			fData[5] = value.M32;
+			fData[3] = value.m12;
+			fData[4] = value.m22;
+			fData[5] = value.m32;
 
-			fData[6] = value.M13;
-			fData[7] = value.M23;
-			fData[8] = value.M33;
+			fData[6] = value.m13;
+			fData[7] = value.m23;
+			fData[8] = value.m33;
 
-			fData[9] = value.M14;
-			fData[10] = value.M24;
-			fData[11] = value.M34;
+			fData[9] = value.m14;
+			fData[10] = value.m24;
+			fData[11] = value.m34;
 		}
 		else if (rowCount == 3 && columnCount == 3)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M21;
-			fData[2] = value.M31;
+			fData[0] = value.m11;
+			fData[1] = value.m21;
+			fData[2] = value.m31;
 
-			fData[3] = value.M12;
-			fData[4] = value.M22;
-			fData[5] = value.M32;
+			fData[3] = value.m12;
+			fData[4] = value.m22;
+			fData[5] = value.m32;
 
-			fData[6] = value.M13;
-			fData[7] = value.M23;
-			fData[8] = value.M33;
+			fData[6] = value.m13;
+			fData[7] = value.m23;
+			fData[8] = value.m33;
 		}
 		else if (rowCount == 3 && columnCount == 2)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M21;
-			fData[2] = value.M31;
+			fData[0] = value.m11;
+			fData[1] = value.m21;
+			fData[2] = value.m31;
 
-			fData[3] = value.M12;
-			fData[4] = value.M22;
-			fData[5] = value.M32;
+			fData[3] = value.m12;
+			fData[4] = value.m22;
+			fData[5] = value.m32;
 		}
 
 		stateKey = ++NextStateKey;
@@ -624,92 +624,92 @@ public class EffectParameter
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M12;
-			fData[2] = value.M13;
-			fData[3] = value.M14;
+			fData[0] = value.m11;
+			fData[1] = value.m12;
+			fData[2] = value.m13;
+			fData[3] = value.m14;
 
-			fData[4] = value.M21;
-			fData[5] = value.M22;
-			fData[6] = value.M23;
-			fData[7] = value.M24;
+			fData[4] = value.m21;
+			fData[5] = value.m22;
+			fData[6] = value.m23;
+			fData[7] = value.m24;
 
-			fData[8] = value.M31;
-			fData[9] = value.M32;
-			fData[10] = value.M33;
-			fData[11] = value.M34;
+			fData[8] = value.m31;
+			fData[9] = value.m32;
+			fData[10] = value.m33;
+			fData[11] = value.m34;
 
-			fData[12] = value.M41;
-			fData[13] = value.M42;
-			fData[14] = value.M43;
-			fData[15] = value.M44;
+			fData[12] = value.m41;
+			fData[13] = value.m42;
+			fData[14] = value.m43;
+			fData[15] = value.m44;
 		}
 		else if (rowCount == 4 && columnCount == 3)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M12;
-			fData[2] = value.M13;
+			fData[0] = value.m11;
+			fData[1] = value.m12;
+			fData[2] = value.m13;
 
-			fData[3] = value.M21;
-			fData[4] = value.M22;
-			fData[5] = value.M23;
+			fData[3] = value.m21;
+			fData[4] = value.m22;
+			fData[5] = value.m23;
 
-			fData[6] = value.M31;
-			fData[7] = value.M32;
-			fData[8] = value.M33;
+			fData[6] = value.m31;
+			fData[7] = value.m32;
+			fData[8] = value.m33;
 
-			fData[9] = value.M41;
-			fData[10] = value.M42;
-			fData[11] = value.M43;
+			fData[9] = value.m41;
+			fData[10] = value.m42;
+			fData[11] = value.m43;
 		}
 		else if (rowCount == 3 && columnCount == 4)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M12;
-			fData[2] = value.M13;
-			fData[3] = value.M14;
+			fData[0] = value.m11;
+			fData[1] = value.m12;
+			fData[2] = value.m13;
+			fData[3] = value.m14;
 
-			fData[4] = value.M21;
-			fData[5] = value.M22;
-			fData[6] = value.M23;
-			fData[7] = value.M24;
+			fData[4] = value.m21;
+			fData[5] = value.m22;
+			fData[6] = value.m23;
+			fData[7] = value.m24;
 
-			fData[8] = value.M31;
-			fData[9] = value.M32;
-			fData[10] = value.M33;
-			fData[11] = value.M34;
+			fData[8] = value.m31;
+			fData[9] = value.m32;
+			fData[10] = value.m33;
+			fData[11] = value.m34;
 		}
 		else if (rowCount == 3 && columnCount == 3)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M12;
-			fData[2] = value.M13;
+			fData[0] = value.m11;
+			fData[1] = value.m12;
+			fData[2] = value.m13;
 
-			fData[3] = value.M21;
-			fData[4] = value.M22;
-			fData[5] = value.M23;
+			fData[3] = value.m21;
+			fData[4] = value.m22;
+			fData[5] = value.m23;
 
-			fData[6] = value.M31;
-			fData[7] = value.M32;
-			fData[8] = value.M33;
+			fData[6] = value.m31;
+			fData[7] = value.m32;
+			fData[8] = value.m33;
 		}
 		else if (rowCount == 3 && columnCount == 2)
 		{
 			float[] fData = (float[]) data;
 
-			fData[0] = value.M11;
-			fData[1] = value.M12;
-			fData[2] = value.M13;
+			fData[0] = value.m11;
+			fData[1] = value.m12;
+			fData[2] = value.m13;
 
-			fData[3] = value.M21;
-			fData[4] = value.M22;
-			fData[5] = value.M23;
+			fData[3] = value.m21;
+			fData[4] = value.m22;
+			fData[5] = value.m23;
 		}
 
 		stateKey = ++NextStateKey;
@@ -726,25 +726,25 @@ public class EffectParameter
 			{
 				float[] fData = (float[]) elements.getEffectParameter(i).data;
 
-				fData[0] = value[i].M11;
-				fData[1] = value[i].M21;
-				fData[2] = value[i].M31;
-				fData[3] = value[i].M41;
+				fData[0] = value[i].m11;
+				fData[1] = value[i].m21;
+				fData[2] = value[i].m31;
+				fData[3] = value[i].m41;
 
-				fData[4] = value[i].M12;
-				fData[5] = value[i].M22;
-				fData[6] = value[i].M32;
-				fData[7] = value[i].M42;
+				fData[4] = value[i].m12;
+				fData[5] = value[i].m22;
+				fData[6] = value[i].m32;
+				fData[7] = value[i].m42;
 
-				fData[8] = value[i].M13;
-				fData[9] = value[i].M23;
-				fData[10] = value[i].M33;
-				fData[11] = value[i].M43;
+				fData[8] = value[i].m13;
+				fData[9] = value[i].m23;
+				fData[10] = value[i].m33;
+				fData[11] = value[i].m43;
 
-				fData[12] = value[i].M14;
-				fData[13] = value[i].M24;
-				fData[14] = value[i].M34;
-				fData[15] = value[i].M44;
+				fData[12] = value[i].m14;
+				fData[13] = value[i].m24;
+				fData[14] = value[i].m34;
+				fData[15] = value[i].m44;
 			}
 		}
 		else if (rowCount == 4 && columnCount == 3)
@@ -753,20 +753,20 @@ public class EffectParameter
 			{
 				float[] fData = (float[]) elements.getEffectParameter(i).data;
 
-				fData[0] = value[i].M11;
-				fData[1] = value[i].M21;
-				fData[2] = value[i].M31;
-				fData[3] = value[i].M41;
+				fData[0] = value[i].m11;
+				fData[1] = value[i].m21;
+				fData[2] = value[i].m31;
+				fData[3] = value[i].m41;
 
-				fData[4] = value[i].M12;
-				fData[5] = value[i].M22;
-				fData[6] = value[i].M32;
-				fData[7] = value[i].M42;
+				fData[4] = value[i].m12;
+				fData[5] = value[i].m22;
+				fData[6] = value[i].m32;
+				fData[7] = value[i].m42;
 
-				fData[8] = value[i].M13;
-				fData[9] = value[i].M23;
-				fData[10] = value[i].M33;
-				fData[11] = value[i].M43;
+				fData[8] = value[i].m13;
+				fData[9] = value[i].m23;
+				fData[10] = value[i].m33;
+				fData[11] = value[i].m43;
 			}
 		}
 		else if (rowCount == 3 && columnCount == 4)
@@ -775,21 +775,21 @@ public class EffectParameter
 			{
 				float[] fData = (float[]) elements.getEffectParameter(i).data;
 
-				fData[0] = value[i].M11;
-				fData[1] = value[i].M21;
-				fData[2] = value[i].M31;
+				fData[0] = value[i].m11;
+				fData[1] = value[i].m21;
+				fData[2] = value[i].m31;
 
-				fData[3] = value[i].M12;
-				fData[4] = value[i].M22;
-				fData[5] = value[i].M32;
+				fData[3] = value[i].m12;
+				fData[4] = value[i].m22;
+				fData[5] = value[i].m32;
 
-				fData[6] = value[i].M13;
-				fData[7] = value[i].M23;
-				fData[8] = value[i].M33;
+				fData[6] = value[i].m13;
+				fData[7] = value[i].m23;
+				fData[8] = value[i].m33;
 
-				fData[9] = value[i].M14;
-				fData[10] = value[i].M24;
-				fData[11] = value[i].M34;
+				fData[9] = value[i].m14;
+				fData[10] = value[i].m24;
+				fData[11] = value[i].m34;
 			}
 		}
 		else if (rowCount == 3 && columnCount == 3)
@@ -798,17 +798,17 @@ public class EffectParameter
 			{
 				float[] fData = (float[]) elements.getEffectParameter(i).data;
 
-				fData[0] = value[i].M11;
-				fData[1] = value[i].M21;
-				fData[2] = value[i].M31;
+				fData[0] = value[i].m11;
+				fData[1] = value[i].m21;
+				fData[2] = value[i].m31;
 
-				fData[3] = value[i].M12;
-				fData[4] = value[i].M22;
-				fData[5] = value[i].M32;
+				fData[3] = value[i].m12;
+				fData[4] = value[i].m22;
+				fData[5] = value[i].m32;
 
-				fData[6] = value[i].M13;
-				fData[7] = value[i].M23;
-				fData[8] = value[i].M33;
+				fData[6] = value[i].m13;
+				fData[7] = value[i].m23;
+				fData[8] = value[i].m33;
 			}
 		}
 		else if (rowCount == 3 && columnCount == 2)
@@ -817,13 +817,13 @@ public class EffectParameter
 			{
 				float[] fData = (float[]) elements.getEffectParameter(i).data;
 
-				fData[0] = value[i].M11;
-				fData[1] = value[i].M21;
-				fData[2] = value[i].M31;
+				fData[0] = value[i].m11;
+				fData[1] = value[i].m21;
+				fData[2] = value[i].m31;
 
-				fData[3] = value[i].M12;
-				fData[4] = value[i].M22;
-				fData[5] = value[i].M32;
+				fData[3] = value[i].m12;
+				fData[4] = value[i].m22;
+				fData[5] = value[i].m32;
 			}
 		}
 

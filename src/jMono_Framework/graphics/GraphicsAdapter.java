@@ -1,365 +1,286 @@
 package jMono_Framework.graphics;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GraphicsAdapter implements AutoCloseable
 {
+    /**
+     * Defines the driver type for graphics adapter. Usable only on DirectX platforms for now.
+     * 
+     * @author Eric Perron (based on the XNA Framework from Microsoft and MonoGame)
+     *
+     */
+    public enum DriverType
+    {
+        /**
+         * Hardware device been used for rendering. Maximum speed and performance.
+         */
+        Hardware,
 
-	/**
-	 * Defines the driver type for graphics adapter. Usable only on DirectX platforms for now.
-	 * 
-	 * @author Eric
-	 *
-	 */
-	public enum DriverType
-	{
-		/**
-		 * Hardware device been used for rendering. Maximum speed and performance.
-		 */
-		Hardware,
+        /**
+         * Emulates the hardware device on CPU. Slowly, only for testing.
+         */
+        Reference,
 
-		/**
-		 * Emulates the hardware device on CPU. Slowly, only for testing.
-		 */
-		Reference,
+        /**
+         * Useful when {@link DriverType.Hardware} acceleration does not work.
+         */
+        FastSoftware
+    }
 
-		/**
-		 * Useful when {@link DriverType.Hardware} acceleration does not work.
-		 */
-		FastSoftware
-	}
+    // private static ReadOnlyCollection<GraphicsAdapter> _adapters;
+    private static List<GraphicsAdapter> _adapters;
 
-	// private static ReadOnlyCollection<GraphicsAdapter> _adapters;
-	private static List<GraphicsAdapter> _adapters;
+    private DisplayModeCollection _supportedDisplayModes;
 
-	private DisplayModeCollection _supportedDisplayModes;
+    private DisplayMode _currentDisplayMode;
 
-// #if MONOMAC
-	// private NSScreen _screen;
-	// protected GraphicsAdapter(NSScreen screen)
-	// {
-	// _screen = screen;
-	// }
-// #elif IOS
-	// private UIScreen _screen;
-	// protected GraphicsAdapter(UIScreen screen)
-	// {
-	// _screen = screen;
-	// }
-// #else
-	protected GraphicsAdapter() {}
-// #endif
+    static
+    // GraphicsAdapter()
+    {
+        // NOTE(Eric): Added this to initialize the Map
+        Map<Integer, SurfaceFormat> map = new HashMap<>();
+        // map.put(BufferedImage.TYPE_3BYTE_BGR, SurfaceFormat.Bgr32SRgb);
+        map.put(BufferedImage.TYPE_4BYTE_ABGR, SurfaceFormat.Color);
+        // map.put(BufferedImage.TYPE_USHORT_565_RGB, SurfaceFormat.Bgr565);
+        formatTranslations = Collections.unmodifiableMap(map);
 
-	@Override
-	public void close() {}
+        // NOTE: An adapter is a monitor+device combination, so we expect
+        // at lease one adapter per connected monitor.
+        platformInitializeAdapters(_adapters);
 
-	public DisplayMode getCurrentDisplayMode()
-	{
-// #if MONOMAC
-		// Dummy values until MonoMac implements Quartz Display Services
-		// int refreshRate = 60;
-		// SurfaceFormat format = SurfaceFormat.Color;
+        // The first adapter is considered the default.
+        _adapters.get(0)._isDefaultAdapter = true;
+    }
 
-		// return new DisplayMode((int)_screen.Frame.Width, (int)_screen.Frame.Height,
-		// refreshRate, format);
-// #elif IOS
-		// return new DisplayMode((int)(_screen.Bounds.Width * _screen.Scale),
-		// (int)(_screen.Bounds.Height * _screen.Scale),
-		// 60,
-		// SurfaceFormat.Color);
-// #elif ANDROID
-		// View view = ((AndroidGameWindow)Game.Instance.Window).GameView;
-		// return new DisplayMode(view.Width, view.Height, 60, SurfaceFormat.Color);
-// #elif DESKTOPGL
+    public static GraphicsAdapter getDefaultAdapter()
+    {
+        return _adapters.get(0);
+    }
 
-        // return new DisplayMode(OpenTK.DisplayDevice.Default.Width, OpenTK.DisplayDevice.Default.Height, (int)OpenTK.DisplayDevice.Default.RefreshRate, SurfaceFormat.Color);
-// #elif WINDOWS
-        // var dc = System.Drawing.Graphics.FromHwnd(IntPtr.Zero).GetHdc();
-        // return new DisplayMode(GetDeviceCaps(dc, HORZRES), GetDeviceCaps(dc, VERTRES), GetDeviceCaps(dc, VREFRESH), SurfaceFormat.Color);
-		java.awt.GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		int width = gd.getDisplayMode().getWidth();
-		int height = gd.getDisplayMode().getHeight();
-		int refreshRate = gd.getDisplayMode().getRefreshRate();
-		return new DisplayMode(width, height, refreshRate, SurfaceFormat.Color);
-//#else
-		// return new DisplayMode(800, 600, 60, SurfaceFormat.Color);
-// #endif
-	}
+    public static List<GraphicsAdapter> getAdapters()
+    {
+        return _adapters;
+    }
 
-	public static GraphicsAdapter getDefaultAdapter()
-	{
-		return getAdapters().get(0);
-	}
+    /**
+     * Used to request creation of the reference graphics device, or the default hardware
+     * accelerated device (when set to false).
+     * <p>
+     * This only works on DirectX platforms where a reference graphics device is available and must
+     * be defined before the graphics device is created. It defaults to false.
+     * 
+     * @return {@code true} if {@link #UseDriverType} is set to {@link DriverType#Reference};
+     *         {@code false} otherwise.
+     */
+    public static boolean useReferenceDevice()
+    {
+        return UseDriverType == DriverType.Reference;
+    }
 
-	public static List<GraphicsAdapter> getAdapters()
-	{
-		if (_adapters == null)
-		{
-// #if MONOMAC
-			// GraphicsAdapter[] tmpAdapters = new GraphicsAdapter[NSScreen.Screens.Length];
-			// for (int i=0; i<NSScreen.Screens.Length; i++) {
-			// tmpAdapters[i] = new GraphicsAdapter(NSScreen.Screens[i]);
-			// }
+    public static void setUseReferenceDevice(boolean value)
+    {
+        UseDriverType = value ? DriverType.Reference : DriverType.Hardware;
+    }
 
-			// _adapters = new ReadOnlyCollection<GraphicsAdapter>(tmpAdapters);
-// #elif IOS
-			// _adapters = new ReadOnlyCollection<GraphicsAdapter>(
-			// new [] {new GraphicsAdapter(UIScreen.MainScreen)});
-// #else
-			// _adapters = new ReadOnlyCollection<GraphicsAdapter>(new[] {new GraphicsAdapter()});
-			_adapters = new ArrayList<GraphicsAdapter>();
-			_adapters.add(new GraphicsAdapter());
-// #endif
-		}
+    /**
+     * Used to request creation of a specific kind of driver.
+     * <p>
+     * These values only work on DirectX platforms and must be defined before the graphics device is
+     * created. {@link DriverType#Hardware} by default.
+     */
+    public static DriverType UseDriverType;
 
-		return _adapters;
-	}
+    private String _description;
 
-	/**
-	 * Used to request creation of the reference graphics device, or the default hardware
-	 * accelerated device (when set to false).
-	 * 
-	 * <p>
-	 * This only works on DirectX platforms where a reference graphics device is available and must
-	 * be defined before the graphics device is created. It defaults to false.
-	 * 
-	 * @return
-	 */
-	public static boolean useReferenceDevice()
-	{
-		return UseDriverType == DriverType.Reference;
-	}
+    public String getDescription()
+    {
+        return _description;
+    }
 
-	public static void setReferenceDevice(boolean value)
-	{
-		UseDriverType = value ? DriverType.Reference : DriverType.Hardware;
-	}
+    private int _deviceId;
 
-	// / <summary>
-	// / Used to request creation of a specific kind of driver
-	// / Hardware is preferred most of times for performance. This is the default value.
-	// / Reference is useful for testing.
-	// / FastSoftware is useful when Hardware acceleration does not work.
-	// / </summary>
-	// / <remarks>
-	// / These values only work on DirectX platforms and must be defined before the graphics device
-	// / is created.
-	// / </remarks>
-	public static DriverType UseDriverType;
+    public int getDeviceId()
+    {
+        return _deviceId;
+    }
 
-	// NOTE: Already commented out in the original code
-	/*
-	 * public boolean QueryRenderTargetFormat(
-	 * GraphicsProfile graphicsProfile,
-	 * SurfaceFormat format,
-	 * DepthFormat depthFormat,
-	 * int multiSampleCount,
-	 * out SurfaceFormat selectedFormat,
-	 * out DepthFormat selectedDepthFormat,
-	 * out int selectedMultiSampleCount)
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * 
-	 * public string Description
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public int DeviceId
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public Guid DeviceIdentifier
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public string DeviceName
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public string DriverDll
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public Version DriverVersion
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public boolean IsDefaultAdapter
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public boolean IsWideScreen
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public IntPtr MonitorHandle
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public int Revision
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 * 
-	 * public int SubSystemId
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 */
+    private String _deviceName;
 
-	// TODO: finish this method
-	public DisplayModeCollection getSupportedDisplayModes()
-	{
-		if (_supportedDisplayModes == null)
-		{
-			List<DisplayMode> modes = new ArrayList<DisplayMode>();
-			modes.add(getCurrentDisplayMode());
-//#if DESKTOPGL
-//            
-//			//IList<OpenTK.DisplayDevice> displays = OpenTK.DisplayDevice.AvailableDisplays;
-//			var displays = new List<OpenTK.DisplayDevice>();
-//
-//			OpenTK.DisplayIndex[] displayIndices = {
-//				OpenTK.DisplayIndex.First,
-//				OpenTK.DisplayIndex.Second,
-//				OpenTK.DisplayIndex.Third,
-//				OpenTK.DisplayIndex.Fourth,
-//				OpenTK.DisplayIndex.Fifth,
-//				OpenTK.DisplayIndex.Sixth,
-//			};
-//
-//			foreach(var displayIndex in displayIndices) 
-//			{
-//				var currentDisplay = OpenTK.DisplayDevice.GetDisplay(displayIndex);
-//				if(currentDisplay!= null) displays.Add(currentDisplay);
-//			}
-//
-//            if (displays.Count > 0)
-//            {
-//                modes.Clear();
-//                foreach (OpenTK.DisplayDevice display in displays)
-//                {
-//                    foreach (OpenTK.DisplayResolution resolution in display.AvailableResolutions)
-//                    {                                
-//                        SurfaceFormat format = SurfaceFormat.Color;
-//                        switch (resolution.BitsPerPixel)
-//                        {
-//                            case 32: format = SurfaceFormat.Color; break;
-//                            case 16: format = SurfaceFormat.Bgr565; break;
-//                            case 8: format = SurfaceFormat.Bgr565; break;
-//                            default:
-//                                break;
-//                        }
-//                        // Just report the 32 bit surfaces for now
-//                        // Need to decide what to do about other surface formats
-//                        if (format == SurfaceFormat.Color)
-//                        {
-//                            modes.Add(new DisplayMode(resolution.Width, resolution.Height, (int)resolution.RefreshRate, format));
-//                        }
-//                    }
-//
-//                }
-//            }
-// #elif DIRECTX && !WINDOWS_PHONE
-			// var dxgiFactory = new SharpDX.DXGI.Factory1();
-			// var adapter = dxgiFactory.GetAdapter(0);
-			// var output = adapter.Outputs[0];
-			// var displayModes = output.GetDisplayModeList(SharpDX.DXGI.Format.R8G8B8A8_UNorm, 0);
-			//
-			// modes.Clear();
-			// foreach (var displayMode in displayModes)
-			// {
-			// int refreshRate = (int)Math.Round(displayMode.RefreshRate.Numerator /
-			// (float)displayMode.RefreshRate.Denominator);
-			// modes.Add(new DisplayMode(displayMode.Width, displayMode.Height, refreshRate,
-			// SurfaceFormat.Color));
-			// }
-// #endif
-			_supportedDisplayModes = new DisplayModeCollection(modes);
-		}
+    public String getDeviceName()
+    {
+        return _deviceName;
+    }
 
-		return _supportedDisplayModes;
-	}
+    private int _vendorId;
 
-	// NOTE: Already commented out in the original code
-	/*
-	 * public int VendorId
-	 * {
-	 * get
-	 * {
-	 * throw new NotImplementedException();
-	 * }
-	 * }
-	 */
+    public int getVendorId()
+    {
+        return _vendorId;
+    }
 
-	// / <summary>
-	// / Gets a <see cref="System.Boolean"/> indicating whether
-	// / <see cref="GraphicsAdapter.CurrentDisplayMode"/> has a
-	// / Width:Height ratio corresponding to a widescreen <see cref="DisplayMode"/>.
-	// / Common widescreen modes include 16:9, 16:10 and 2:1.
-	// / </summary>
-	public boolean isWideScreen()
-	{
-		// Common non-widescreen modes: 4:3, 5:4, 1:1
-		// Common widescreen modes: 16:9, 16:10, 2:1
-		// XNA does not appear to account for rotated displays on the desktop
-		final float limit = 4.0f / 3.0f;
-		float aspect = getCurrentDisplayMode().getAspectRatio();
-		return aspect > limit;
-	}
+    private boolean _isDefaultAdapter;
 
-	// #if WINDOWS && !OPENGL
-	// [System.Runtime.InteropServices.DllImport("gdi32.dll", CharSet =
-	// System.Runtime.InteropServices.CharSet.Auto, SetLastError = true, ExactSpelling = true)]
-	// public static extern int GetDeviceCaps(IntPtr hDC, int nIndex);
-	//
-	// private final int HORZRES = 8;
-	// private final int VERTRES = 10;
-	// private final int VREFRESH = 116;
-	// #endif
+    public boolean isDefaultAdapter()
+    {
+        return _isDefaultAdapter;
+    }
+
+    // TODO(Eric): IntPtr
+    // public IntPtr MonitorHandle { get; private set; }
+
+    private int _revision;
+
+    public int getRevision()
+    {
+        return _revision;
+    }
+
+    private int _subSystemId;
+
+    public int getSubSystemId()
+    {
+        return _subSystemId;
+    }
+
+    public DisplayModeCollection getSupportedDisplayModes()
+    {
+        return _supportedDisplayModes;
+    }
+
+    public DisplayMode getCurrentDisplayMode()
+    {
+        return _currentDisplayMode;
+    }
+
+    /**
+     * Returns whether or not the {@link GraphicsAdapter#CurrentDisplayMode} is widescreen.
+     * <p>
+     * Common widescreen modes include 16:9, 16:10 and 2:1.
+     * 
+     * @return {@code true} if the {@link GraphicsAdapter#CurrentDisplayMode} is widescreen; false
+     *         otherwise.
+     */
+    public boolean isWideScreen()
+    {
+        // Seems like XNA treats aspect ratios above 16:10 as wide screen.
+        final float minWideScreenAspect = 16.0f / 10.0f;
+        return getCurrentDisplayMode().getAspectRatio() >= minWideScreenAspect;
+    }
+
+    /*
+     * public bool QueryRenderTargetFormat(
+     * GraphicsProfile graphicsProfile,
+     * SurfaceFormat format,
+     * DepthFormat depthFormat,
+     * int multiSampleCount,
+     * out SurfaceFormat selectedFormat,
+     * out DepthFormat selectedDepthFormat,
+     * out int selectedMultiSampleCount)
+     * {
+     * throw new NotImplementedException();
+     * }
+     */
+
+    public boolean isProfileSupported(GraphicsProfile graphicsProfile)
+    {
+        return platformIsProfileSupported(graphicsProfile);
+    }
+
+    @Override
+    public void close()
+    {
+        // We don't keep any resources, so we have
+        // nothing to do... just here for XNA compatibility.
+    }
+
+    //
+    // NOTE(Eric): Defined in other files in MonoGame (ex: GraphicsAdapter.DirectX.cs)
+    //
+
+    // TODO(Eric): Check if this is equivalent to the DirectX initialization (step in MonoGame 3.6
+    // code)
+    // See java.awt.GraphicsEnvironment
+    private static void platformInitializeAdapters(List<GraphicsAdapter> adapters)
+    {
+        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        try
+        {
+            java.awt.GraphicsDevice[] screenDevices = graphicsEnvironment.getScreenDevices();
+            int adapterCount = screenDevices.length;
+            _adapters = new ArrayList<GraphicsAdapter>(adapterCount);
+
+            for (int i = 0; i < adapterCount; ++i)
+            {
+                java.awt.GraphicsDevice device = screenDevices[i];
+                GraphicsAdapter adapter = createAdapter(device);
+                _adapters.add(adapter);
+            }
+        }
+        catch (HeadlessException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static GraphicsAdapter createAdapter(java.awt.GraphicsDevice device)
+    {
+        GraphicsAdapter adapter = new GraphicsAdapter();
+        int desktopWidth = device.getDefaultConfiguration().getDevice().getDisplayMode().getWidth();
+        int desktopHeight = device.getDefaultConfiguration().getDevice().getDisplayMode().getHeight();
+
+        List<DisplayMode> modes = new ArrayList<DisplayMode>();
+
+        for (SurfaceFormat formatTranslation : formatTranslations.values())
+        {
+            java.awt.DisplayMode[] displayModes = device.getDisplayModes();
+            for (java.awt.DisplayMode displayMode : displayModes)
+            {
+                DisplayMode mode = new DisplayMode(displayMode.getWidth(), displayMode.getHeight(), formatTranslation);
+                if (modes.contains(mode))
+                    continue;
+
+                modes.add(mode);
+
+                if (adapter._currentDisplayMode == null)
+                {
+                    if (mode.getWidth() == desktopWidth && mode.getHeight() == desktopHeight && mode.getFormat().equals(SurfaceFormat.Color))
+                        adapter._currentDisplayMode = mode;
+                }
+            }
+        }
+
+        adapter._supportedDisplayModes = new DisplayModeCollection(modes);
+
+        // (desktop mode wasn't found in the available modes)
+        if (adapter._currentDisplayMode == null)
+            adapter._currentDisplayMode = new DisplayMode(desktopWidth, desktopHeight, SurfaceFormat.Color);
+
+        return adapter;
+    }
+
+    // TODO(Eric): See if I need to add more SurfaceFormat.
+    private static final Map<Integer, SurfaceFormat> formatTranslations;
+
+    private boolean platformIsProfileSupported(GraphicsProfile graphicsProfile)
+    {
+        // NOTE(Eric): This is good as long as we only have the software renderer.
+        // Adjust this once we add lwjgl (or something else).
+        switch (graphicsProfile)
+        {
+            case Reach:
+                return true;
+            case HiDef:
+                return false;
+            default:
+                throw new IllegalArgumentException("Invalid GraphicsProfile");
+        }
+    }
 }

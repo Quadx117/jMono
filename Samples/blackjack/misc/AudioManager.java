@@ -165,7 +165,7 @@ public class AudioManager extends GameComponent
 		{
 			if (audioManager.soundBank.get(soundName).isLooped() != isLooped)
 			{
-				audioManager.soundBank.get(soundName).setIsLooped(isLooped);
+				audioManager.soundBank.get(soundName).setLooped(isLooped);
 			}
 
 			audioManager.soundBank.get(soundName).play();
@@ -189,7 +189,7 @@ public class AudioManager extends GameComponent
 		{
 			if (audioManager.soundBank.get(soundName).isLooped() != isLooped)
 			{
-				audioManager.soundBank.get(soundName).setIsLooped(isLooped);
+				audioManager.soundBank.get(soundName).setLooped(isLooped);
 			}
 
 			audioManager.soundBank.get(soundName).setVolume(volume);

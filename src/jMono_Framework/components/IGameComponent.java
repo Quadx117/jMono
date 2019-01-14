@@ -2,10 +2,10 @@ package jMono_Framework.components;
 
 /**
  * 
- * @author Eric Perron (inspired by XNA framework from Microsoft)
+ * @author Eric Perron (based on the XNA Framework from Microsoft and MonoGame)
  * 
  */
 public interface IGameComponent
 {
-	void initialize();
+    void initialize();
 }

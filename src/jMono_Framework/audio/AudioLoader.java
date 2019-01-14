@@ -19,9 +19,12 @@ public class AudioLoader
 	// Make sure we can't instantiate this class
 	private AudioLoader() {}
 
+	// @formatter:off
 	// ############################################################
 	// # Methods I added compared to MonoGame's AudioLoader class #
 	// ############################################################
+	// @formatter:on
+	
 	public static byte[] load(AudioInputStream audioStream)
 	{
 		if (audioStream == null)
@@ -91,9 +94,11 @@ public class AudioLoader
 		return null;
 	}
 
+	// @formatter:off
 	// ############################################################
 	// #        Methods from MonoGame's AudioLoader class         #
 	// ############################################################
+	// @formatter:on
 
 //	private static ALFormat getSoundFormat(int channels, int bits)
 //    {

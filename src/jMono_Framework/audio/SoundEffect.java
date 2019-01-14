@@ -487,9 +487,11 @@ public class SoundEffect implements AutoCloseable
 		}
 	}
 
+	// @formatter:off
 	// ########################################################################
 	// #                        SoundEffect.OpenAL.cs                         #
 	// ########################################################################
+	// @formatter:on
 
 	// TODO: Should I change this to SourceDatatLine (more similar to SharpDX.XAudio2.AudioBuffer)
 	// see SoundEffect.XAudio.cs
@@ -645,9 +647,11 @@ public class SoundEffect implements AutoCloseable
 //        OpenALSoundController.DestroyInstance();
     }
     
+    // @formatter:off
     // ########################################################################
     // #                        SoundEffect.XAudio.cs                         #
     // ########################################################################
+    // @formatter:on
 
 //    private static XAudio2 Device { get; private set; }
 //    private static MasteringVoice MasterVoice { get; private set; }
@@ -697,7 +701,7 @@ public class SoundEffect implements AutoCloseable
 //        initializeSoundEffect();
 //    }
 
-    private void initializeSoundEffect()
+    public static void initializeSoundEffect()
     {
 //        try
 //        {

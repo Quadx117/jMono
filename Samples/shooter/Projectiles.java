@@ -64,7 +64,7 @@ public class Projectiles
 
 	public void draw(SpriteBatch spriteBatch)
 	{
-		spriteBatch.draw(texture, position, null, Color.White, 0f, new Vector2(getWidth() / 2, getHeight() / 2), 1f,
+		spriteBatch.draw(texture, position, null, Color.White(), 0f, new Vector2(getWidth() / 2, getHeight() / 2), 1f,
 				SpriteEffects.None, 0f);
 	}
 }

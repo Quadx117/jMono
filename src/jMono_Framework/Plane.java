@@ -7,298 +7,333 @@ import jMono_Framework.math.Vector4;
 
 class PlaneHelper
 {
-	/**
-	 * Returns a value indicating what side (positive/negative) of a plane a point is.
-	 * 
-	 * @param point
-	 *        The point to check with
-	 * @param plane
-	 *        The plane to check against
-	 * @return Greater than zero if on the positive side, less than zero if on the negative size, 0
-	 *         otherwise
-	 */
-	public static float classifyPoint(final Vector3 point, final Plane plane)
-	{
-		return point.x * plane.normal.x + point.y * plane.normal.y + point.z * plane.normal.z + plane.D;
-	}
+    /**
+     * Returns a value indicating what side (positive/negative) of a plane a point is.
+     * 
+     * @param point
+     *        The point to check with
+     * @param plane
+     *        The plane to check against
+     * @return Greater than zero if on the positive side, less than zero if on the negative size, 0
+     *         otherwise
+     */
+    public static float classifyPoint(final Vector3 point, final Plane plane)
+    {
+        return point.x * plane.normal.x + point.y * plane.normal.y + point.z * plane.normal.z + plane.D;
+    }
 
-	/**
-	 * Returns the perpendicular distance from a point to a plane.
-	 * 
-	 * @param point
-	 *        The point to check
-	 * @param plane
-	 *        The place to check
-	 * @return The perpendicular distance from the point to the plane
-	 */
-	public static float perpendicularDistance(final Vector3 point, final Plane plane)
-	{
-		// dist = (ax + by + cz + d) / sqrt(a*a + b*b + c*c)
-		return (float) Math.abs((plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z)
-				/ Math.sqrt(plane.normal.x * plane.normal.x + plane.normal.y * plane.normal.y + plane.normal.z
-						* plane.normal.z));
-	}
+    /**
+     * Returns the perpendicular distance from a point to a plane.
+     * 
+     * @param point
+     *        The point to check
+     * @param plane
+     *        The place to check
+     * @return The perpendicular distance from the point to the plane
+     */
+    public static float perpendicularDistance(final Vector3 point, final Plane plane)
+    {
+        // dist = (ax + by + cz + d) / sqrt(a*a + b*b + c*c)
+        return (float) Math.abs((plane.normal.x * point.x + plane.normal.y * point.y + plane.normal.z * point.z)
+                                / Math.sqrt(plane.normal.x * plane.normal.x + plane.normal.y * plane.normal.y + plane.normal.z * plane.normal.z));
+    }
 }
 
 // C# struct
 public class Plane // IEquatable<Plane>
 {
-	public float D;
+    // #region Public Fields
 
-	public Vector3 normal;
+    public float D;
 
-	// Note: Added this since it is provided by default for struct in C#
-	public Plane()
-	{
-		normal = new Vector3();
-		this.D = 0f;
-	}
+    public Vector3 normal;
 
-	public Plane(Vector4 value)
-	{
-		this(new Vector3(value.x, value.y, value.z), value.w);
-	}
+    // #endregion Public Fields
 
-	public Plane(Vector3 normal, float d)
-	{
-		this.normal = normal;
-		this.D = d;
-	}
+    // #region Constructors
 
-	public Plane(Vector3 a, Vector3 b, Vector3 c)
-	{
-		Vector3 ab = new Vector3();
-		Vector3.subtract(b, a, ab);
-
-		Vector3 ac = new Vector3();
-		Vector3.subtract(c, a, ac);
-
-		Vector3 cross = Vector3.cross(ab, ac);
-		normal = Vector3.normalize(cross);
-		D = -(Vector3.dot(normal, a));
-	}
-
-	public Plane(float a, float b, float c, float d)
-	{
-		this(new Vector3(a, b, c), d);
-	}
-
-	public float dot(Vector4 value)
-	{
-		return ((((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z)) + (this.D * value.w));
-	}
-
-	public void dot(final Vector4 value, float result)
-	{
-		result = (((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z))
-				+ (this.D * value.w);
-	}
-
-	public float dotCoordinate(Vector3 value)
-	{
-		return ((((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z)) + this.D);
-	}
-
-	public void dotCoordinate(final Vector3 value, float result)
-	{
-		result = (((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z)) + this.D;
-	}
-
-	public float dotNormal(Vector3 value)
-	{
-		return (((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z));
-	}
-
-	public void dotNormal(final Vector3 value, float result)
-	{
-		result = ((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z);
-	}
-
-	/// <summary>
-	/// Transforms a normalized plane by a matrix.
-	/// </summary>
-	/// <param name="plane">The normalized plane to transform.</param>
-	/// <param name="matrix">The transformation matrix.</param>
-	/// <returns>The transformed plane.</returns>
-	public static Plane transform(Plane plane, Matrix matrix)
-	{
-		Plane result = new Plane();
-		transform(plane, matrix, result);
-		return result;
-	}
-
-	/// <summary>
-	/// Transforms a normalized plane by a matrix.
-	/// </summary>
-	/// <param name="plane">The normalized plane to transform.</param>
-	/// <param name="matrix">The transformation matrix.</param>
-	/// <param name="result">The transformed plane.</param>
-	public static void transform(final Plane plane, final Matrix matrix, Plane result)
-	{
-		// See "Transforming Normals" in http://www.glprogramming.com/red/appendixf.html
-		// for an explanation of how this works.
-
-		Matrix transformedMatrix = Matrix.identity();
-		Matrix.invert(matrix, transformedMatrix);
-		Matrix.transpose(transformedMatrix, transformedMatrix);
-
-		Vector4 vector = new Vector4(plane.normal, plane.D);
-
-		Vector4 transformedVector = new Vector4();
-		Vector4.transform(vector, transformedMatrix, transformedVector);
-
-		result = new Plane(transformedVector);
+    // Note: Added this since it is provided by default for struct in C#
+    public Plane()
+    {
+        normal = new Vector3();
+        this.D = 0f;
     }
 
-	/// <summary>
-	/// Transforms a normalized plane by a quaternion rotation.
-	/// </summary>
-	/// <param name="plane">The normalized plane to transform.</param>
-	/// <param name="rotation">The quaternion rotation.</param>
-	/// <returns>The transformed plane.</returns>
-	public static Plane transform(Plane plane, Quaternion rotation)
-	{
-		Plane result = new Plane();
-		transform(plane, rotation, result);
-		return result;
-	}
+    public Plane(Vector4 value)
+    {
+        this(new Vector3(value.x, value.y, value.z), value.w);
+    }
 
-	/// <summary>
-	/// Transforms a normalized plane by a quaternion rotation.
-	/// </summary>
-	/// <param name="plane">The normalized plane to transform.</param>
-	/// <param name="rotation">The quaternion rotation.</param>
-	/// <param name="result">The transformed plane.</param>
-	public static void transform(final Plane plane, final Quaternion rotation, Plane result)
-	{
-		Vector3.transform(plane.normal, rotation, result.normal);
-		result.D = plane.D;
-	}
+    public Plane(Vector3 normal, float d)
+    {
+        this.normal = normal;
+        this.D = d;
+    }
 
-	public void normalize()
-	{
-		float factor;
-		Vector3 normal = this.normal;
-		this.normal = Vector3.normalize(this.normal);
-		factor = (float) Math.sqrt(this.normal.x * this.normal.x + this.normal.y * this.normal.y + this.normal.z
-				* this.normal.z)
-				/ (float) Math.sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-		D = D * factor;
-	}
+    public Plane(Vector3 a, Vector3 b, Vector3 c)
+    {
+        Vector3 ab = Vector3.subtract(b, a);
+        Vector3 ac = Vector3.subtract(c, a);
 
-	public static Plane normalize(Plane value)
-	{
-		Plane ret = new Plane();
-		normalize(value, ret);
-		return ret;
-	}
+        Vector3 cross = Vector3.cross(ab, ac);
+        normal = Vector3.normalize(cross);
+        D = -(Vector3.dot(normal, a));
+    }
 
-	public static void normalize(final Plane value, Plane result)
-	{
-		float factor;
-		result.normal = Vector3.normalize(value.normal);
-		factor = (float) Math.sqrt(result.normal.x * result.normal.x + result.normal.y * result.normal.y
-				+ result.normal.z * result.normal.z)
-				/ (float) Math.sqrt(value.normal.x * value.normal.x + value.normal.y * value.normal.y + value.normal.z
-						* value.normal.z);
-		result.D = value.D * factor;
-	}
+    public Plane(float a, float b, float c, float d)
+    {
+        this(new Vector3(a, b, c), d);
+    }
 
-	/**
-	 * Indicates whether some other object is "equal to" this one.
-	 * 
-	 * @param obj
-	 * 		  the reference object with which to compare.
-	 * @return {@code true} if this object is the same as the obj argument;
-     *         {@code false} otherwise.
-	 */
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
-		{
-			return false;
-		}
-		if (obj.getClass() != this.getClass())
-		{
-			return false;
-		}
-		return this.equals((Plane) obj);
-	}
+    // #endregion Constructors
 
-	// Helper method
-	private boolean equals(Plane other)
-	{
-		return ((normal.equals(other.normal)) && (D == other.D));
-	}
+    // #region Public Methods
 
-	/**
-	 * Indicates whether some other object is "not equal to" this one.
-	 * 
-	 * @param obj
-	 * 		  the reference object with which to compare.
-	 * @return {@code false} if this object is the same as the obj argument;
-     *         {@code true} otherwise.
+    public float dot(Vector4 value)
+    {
+        return ((((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z)) + (this.D * value.w));
+    }
+
+    // TODO(Eric): Original code with out parameters on primitive date types.
+    // This could be emulated in Java using a Wrapper class aroud the primitive
+    // see :
+    // http://stackoverflow.com/questions/4319537/how-do-i-pass-a-primitive-data-type-by-reference/4319581#4319581
+    // public void dot(final Vector4 value, float result)
+    // {
+    // result = (((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z *
+    // value.z)) + (this.D * value.w);
+    // }
+
+    public float dotCoordinate(Vector3 value)
+    {
+        return ((((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z)) + this.D);
+    }
+
+    // TODO(Eric): Original code with out parameters on primitive date types.
+    // This could be emulated in Java using a Wrapper class aroud the primitive
+    // see :
+    // http://stackoverflow.com/questions/4319537/how-do-i-pass-a-primitive-data-type-by-reference/4319581#4319581
+    // public void dotCoordinate(final Vector3 value, float result)
+    // {
+    // result = (((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z *
+    // value.z)) + this.D;
+    // }
+
+    public float dotNormal(Vector3 value)
+    {
+        return (((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z));
+    }
+
+    // TODO(Eric): Original code with out parameters on primitive date types.
+    // This could be emulated in Java using a Wrapper class aroud the primitive
+    // see :
+    // http://stackoverflow.com/questions/4319537/how-do-i-pass-a-primitive-data-type-by-reference/4319581#4319581
+    // public void dotNormal(final Vector3 value, float result)
+    // {
+    // result = ((this.normal.x * value.x) + (this.normal.y * value.y)) + (this.normal.z * value.z);
+    // }
+
+    /**
+     * Transforms a normalized plane by a matrix.
+     * 
+     * @param plane
+     *        The normalized plane to transform.
+     * @param matrix
+     *        The transformation matrix.
+     * @return The transformed plane.
+     */
+    public static Plane transform(Plane plane, Matrix matrix)
+    {
+        Plane result = new Plane();
+        transform(plane, matrix, result);
+        return result;
+    }
+
+    /**
+     * Transforms a normalized plane by a matrix.
+     * 
+     * @param plane
+     *        The normalized plane to transform.
+     * @param matrix
+     *        The transformation matrix.
+     * @param result
+     *        The transformed plane.
+     */
+    public static void transform(final Plane plane, final Matrix matrix, Plane result)
+    {
+        // See "Transforming Normals" in http://www.glprogramming.com/red/appendixf.html
+        // for an explanation of how this works.
+
+        Matrix transformedMatrix = new Matrix();
+        Matrix.invert(matrix, transformedMatrix);
+        Matrix.transpose(transformedMatrix, transformedMatrix);
+
+        Vector4 vector = new Vector4(plane.normal, plane.D);
+
+        Vector4 transformedVector = new Vector4();
+        Vector4.transform(vector, transformedMatrix, transformedVector);
+
+        result.normal = new Vector3(transformedVector.x, transformedVector.y, transformedVector.z);
+        result.D = transformedVector.w;
+    }
+
+    /**
+     * Transforms a normalized plane by a quaternion rotation.
+     * 
+     * @param plane
+     *        The normalized plane to transform.
+     * @param rotation
+     *        The quaternion rotation.
+     * @return The transformed plane.
+     */
+    public static Plane transform(Plane plane, Quaternion rotation)
+    {
+        Plane result = new Plane();
+        transform(plane, rotation, result);
+        return result;
+    }
+
+    /**
+     * Transforms a normalized plane by a quaternion rotation.
+     * 
+     * @param plane
+     *        The normalized plane to transform.
+     * @param rotation
+     *        The quaternion rotation.
+     * @param result
+     *        The transformed plane.
+     */
+    public static void transform(final Plane plane, final Quaternion rotation, Plane result)
+    {
+        Vector3.transform(plane.normal, rotation, result.normal);
+        result.D = plane.D;
+    }
+
+    public void normalize()
+    {
+        float factor;
+        Vector3 normal = this.normal;
+        this.normal = Vector3.normalize(this.normal);
+        factor = (float) Math.sqrt(this.normal.x * this.normal.x + this.normal.y * this.normal.y + this.normal.z * this.normal.z)
+                 / (float) Math.sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+        D = D * factor;
+    }
+
+    public static Plane normalize(Plane value)
+    {
+        Plane ret = new Plane();
+        normalize(value, ret);
+        return ret;
+    }
+
+    public static void normalize(final Plane value, Plane result)
+    {
+        float factor;
+        result.normal = Vector3.normalize(value.normal);
+        factor = (float) Math.sqrt(result.normal.x * result.normal.x + result.normal.y * result.normal.y + result.normal.z * result.normal.z)
+                 / (float) Math.sqrt(value.normal.x * value.normal.x + value.normal.y * value.normal.y + value.normal.z * value.normal.z);
+        result.D = value.D * factor;
+    }
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * 
+     * @param obj
+     *        the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (obj.getClass() != this.getClass())
+        {
+            return false;
+        }
+        return this.equals((Plane) obj);
+    }
+
+    public boolean equals(Plane other)
+    {
+        return ((normal.equals(other.normal)) && (D == other.D));
+    }
+
+    /**
+     * Indicates whether some other object is "not equal to" this one.
+     * 
+     * @param obj
+     *        the reference object with which to compare.
+     * @return {@code false} if this object is the same as the obj argument; {@code true} otherwise.
      * @see #equals(Object)
-	 */
-	public boolean notEquals(Object obj)
-	{
-		return !this.equals(obj);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return normal.hashCode() ^ Float.hashCode(D);
-	}
+     */
+    public boolean notEquals(Object obj)
+    {
+        return !this.equals(obj);
+    }
 
-	public PlaneIntersectionType intersects(BoundingBox box)
-	{
-		return box.intersects(this);
-	}
+    @Override
+    public int hashCode()
+    {
+        return normal.hashCode() ^ Float.hashCode(D);
+    }
 
-	public void intersects(final BoundingBox box, PlaneIntersectionType result)
-	{
-		box.intersects(this, result);
-	}
+    public PlaneIntersectionType intersects(BoundingBox box)
+    {
+        return box.intersects(this);
+    }
 
-	public PlaneIntersectionType intersects(BoundingFrustum frustum)
-	{
-		return frustum.intersects(this);
-	}
+    // NOTE(Eric): This does not work in java since assigning a new enum constant
+    // changes the reference of the object. Could implement a Wrapper to get around
+    // this if we really wanted this behavior.
+    // public void intersects(final BoundingBox box, PlaneIntersectionType result)
+    // {
+    // box.intersects(this, result);
+    // }
 
-	public PlaneIntersectionType intersects(BoundingSphere sphere)
-	{
-		return sphere.intersects(this);
-	}
+    public PlaneIntersectionType intersects(BoundingFrustum frustum)
+    {
+        return frustum.intersects(this);
+    }
 
-	public void intersects(final BoundingSphere sphere, PlaneIntersectionType result)
-	{
-		sphere.intersects(this, result);
-	}
+    public PlaneIntersectionType intersects(BoundingSphere sphere)
+    {
+        return sphere.intersects(this);
+    }
 
-	protected PlaneIntersectionType intersects(final Vector3 point)
-	{
-		float distance = dotCoordinate(point);
+    // NOTE(Eric): This does not work in java since assigning a new enum constant
+    // changes the reference of the object. Could implement a Wrapper to get around
+    // this if we really wanted this behavior.
+    // public void intersects(final BoundingSphere sphere, PlaneIntersectionType result)
+    // {
+    // sphere.intersects(this, result);
+    // }
 
-		if (distance > 0)
-			return PlaneIntersectionType.Front;
+    protected PlaneIntersectionType intersects(final Vector3 point)
+    {
+        float distance = dotCoordinate(point);
 
-		if (distance < 0)
-			return PlaneIntersectionType.Back;
+        if (distance > 0)
+            return PlaneIntersectionType.Front;
 
-		return PlaneIntersectionType.Intersecting;
-	}
+        if (distance < 0)
+            return PlaneIntersectionType.Back;
 
-	protected String debugDisplayString()
-	{
-		return (this.normal.debugDisplayString() + "  " + this.D);
-	}
+        return PlaneIntersectionType.Intersecting;
+    }
 
-	@Override
-	public String toString()
-	{
-		return "{{Normal:" + normal + " D:" + D + "}}";
-	}
+    protected String debugDisplayString()
+    {
+        return (this.normal.debugDisplayString() + "  " + this.D);
+    }
 
+    @Override
+    public String toString()
+    {
+        return "{{Normal:" + normal + " D:" + D + "}}";
+    }
+
+    // #endregion
 }

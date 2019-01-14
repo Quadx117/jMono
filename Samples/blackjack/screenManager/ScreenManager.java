@@ -323,7 +323,7 @@ public class ScreenManager extends DrawableGameComponent
 
 		spriteBatch.draw(blankTexture,
 						 new Rectangle(0, 0, viewport.getWidth(), viewport.getHeight()),
-						 Color.multiply(Color.Black, alpha));
+						 Color.multiply(Color.Black(), alpha));
 
 		spriteBatch.end();
 	}

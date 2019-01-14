@@ -34,7 +34,7 @@ public class Mouse
 
 	static JFrameGameFrame window;
 
-	public static void setWindows(JFrameGameFrame window)
+	public static void setWindow(JFrameGameFrame window)
 	{
 		Mouse.window = window;
 	}

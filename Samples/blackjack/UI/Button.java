@@ -222,7 +222,7 @@ public class Button extends AnimatedGameComponent
 	{
 		spriteBatch.begin();
 
-		spriteBatch.draw(isPressed ? pressedTexture : regularTexture, bounds, Color.White);
+		spriteBatch.draw(isPressed ? pressedTexture : regularTexture, bounds, Color.White());
 		if (font != null)
 		{
 			Vector2 textPosition = font.measureString(text);
@@ -231,7 +231,7 @@ public class Button extends AnimatedGameComponent
 			textPosition.divide(2);
 			textPosition.x += bounds.x;
 			textPosition.y += bounds.y;
-			spriteBatch.drawString(font, text, textPosition, Color.White);
+			spriteBatch.drawString(font, text, textPosition, Color.White());
 		}
 
 		spriteBatch.end();

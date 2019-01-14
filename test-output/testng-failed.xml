@@ -3,11 +3,11 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [Default suite]">
   <test name="Default test(failed)">
     <classes>
-      <class name="framework.Vector2Test">
+      <class name="framework.math.RayTest">
         <methods>
-          <include name="subtract"/>
+          <include name="boundingBoxIntersects"/>
         </methods>
-      </class> <!-- framework.Vector2Test -->
+      </class> <!-- framework.math.RayTest -->
     </classes>
   </test> <!-- Default test(failed) -->
 </suite> <!-- Failed suite [Default suite] -->

@@ -1,16 +1,14 @@
 package jMono_Framework.audio;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.AudioFormat.Encoding;
 
-// TODO: Should I add a liste of clips like in SharpDX.XAudio2.SourceVoice ?
+// TODO: Should I add a list of clips like in SharpDX.XAudio2.SourceVoice ?
 // @see https://github.com/sharpdx/SharpDX/blob/master/Source/SharpDX.XAudio2/SourceVoice.cs
 // @see https://msdn.microsoft.com/en-us/library/windows/desktop/microsoft.directx_sdk.ixaudio2sourcevoice.ixaudio2sourcevoice.aspx
 public class SourceVoice
